@@ -1,5 +1,7 @@
-3 git_2: Update and commit any two lines in secondFile.txt.
-4 git_1: Update and commit the same 2 lines with the different info in secondFile.txt
+1 git_2: Update and commit any two lines in secondFile.txt.
+2 git_1: Update and commit the same 2 lines with the different info in secondFile.txt
+3 git_1: Add and commit firstFile.txt file with 10 lines.
+4 git_1: Add and commit secondFile.txt file with 10 lines.
 3 new line
 4 new line
 5 new line
