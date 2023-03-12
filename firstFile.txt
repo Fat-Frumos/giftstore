@@ -1,7 +1,7 @@
 1 git_1: Update and commit firstFile.txt file, modify two lines.
 2 git_1: Update and commit firstFile.txt file, modify another two lines
-3 new line
-4 new line
+3 Transfer changes of commit from Step 7 only to git_2, using format patch.
+4 Transfer changes of commit from Step 8 only to git_2, using cherrypick command.
 5 new line
 6 new line
 7 new line
