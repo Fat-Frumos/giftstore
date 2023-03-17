@@ -1,4 +1,4 @@
-name: REST-API Spring Java (Gradle)
+name: REST API
 
 on:
   push:
@@ -15,40 +15,39 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up JDK 11
-      uses: actions/setup-java@v3
-      with:
-        java-version: '11'
-        distribution: 'temurin'
-        server-id: github
-        settings-path: ${{ github.workspace }}
+      - uses: actions/checkout@v3
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          server-id: github
+          settings-path: ${{ github.workspace }}
 
+      - name: chmod with gradlew
+        run: chmod +x gradlew
 
-    - name: chmod with gradlew
-      run: chmod +x gradlew
+      - name: View directory
+        run: pwd && ls -ltr
 
-    - name: View directory
-      run: pwd && ls -ltr
+      - name: Assemble fat jar in Utils module and test with Gradle
+        run:  ./gradlew :app:clean build test
 
-    - name: Assemble App module and test with Gradle
-      run:  build clean test
+      - name: Run Api main
+        run:  ./gradlew :app:run
 
-    - name: Run Api main
-      run:  ./gradlew :app:run
+      - name: Build with Gradle
+        uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
+        with:
+          arguments: publishToMavenLocal
 
-    - name: Build with Gradle
-      uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
-      with:
-        arguments: publishToMavenLocal
+      - name: Run tests with Gradle
+        run: ./gradlew test
 
-    - name: Run tests with Gradle
-      run: ./gradlew test
-
-    - name: Publish to GitHub Packages
-      uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
-      with:
-        arguments: publish
-      env:
-        USERNAME: ${{ github.actor }}
-        TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish to GitHub Packages
+        uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
+        with:
+          arguments: publish
+        env:
+          USERNAME: ${{ github.actor }}
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}

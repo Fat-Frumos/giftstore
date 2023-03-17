@@ -2,9 +2,9 @@ name: Shadow Jar Utils Java
 
 on:
   push:
-    branches: [ "gradle" ]
+    branches: [ "develop" ]
   pull_request:
-    branches: [ "gradle" ]
+    branches: [ "develop" ]
 
 permissions:
   contents: read
