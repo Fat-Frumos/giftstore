@@ -1,0 +1,15 @@
+plugins {
+    id 'com.epam.esm.java-common-conventions'
+}
+
+repositories {
+    mavenCentral()
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java']
+        }
+    }
+}

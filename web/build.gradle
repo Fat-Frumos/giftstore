@@ -1,0 +1,25 @@
+plugins {
+    id 'java'
+    id 'war'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(':app')
+    implementation project(':dao')
+    implementation project(':exception')
+    implementation 'javax.servlet:javax.servlet-api:4.0.1'
+    implementation 'org.apache.tomcat.embed:tomcat-embed-core:9.0.54'
+    implementation 'org.apache.tomcat.embed:tomcat-embed-jasper:9.0.54'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java']
+        }
+    }
+}
