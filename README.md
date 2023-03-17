@@ -1,2 +1,4 @@
-To modify the existing file, we will use VIM text editor.
-Now I will add some changes
+# External Lab
+## Build Tools: Gradle
+### Task 1: Assemble custom jar utils-1.3.5.jar
+### Task 2: Create a project multi-project with two subprojects core and api
