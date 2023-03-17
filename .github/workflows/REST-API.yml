@@ -2,9 +2,9 @@ name: REST-API Spring Java (Gradle)
 
 on:
   push:
-    branches: [ "module#2" ]
+    branches: [ "develop" ]
   pull_request:
-    branches: [ "module#2" ]
+    branches: [ "develop" ]
 
 permissions:
   contents: read
