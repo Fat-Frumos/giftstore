@@ -1,0 +1,31 @@
+name: Deploy to Tomcat
+on:
+  push:
+    branches: [ master ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Build project
+        run: mvn clean package
+      - name: Test project
+        run: mvn test
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Tomcat
+        run: sudo apt-get update && sudo apt-get install tomcat9
+      - name: Deploy WAR file
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.TOMCAT_HOST }}
+          username: ${{ secrets.TOMCAT_USERNAME }}
+          password: ${{ secrets.TOMCAT_PASSWORD }}
+          port: ${{ secrets.TOMCAT_PORT }}
+          script: |
+            cd /var/lib/tomcat9/webapps
+            rm -rf ROOT*
+            curl -O http://localhost:8080/manager/text/deploy?path=/&amp;war=file:/target/gift.war
