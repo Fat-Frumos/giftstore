@@ -28,4 +28,4 @@ jobs:
           script: |
             cd /var/lib/tomcat9/webapps
             rm -rf ROOT*
-            curl -O http://localhost:8080/manager/text/deploy?path=/&amp;war=file:/target/gift.war
+            curl -O http://localhost:8080/manager/text/deploy?path=/&amp;war=file:api/target/gift.war
