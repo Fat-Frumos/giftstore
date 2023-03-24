@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Data
 @AllArgsConstructor
 public class TagDtoMapper {
-    public TagDto toDto(Tag tag) {
+    public TagDto toDto(final Tag tag) {
         return new TagDto(tag.getId(), tag.getName());
     }
 }

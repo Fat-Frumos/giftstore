@@ -20,7 +20,7 @@ public class DefaultTagService implements TagService {
     private final TagDtoMapper tagDtoMapper;
 
     @Override
-    public TagDto getBy(Long id) {
+    public TagDto getBy(final Long id) {
         Tag tag = tagDao.getById(id).orElseThrow(() ->
                 new ServiceException(
                         String.format("Certificate not found%d", id)));

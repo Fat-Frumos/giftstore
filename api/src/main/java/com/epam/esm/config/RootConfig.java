@@ -10,20 +10,20 @@ import org.springframework.web.servlet.config.annotation.*;
 public class RootConfig implements WebMvcConfigurer {
     @Override
     public void addViewControllers(
-            ViewControllerRegistry registry) {
+            final ViewControllerRegistry registry) {
         registry.addViewController("/").
                 setViewName("forward:/");
     }
 
     @Override
     public void addResourceHandlers(
-            ResourceHandlerRegistry registry) {
+            final ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/resources/**")
                 .addResourceLocations("/resources/");
     }
 
     @Override
-    public void addCorsMappings(CorsRegistry registry) {
+    public void addCorsMappings(final CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins("*")
                 .allowedMethods("GET", "POST", "PUT", "DELETE");

@@ -39,11 +39,13 @@ public class AppConfig implements TransactionManagementConfigurer {
 
     @Bean
     public PlatformTransactionManager txManager() {
+
         return new DataSourceTransactionManager(dataSource());
     }
 
     @Override
     public PlatformTransactionManager annotationDrivenTransactionManager() {
+
         return txManager();
     }
 

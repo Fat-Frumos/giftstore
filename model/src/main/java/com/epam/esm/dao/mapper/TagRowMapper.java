@@ -14,7 +14,7 @@ public class TagRowMapper implements RowMapper<Tag> {
     private final String TAG_NAME = "t_name";
 
     @Override
-    public Tag mapRow(ResultSet resultSet, int i)
+    public Tag mapRow(final ResultSet resultSet, final int i)
             throws SQLException {
         return new Tag(
                 resultSet.getLong(TAG_ID),

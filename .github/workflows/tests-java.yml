@@ -8,7 +8,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -40,14 +39,3 @@ jobs:
 
       - name: exec:java
         run: cd WEB-INF
-
-      - name: exec:java
-        run: java -classpath "lib/*:classes/." com.epam.esm.WebAppInitializer
-
-      - name: clean install test surefire-report:report
-        run: mvn clean install test surefire-report:report
-
-      - name: Run maven script
-        uses: guillonapa/action-maven-cli/jdk8@master
-        with:
-          lifecycle: 'clean package test'

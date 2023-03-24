@@ -30,5 +30,4 @@ public class Certificate implements BaseEntity {
     private Instant lastUpdateDate;
     private Integer duration;
     private Set<Tag> tags = new HashSet<>();
-
 }

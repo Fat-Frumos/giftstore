@@ -22,44 +22,48 @@ public class DefaultCertificateDao implements CertificateDao {
     private final CertificateRowMapper certificateRowMapper;
 
     @Override
-    public Optional<Certificate> getById(Long id) {
+    public final Optional<Certificate> getById(final Long id) {
         return Optional.ofNullable(
                 jdbcTemplate.queryForObject(GET_BY_ID, new Object[]{id},
                         certificateRowMapper));
     }
 
     @Override
-    public Optional<Tag> getByName(String name) {
+    public final Optional<Tag> getByName(final String name) {
         return Optional.empty();
     }
 
     @Override
-    public List<Certificate> getAll() {
+    public final List<Certificate> getAll() {
         return jdbcTemplate.query(
                 GET_ALL_CERTIFICATE,
                 certificateRowMapper);
     }
 
     @Override
-    public Certificate save(Certificate giftCertificates) {
+    public final Certificate save(final Certificate certificate) {
+        certificate.setId((System.currentTimeMillis() >> 48) & 0x0FFF);
         jdbcTemplate.update(INSERT_CERTIFICATE,
-                giftCertificates.getName(),
-                giftCertificates.getDescription(),
-                Timestamp.from(giftCertificates.getCreateDate()),
-                Timestamp.from(giftCertificates.getLastUpdateDate()),
-                giftCertificates.getDuration());
-        giftCertificates.setId((System.currentTimeMillis() >> 48) & 0x0FFF);
-        return giftCertificates;
+                certificate.getId(),
+                certificate.getName(),
+                certificate.getDescription(),
+                Timestamp.from(certificate.getCreateDate()),
+                Timestamp.from(certificate.getLastUpdateDate()),
+                certificate.getDuration());
+        return certificate;
     }
 
     @Override
-    public void delete(Long id) {
+    public final void delete(final Long id) {
+
         this.jdbcTemplate.update(DELETE_CERTIFICATE, id);
     }
 
 
     @Override
-    public CertificateDto update(Certificate certificate) {
+    public final CertificateDto update(
+            final Certificate certificate) {
+        //TODO
         return new CertificateDto();
     }
 }

@@ -21,7 +21,7 @@ public class DefaultCertificateService implements CertificateService {
     private final CertificateDtoMapper certificateDtoMapper;
 
     @Override
-    public CertificateDto getById(Long id) {
+    public CertificateDto getById(final Long id) {
         Certificate certificate =
                 certificateDao.getById(id).orElseThrow(() ->
                         new ServiceException(String.format("Certificate not found%d", id)));
@@ -38,7 +38,7 @@ public class DefaultCertificateService implements CertificateService {
 
     @Transactional
     @Override
-    public boolean delete(Long id) {
+    public boolean delete(final Long id) {
         //TODO
         return false;
 
@@ -46,8 +46,7 @@ public class DefaultCertificateService implements CertificateService {
 
     @Transactional
     @Override
-    public Certificate update(
-            CertificateDto certificateDto) {
+    public Certificate update(final CertificateDto certificateDto) {
         //TODO
         return new Certificate();
     }

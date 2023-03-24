@@ -20,31 +20,33 @@ public class DefaultTagDao implements TagDao {
     private final TagRowMapper tagRowMapper;
 
     @Override
-    public Optional<Tag> getById(Long id) {
+    public final Optional<Tag> getById(final Long id) {
         return Optional.of(Objects.requireNonNull(
                 jdbcTemplate.queryForObject(GET_TAG_BY_ID,
                         new Object[]{id}, tagRowMapper)));
     }
 
     @Override
-    public Optional<Tag> getByName(String name) {
+    public final Optional<Tag> getByName(final String name) {
         return Optional.ofNullable(jdbcTemplate.queryForObject(
                 GET_BY_NAME, new Object[]{name}, tagRowMapper));
     }
 
     @Override
-    public List<Tag> getAll() {
+    public final List<Tag> getAll() {
+
         return jdbcTemplate.query(GET_ALL_TAGS, tagRowMapper);
     }
 
     @Override
-    public Tag save(Tag tag) {
+    public final Tag save(final Tag tag) {
         // TODO
         return new Tag();
     }
 
     @Override
-    public void delete(Long id) {
+    public final void delete(final Long id) {
+
         this.jdbcTemplate.update(DELETE_TAG, id);
     }
 }

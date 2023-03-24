@@ -9,22 +9,22 @@ import java.sql.SQLException;
 
 @Component
 public class CertificateRowMapper implements RowMapper<Certificate> {
-    private final String CERTIFICATE_ID = "c_id";
-    private final String CERTIFICATE_NAME = "c_name";
-    private final String CERTIFICATE_DESCRIPTION = "c_description";
-    private final String CERTIFICATE_DURATION = "c_duration";
-    private final String CERTIFICATE_CREATE_DATE = "c_create_date";
-    private final String CERTIFICATE_LAST_UPDATE_DATE = "c_last_update_date";
+    private final String GIFT_ID = "id";
+    private final String GIFT_NAME = "name";
+    private final String DESCRIPTION = "description";
+    private final String DURATION = "duration";
+    private final String CREATE_DATE = "create_date";
+    private final String LAST_UPDATE_DATE = "last_update_date";
 
     @Override
-    public Certificate mapRow(ResultSet resultSet, int i) throws SQLException {
+    public Certificate mapRow(final ResultSet resultSet, final int i) throws SQLException {
         return Certificate.builder()
-                .id(resultSet.getLong(CERTIFICATE_ID))
-                .name(resultSet.getString(CERTIFICATE_NAME))
-                .description(resultSet.getString(CERTIFICATE_DESCRIPTION))
-                .duration(resultSet.getInt(CERTIFICATE_DURATION))
-                .createDate(resultSet.getTimestamp(CERTIFICATE_CREATE_DATE).toInstant())
-                .lastUpdateDate(resultSet.getTimestamp(CERTIFICATE_LAST_UPDATE_DATE).toInstant())
+                .id(resultSet.getLong(GIFT_ID))
+                .name(resultSet.getString(GIFT_NAME))
+                .description(resultSet.getString(DESCRIPTION))
+                .duration(resultSet.getInt(DURATION))
+                .createDate(resultSet.getTimestamp(CREATE_DATE).toInstant())
+                .lastUpdateDate(resultSet.getTimestamp(LAST_UPDATE_DATE).toInstant())
                 .build();
     }
 }
