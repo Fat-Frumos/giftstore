@@ -22,9 +22,9 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.TOMCAT_HOST }}
-          username: ${{ secrets.TOMCAT_USERNAME }}
-          password: ${{ secrets.TOMCAT_PASSWORD }}
-          port: ${{ secrets.TOMCAT_PORT }}
+          username: admin
+          password: admin
+          port: 8080
           script: |
             cd /var/lib/tomcat9/webapps
             rm -rf ROOT*

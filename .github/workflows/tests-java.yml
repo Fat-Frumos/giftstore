@@ -32,13 +32,13 @@ jobs:
         run: mvn -B package --file pom.xml
 
       - name: gift.war
-        run: jar ls -la && pwd
+        run: ls -la && pwd
 
       - name: gift.war
         run: cd api/target
 
       - name: gift.war
-        run: jar ls -la && pwd
+        run: ls -la && pwd
 
       - name: gift.war
         run: jar -xvf gift.war
