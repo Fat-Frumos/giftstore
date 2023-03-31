@@ -34,9 +34,5 @@ jobs:
       - name: gift.war
         run: ls -la && pwd
 
-
-     - name: gift.war
-       run: java -jar  /api/target/gift.war
-#
-#      - name: exec:java
-#        run: cd WEB-INF
+      - name: gift.war
+        run: java -jar /api/target/gift.war
