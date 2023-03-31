@@ -2,9 +2,9 @@ name: Java CI with Maven(Gift-shop)
 
 on:
   push:
-    branches: [ master ]
+    branches: [ module#2 ]
   pull_request:
-    branches: [ master ]
+    branches: [ module#2 ]
 
 jobs:
   build:

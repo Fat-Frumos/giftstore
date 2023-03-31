@@ -6,7 +6,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -16,7 +15,6 @@ import java.util.Set;
 @Setter
 @Getter
 @Builder
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
@@ -30,4 +28,11 @@ public class Certificate implements BaseEntity {
     private Instant lastUpdateDate;
     private Integer duration;
     private Set<Tag> tags = new HashSet<>();
+
+    @Override
+    public String toString() {
+        return String.format(
+                "{id=%d, name='%s', description='%s', price=%s, duration=%d, tags=%s}",
+                id, name, description, price, duration, tags);
+    }
 }

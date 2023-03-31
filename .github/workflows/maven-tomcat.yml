@@ -1,7 +1,7 @@
 name: Deploy to Tomcat
 on:
   push:
-    branches: [ master ]
+    branches: [ module#2 ]
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -18,14 +18,15 @@ jobs:
     steps:
       - name: Install Tomcat
         run: sudo apt-get update && sudo apt-get install tomcat9
-      - name: Deploy WAR file
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.TOMCAT_HOST }}
-          username: admin
-          password: admin
-          port: 8080
-          script: |
-            cd /var/lib/tomcat9/webapps
-            rm -rf ROOT*
-            curl -O http://localhost:8080/manager/text/deploy?path=/&amp;war=file:api/target/gift.war
+
+#      - name: Deploy WAR file
+#        uses: appleboy/ssh-action@master
+#        with:
+#          host: ${{ secrets.TOMCAT_HOST }}
+#          username: admin
+#          password: admin
+#          port: 8080
+#          script: |
+#            cd /var/lib/tomcat9/webapps
+#            rm -rf ROOT*
+#            curl -O http://localhost:8080/manager/text/deploy?path=/&amp;war=file:api/target/gift.war

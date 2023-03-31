@@ -1,17 +1,18 @@
 package com.epam.esm.dao;
 
-import com.epam.esm.dao.mapper.TagRowMapper;
+import com.epam.esm.mapper.TagRowMapper;
 import com.epam.esm.domain.Tag;
+import com.epam.esm.exception.DaoException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
-import static com.epam.esm.dao.mapper.QueriesContext.*;
+import static com.epam.esm.mapper.QueriesContext.*;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class DefaultTagDao implements TagDao {
@@ -20,33 +21,66 @@ public class DefaultTagDao implements TagDao {
     private final TagRowMapper tagRowMapper;
 
     @Override
-    public final Optional<Tag> getById(final Long id) {
-        return Optional.of(Objects.requireNonNull(
-                jdbcTemplate.queryForObject(GET_TAG_BY_ID,
-                        new Object[]{id}, tagRowMapper)));
+    public final Tag getById(final Long id)
+            throws DaoException {
+        try {
+            return jdbcTemplate.queryForObject(
+                    GET_TAG_BY_ID,
+                    new Object[]{id},
+                    tagRowMapper);
+        } catch (Exception e) {
+            log.debug(GET_TAG_BY_ID);
+            throw new DaoException(e);
+        }
     }
 
     @Override
-    public final Optional<Tag> getByName(final String name) {
-        return Optional.ofNullable(jdbcTemplate.queryForObject(
-                GET_BY_NAME, new Object[]{name}, tagRowMapper));
+    public final Tag getByName(final String name)
+            throws DaoException {
+        try {
+            return jdbcTemplate.queryForObject(
+                    GET_BY_NAME,
+                    new Object[]{name},
+                    tagRowMapper);
+        } catch (Exception e) {
+            log.debug(GET_TAG_BY_ID);
+            throw new DaoException(e);
+        }
     }
 
     @Override
-    public final List<Tag> getAll() {
-
-        return jdbcTemplate.query(GET_ALL_TAGS, tagRowMapper);
+    public final List<Tag> getAll()
+            throws DaoException {
+        try {
+            return jdbcTemplate.query(
+                    GET_ALL_TAGS,
+                    tagRowMapper);
+        } catch (Exception e) {
+            log.debug(GET_ALL_TAGS);
+            throw new DaoException(e);
+        }
     }
 
     @Override
-    public final Tag save(final Tag tag) {
-        // TODO
-        return new Tag();
+    public final boolean save(final Tag tag)
+            throws DaoException {
+        try { // TODO
+            return false;
+        } catch (Exception e) {
+            log.debug(INSERT_TAG);
+            throw new DaoException(e);
+        }
     }
 
     @Override
-    public final void delete(final Long id) {
-
-        this.jdbcTemplate.update(DELETE_TAG, id);
+    public final boolean delete(final Long id)
+            throws DaoException {
+        try {
+            return jdbcTemplate.update(
+                    DELETE_TAG, id) > 0;
+        } catch (Exception e) {
+            log.debug(GET_TAG_BY_ID);
+            throw new DaoException(e);
+        }
     }
 }

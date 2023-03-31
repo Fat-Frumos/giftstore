@@ -23,5 +23,4 @@ public class Tag implements BaseEntity {
     private Long id;
     private String name;
     private Set<Certificate> certificates = new HashSet<>();
-
 }

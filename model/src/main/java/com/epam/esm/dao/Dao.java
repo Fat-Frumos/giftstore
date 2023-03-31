@@ -1,18 +1,18 @@
 package com.epam.esm.dao;
 
-import com.epam.esm.domain.Tag;
+import com.epam.esm.domain.BaseEntity;
+import com.epam.esm.exception.DaoException;
 
 import java.util.List;
-import java.util.Optional;
 
-public interface Dao<T> {
-    List<T> getAll();
+public interface Dao<T extends BaseEntity> {
+    List<T> getAll() throws DaoException;
 
-    Optional<T> getById(Long id);
+    T getById(Long id) throws DaoException;
 
-    Optional<Tag> getByName(String name);
+    T getByName(String name) throws DaoException;
 
-    T save(T entity);
+    boolean save(T entity) throws DaoException;
 
-    void delete(Long id);
+    boolean delete(Long id) throws DaoException;
 }

@@ -1,19 +1,19 @@
 package com.epam.esm.dao;
 
-import com.epam.esm.dao.mapper.CertificateRowMapper;
+import com.epam.esm.mapper.CertificateRowMapper;
 import com.epam.esm.domain.Certificate;
-import com.epam.esm.domain.Tag;
-import com.epam.esm.dto.CertificateDto;
+import com.epam.esm.exception.DaoException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Optional;
 
-import static com.epam.esm.dao.mapper.QueriesContext.*;
+import static com.epam.esm.mapper.QueriesContext.*;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class DefaultCertificateDao implements CertificateDao {
@@ -22,48 +22,85 @@ public class DefaultCertificateDao implements CertificateDao {
     private final CertificateRowMapper certificateRowMapper;
 
     @Override
-    public final Optional<Certificate> getById(final Long id) {
-        return Optional.ofNullable(
-                jdbcTemplate.queryForObject(GET_BY_ID, new Object[]{id},
-                        certificateRowMapper));
+    public final Certificate getById(final Long id)
+            throws DaoException {
+        try {
+            return jdbcTemplate.queryForObject(
+                    GET_CERTIFICATE_BY_ID,
+                    new Object[]{id},
+                    certificateRowMapper);
+        } catch (Exception e) {
+            log.debug(GET_CERTIFICATE_BY_ID);
+            throw new DaoException(e);
+        }
     }
 
     @Override
-    public final Optional<Tag> getByName(final String name) {
-        return Optional.empty();
+    public final Certificate getByName(final String name)
+            throws DaoException {
+        try { // TODO
+            return jdbcTemplate.queryForObject(
+                    GET_CERTIFICATE_BY_NAME,
+                    new Object[]{name},
+                    certificateRowMapper);
+        } catch (Exception e) {
+            log.debug(GET_CERTIFICATE_BY_NAME);
+            throw new DaoException(e);
+        }
     }
 
     @Override
-    public final List<Certificate> getAll() {
-        return jdbcTemplate.query(
-                GET_ALL_CERTIFICATE,
-                certificateRowMapper);
+    public final List<Certificate> getAll()
+            throws DaoException {
+        try {
+            return jdbcTemplate.query(
+                    GET_ALL_CERTIFICATE,
+                    certificateRowMapper);
+        } catch (Exception e) {
+            log.debug(GET_ALL_CERTIFICATE);
+            throw new DaoException(e);
+        }
     }
 
     @Override
-    public final Certificate save(final Certificate certificate) {
-        certificate.setId((System.currentTimeMillis() >> 48) & 0x0FFF);
-        jdbcTemplate.update(INSERT_CERTIFICATE,
-                certificate.getId(),
-                certificate.getName(),
-                certificate.getDescription(),
-                Timestamp.from(certificate.getCreateDate()),
-                Timestamp.from(certificate.getLastUpdateDate()),
-                certificate.getDuration());
-        return certificate;
+    public final boolean save(final Certificate certificate)
+            throws DaoException {
+        try {
+            return jdbcTemplate.update(INSERT_CERTIFICATE,
+                    System.currentTimeMillis() >> 48 & 0x0FFF,
+                    certificate.getName(),
+                    certificate.getDescription(),
+                    Timestamp.from(certificate.getCreateDate()),
+                    Timestamp.from(certificate.getLastUpdateDate()),
+                    certificate.getDuration()) == 1;
+        } catch (Exception e) {
+            log.debug(INSERT_CERTIFICATE);
+            throw new DaoException("Failed to save certificate to the database", e);
+        }
     }
 
     @Override
-    public final void delete(final Long id) {
-
-        this.jdbcTemplate.update(DELETE_CERTIFICATE, id);
+    public final boolean delete(final Long id)
+            throws DaoException {
+        try {
+            return jdbcTemplate.update(
+                    DELETE_CERTIFICATE, id) == 1;
+        } catch (Exception e) {
+            log.debug(DELETE_CERTIFICATE);
+            throw new DaoException(e);
+        }
     }
 
-
     @Override
-    public final CertificateDto update(
-            final Certificate certificate) {
-        //TODO
-        return new CertificateDto();
+    public final boolean update(
+            final Certificate certificate)
+            throws DaoException {
+        try { // TODO update to DB,
+            // TODO prices should be updated
+            return false;
+        } catch (Exception e) {
+            log.debug(INSERT_CERTIFICATE);
+            throw new DaoException(e);
+        }
     }
 }
