@@ -34,5 +34,11 @@ jobs:
       - name: gift.war
         run: ls -la && pwd
 
+      - name: cd
+        run: cd api/
+
       - name: gift.war
-        run: java -jar /api/target/gift.war
+        run: ls -la && pwd
+
+      - name: gift.war
+        run: java -jar /target/gift.war
