@@ -2,9 +2,9 @@ name: Java install openjdk-8-jdk
 
 on:
   push:
-    branches: [ module#2 ]
+    branches: [ master ]
   pull_request:
-    branches: [ module#2 ]
+    branches: [ master ]
 
 jobs:
   build:
@@ -34,14 +34,9 @@ jobs:
       - name: gift.war
         run: ls -la && pwd
 
-      - name: gift.war
-        run: cd api
 
-      - name: gift.war
-        run: ls -la && pwd
-
-#      - name: gift.war
-#        run: jar -xvf gift.war
+     - name: gift.war
+       run: java -jar  /api/target/gift.war
 #
 #      - name: exec:java
 #        run: cd WEB-INF
