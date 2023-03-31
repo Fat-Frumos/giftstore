@@ -13,11 +13,14 @@ jobs:
       - name: Build project
         run: mvn clean package
       
-      - name: Install Tomcat
-        run: sudo apt-get update && sudo apt-get install tomcat7
-
-      - name: Install Tomcat
+      - name: find Tomcat
         run: find . -name gift.war
+
+      - name: universe file
+        run: sudo add-apt-repository universe
+
+      - name: tomcat7 file
+        run: sudo apt-get update && sudo apt-get install tomcat7
 
       - name: Copy WAR file
         run: sudo mkdir -p /usr/share/tomcat7/webapps/

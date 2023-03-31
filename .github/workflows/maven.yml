@@ -22,5 +22,8 @@ jobs:
       - name: Build with Maven
         run: mvn -B package --file pom.xml
 
+      - name: find Tomcat
+        run: find . -name gift.war
+
       - name: Ip
         run: ip address
