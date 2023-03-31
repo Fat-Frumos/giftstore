@@ -7,10 +7,10 @@ RUN mvn clean package -DskipTests -Dmaven.compiler.target=11
 
 COPY . .
 COPY --from=build /api/target/gift.war certificate.war
-COPY ./api/target/gift.war /usr/local/tomcat/webapps/
+COPY api/target/gift.war /usr/local/tomcat/webapps/
 
 RUN echo find . -name gift.war
 RUN echo $CLASSPATH
 
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","certificate.war"]
+ENTRYPOINT ["catalina.sh", "run"]
