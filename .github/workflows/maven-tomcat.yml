@@ -16,17 +16,14 @@ jobs:
       - name: find Tomcat
         run: find . -name gift.war
 
-      - name: universe file
-        run: sudo add-apt-repository universe
-
       - name: tomcat7 file
-        run: sudo apt-get update && sudo apt-get install tomcat7
+        run: sudo apt-get update && sudo apt-get install tomcat8
 
       - name: Copy WAR file
         run: sudo mkdir -p /usr/share/tomcat7/webapps/
 
       - name: Copy WAR file
-        run: sudo cp api/target/*.war /usr/share/tomcat7/webapps/
+        run: sudo cp ./api/target/*.war /usr/share/tomcat7/webapps/
             
       - name: Start Tomcat
         run: sudo service tomcat7 start

@@ -9,6 +9,7 @@ COPY . .
 COPY --from=build /api/target/gift.war certificate.war
 COPY ./api/target/gift.war /usr/local/tomcat/webapps/
 
+RUN echo find . -name gift.war
 RUN echo $CLASSPATH
 
 EXPOSE 8080
