@@ -1,12 +1,11 @@
 package com.epam.esm.service;
 
 import com.epam.esm.dao.TagDao;
-import com.epam.esm.domain.Tag;
 import com.epam.esm.dto.TagDto;
-import com.epam.esm.exception.DaoException;
-import com.epam.esm.exception.ServiceException;
+import com.epam.esm.mapper.TagMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,51 +16,59 @@ import static java.util.stream.Collectors.toList;
 
 @Service
 @RequiredArgsConstructor
-@CacheConfig(cacheNames = "equations")
+@CacheConfig(cacheNames = "tags")
 public class DefaultTagService implements TagService {
 
     private final TagDao tagDao;
+    private final TagMapper tagMapper;
 
     @Override
-    @Transactional(readOnly = true)
     @Cacheable
-    public TagDto getById(final Long id)
-            throws ServiceException {
-        try {
-            Tag tag = tagDao.getById(id);
-            return new TagDto(tag);
-        } catch (DaoException e) {
-            throw new ServiceException(
-                    "Certificate not found", e);
-        }
+    @Transactional(readOnly = true)
+    public TagDto getById(
+            final Long id)
+            throws RuntimeException {
+        return tagMapper.toDto(
+                tagDao.getById(id));
     }
 
     @Override
-    public TagDto getByName(String name) throws ServiceException {
-        return null;
+    @Cacheable
+    @Transactional(readOnly = true)
+    public TagDto getByName(
+            final String name)
+            throws RuntimeException {
+        return tagMapper.toDto(
+                tagDao.getByName(name));
     }
 
     @Override
+    @Cacheable
     @Transactional(readOnly = true)
     public List<TagDto> getAll()
-            throws ServiceException {
-        try {
-            return tagDao.getAll()
-                    .stream()
-                    .map(TagDto::new)
-                    .collect(toList());
-        } catch (DaoException e) {
-            throw new ServiceException(e);
-        }
+            throws RuntimeException {
+        return tagDao.getAll()
+                .stream()
+                .map(tagMapper::toDto)
+                .collect(toList());
     }
 
     @Override
-    public boolean save(TagDto tag) throws ServiceException {
-        return false;
+    @Transactional
+    @CacheEvict(allEntries = true)
+    public boolean save(
+            final TagDto tagDto)
+            throws RuntimeException {
+        return tagDao.save(
+                tagMapper.toEntity(tagDto));
     }
 
     @Override
-    public boolean delete(Long id) throws ServiceException {
-        return false;
+    @Transactional
+    @CacheEvict(allEntries = true)
+    public boolean delete(
+            final Long id)
+            throws RuntimeException {
+        return tagDao.delete(id);
     }
 }

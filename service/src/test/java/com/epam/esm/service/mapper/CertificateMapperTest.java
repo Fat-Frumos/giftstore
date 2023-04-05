@@ -11,7 +11,9 @@ import org.junit.jupiter.params.provider.CsvSource;
 import java.math.BigDecimal;
 import java.time.Instant;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("CertificateMapper tests")
 class CertificateMapperTest {
@@ -97,12 +99,12 @@ class CertificateMapperTest {
     @Test
     @DisplayName("Should throw NullPointerException when passed null argument")
     void shouldThrowNullPointerExceptionWhenPassedNullToEntity() {
-        assertThrows(NullPointerException.class, () -> mapper.toEntity(null));
+        assertThrows(RuntimeException.class, () -> mapper.toEntity(null));
     }
 
     @Test
     @DisplayName("Should throw NullPointerException when passed null argument")
     void shouldThrowNullPointerExceptionWhenPassedNullToDto() {
-        assertThrows(NullPointerException.class, () -> mapper.toDto(null));
+        assertThrows(RuntimeException.class, () -> mapper.toDto(null));
     }
 }

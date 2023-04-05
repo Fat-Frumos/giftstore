@@ -5,10 +5,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.*;
+import org.springframework.http.HttpHeaders;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -27,10 +25,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @EnableTransactionManagement
 @ComponentScan("com.epam.esm")
-@PropertySource(value = {
-        "classpath:application.properties",
-        "file:${config.dir}/application.properties"},
-        ignoreResourceNotFound = true)
+@PropertySource(value = {"classpath:application.properties"}, ignoreResourceNotFound = true)
 public class AppConfig implements TransactionManagementConfigurer {
 
     @Value("${spring.datasource.username}")
@@ -45,14 +40,42 @@ public class AppConfig implements TransactionManagementConfigurer {
     @Value("${spring.datasource.url}")
     private String url;
 
-    @Bean
-    public DataSource dataSource() {
+    private DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName(driverClassName);
         dataSource.setUrl(url);
         dataSource.setUsername(username);
         dataSource.setPassword(password);
         return dataSource;
+    }
+
+    @Bean
+    @Profile("prod")
+    public DataSource dataSourceProd() {
+        return dataSource();
+    }
+
+    @Bean
+    @Profile("prod")
+    public JdbcTemplate jdbcTemplateProd() {
+        return new JdbcTemplate(dataSourceProd());
+    }
+
+    @Bean
+    @Profile("dev")
+    public DataSource dataSourceDev() {
+        return dataSource();
+    }
+
+    @Bean
+    @Profile("dev")
+    public JdbcTemplate jdbcTemplateDev() {
+        return new JdbcTemplate(dataSourceDev());
+    }
+
+    @Bean
+    public HttpHeaders httpHeaders() {
+        return new HttpHeaders();
     }
 
     @Bean
@@ -68,14 +91,10 @@ public class AppConfig implements TransactionManagementConfigurer {
     }
 
     @Bean
-    public JdbcTemplate getJdbcTemplate() {
-        return new JdbcTemplate(dataSource());
-    }
-
-    @Bean
     public CacheManager cacheManager() {
-        ConcurrentMapCacheManager cacheManager = new ConcurrentMapCacheManager("certificates");
-        cacheManager.setCacheNames(List.of("certificates"));
+        ConcurrentMapCacheManager cacheManager =
+                new ConcurrentMapCacheManager("certificates", "tags");
+        cacheManager.setCacheNames(List.of("certificates", "tags"));
         return cacheManager;
     }
 }

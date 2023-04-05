@@ -1,18 +1,14 @@
 package com.epam.esm.dto;
 
-import com.epam.esm.domain.Tag;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-@Getter
-@RequiredArgsConstructor
-public class TagDto {
+@Data
+@Builder
+@EqualsAndHashCode(callSuper=false)
+public class TagDto extends BaseDto {
 
     private Long id;
     private String name;
-
-    public TagDto(final Tag tag) {
-        this.id = tag.getId();
-        this.name = tag.getName();
-    }
 }

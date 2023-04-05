@@ -1,25 +1,16 @@
 package com.epam.esm.service;
 
+import com.epam.esm.criteria.Criteria;
 import com.epam.esm.dto.CertificateDto;
-import com.epam.esm.exception.ServiceException;
+import com.epam.esm.dto.CertificateWithoutTagDto;
 
 import java.util.List;
 
 public interface CertificateService extends BaseService<CertificateDto> {
-    @Override
-    CertificateDto getById(Long id) throws ServiceException;
 
-    @Override
-    CertificateDto getByName(String name) throws ServiceException;
+    List<CertificateDto> getAllBy(Criteria criteria);
 
-    @Override
-    List<CertificateDto> getAll() throws ServiceException;
+    boolean update(CertificateDto certificateDto);
 
-    boolean update(CertificateDto certificate) throws ServiceException;
-
-    @Override
-    boolean save(CertificateDto certificate) throws ServiceException;
-
-    @Override
-    boolean delete(Long id) throws ServiceException;
+    List<CertificateWithoutTagDto> getAllWithoutTags();
 }

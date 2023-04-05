@@ -1,24 +1,33 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.criteria.Criteria;
+import com.epam.esm.criteria.SortOrder;
+import com.epam.esm.exception.CertificateIsExistsException;
+import com.epam.esm.exception.CertificateNotFoundException;
 import com.epam.esm.handler.ErrorResponse;
 import com.epam.esm.dto.CertificateDto;
-import com.epam.esm.exception.ServiceException;
 import com.epam.esm.service.CertificateService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.time.Instant;
+
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.OK;
 
 @Slf4j
 @RestController
@@ -35,20 +44,12 @@ public class CertificateController {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             return new ResponseEntity<>(
-                    certificateService.getById(id),
-                    headers,
-                    HttpStatus.OK);
-        } catch (ServiceException e) {
-            log.info(e.getMessage(), e);
+                    certificateService.getById(id), headers, OK);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
             return new ResponseEntity<>(
                     new ErrorResponse(
-                            e.getMessage(), 40401),
-                    HttpStatus.NOT_FOUND);
-        } catch (Exception e) { //TODO enums status
-            log.error(e.getMessage());
-            return new ResponseEntity<>(
-                    new ErrorResponse(e.getMessage(), 404),
-                    HttpStatus.NOT_FOUND);
+                            e.getMessage(), 40401), NOT_FOUND);
         }
     }
 
@@ -56,31 +57,67 @@ public class CertificateController {
     public ResponseEntity<Object> getAll() {
         try {
             return new ResponseEntity<>(
-                    certificateService.getAll(),
-                    new HttpHeaders(),
-                    HttpStatus.OK);
+                    certificateService.getAllWithoutTags(),
+                    new HttpHeaders(), OK);
         } catch (Exception e) {
-            log.debug(e.getMessage());
+            log.error(e.getMessage());
+            return new ResponseEntity<>(NOT_FOUND);
+        }
+    }
+
+    @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> search(
+            @RequestParam(value = "tagName", required = false) String tagName,
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "description", required = false) String description,
+            @RequestParam(value = "date", required = false) Instant date,
+            @RequestParam(value = "order", required = false, defaultValue = "UNSORTED")
+            SortOrder order) {
+        try {
+            Criteria criteria = Criteria.builder().tagName(tagName).name(name).date(date).description(description).sortOrder(order).build();
             return new ResponseEntity<>(
-                    HttpStatus.NOT_FOUND);
+                    certificateService.getAllBy(criteria),
+                    new HttpHeaders(), OK);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return new ResponseEntity<>(NOT_FOUND);
         }
     }
 
     @ResponseBody
-    @PutMapping(value = "/{id}")
+    @PatchMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public final ResponseEntity<Object> update(
             @PathVariable("id") final Long id,
             @RequestBody final CertificateDto certificateDto) {
-        certificateDto.setId(id);
         try {
-            return new ResponseEntity<>(
-                    certificateService.update(certificateDto),
-                    new HttpHeaders(),
-                    HttpStatus.OK);
+            if (certificateService.getById(id) != null) {
+                certificateDto.setId(id);
+                return new ResponseEntity<>(
+                        certificateService.update(certificateDto),
+                        new HttpHeaders(), OK);
+            }
+            throw new CertificateNotFoundException(String.valueOf(id));
         } catch (Exception e) {
-            log.debug(e.getMessage());
-            return new ResponseEntity<>(
-                    HttpStatus.NOT_FOUND);
+            log.error(e.getMessage());
+            return new ResponseEntity<>(NOT_FOUND);
+        }
+    }
+
+    @ResponseBody
+    @PostMapping
+    public final ResponseEntity<Object> create(
+            @RequestBody final CertificateDto certificateDto) {
+        try {
+            if (certificateService.getByName(certificateDto.getName()) == null) {
+                return new ResponseEntity<>(
+                        certificateService.save(certificateDto),
+                        new HttpHeaders(), OK);
+            } else {
+                throw new CertificateIsExistsException(certificateDto.getName());
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return new ResponseEntity<>(NOT_FOUND);
         }
     }
 
@@ -88,8 +125,13 @@ public class CertificateController {
     @DeleteMapping(value = "/{id}")
     public final ResponseEntity<Void> delete(
             @PathVariable("id") final Long id) {
-        return certificateService.delete(id)
-                ? new ResponseEntity<>(HttpStatus.OK)
-                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        try {
+            return certificateService.delete(id)
+                    ? new ResponseEntity<>(OK)
+                    : new ResponseEntity<>(NOT_FOUND);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
+        }
     }
 }

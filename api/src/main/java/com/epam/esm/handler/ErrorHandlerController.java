@@ -1,7 +1,6 @@
 package com.epam.esm.handler;
 
 import com.epam.esm.exception.CertificateNotFoundException;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,6 +11,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @ControllerAdvice
@@ -21,17 +21,22 @@ public class ErrorHandlerController extends ResponseEntityExceptionHandler {
     @ExceptionHandler(CertificateNotFoundException.class)
     public ResponseEntity<Object> handleCertificateNotFoundException(
             final CertificateNotFoundException e) {
-        ErrorResponse errorResponse = new ErrorResponse(e.getMessage(), 40401);
-        return new ResponseEntity<>(errorResponse, NOT_FOUND);
+        ErrorResponse errorResponse =
+                new ErrorResponse(e.getMessage(), 40401);
+        return new ResponseEntity<>(
+                errorResponse, NOT_FOUND);
     }
 
     @ResponseBody
     @ExceptionHandler(RuntimeException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity<Object> handleRuntimeException(final RuntimeException e) {
+    @ResponseStatus(INTERNAL_SERVER_ERROR)
+    public ResponseEntity<Object> handleRuntimeException(
+            final RuntimeException e) {
         Map<String, Object> errorResponse = new HashMap<>();
         errorResponse.put("errorMessage", e.getMessage());
-        errorResponse.put("errorCode", 40401);
-        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        errorResponse.put("errorCode", 500);
+        return new ResponseEntity<>(
+                errorResponse,
+                INTERNAL_SERVER_ERROR);
     }
 }

@@ -2,11 +2,12 @@ package com.epam.esm.service;
 
 import com.epam.esm.dao.CertificateDao;
 import com.epam.esm.dto.CertificateDto;
-import com.epam.esm.exception.ServiceException;
+import com.epam.esm.criteria.Criteria;
+import com.epam.esm.dto.CertificateWithoutTagDto;
 import com.epam.esm.mapper.CertificateMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,87 +18,85 @@ import static java.util.stream.Collectors.toList;
 
 @Service
 @RequiredArgsConstructor
+@CacheConfig(cacheNames = "certificates")
 public class DefaultCertificateService implements CertificateService {
 
     private final CertificateDao certificateDao;
     private final CertificateMapper mapper;
 
     @Override
+    @Cacheable
     @Transactional(readOnly = true)
-    @Cacheable("certificates")
     public CertificateDto getById(final Long id)
-            throws ServiceException {
-        try {
-            return mapper.toDto(certificateDao.getById(id));
-        } catch (Exception e) {
-            throw new ServiceException("Certificate not found");
-        }
+            throws RuntimeException {
+        return mapper.toDto(
+                certificateDao.getById(id));
     }
 
     @Override
+    @Cacheable
     @Transactional(readOnly = true)
-//    @Cacheable("certificates")
     public List<CertificateDto> getAll()
-            throws ServiceException {
-        try {
-            return certificateDao.getAll().stream()
-                    .map(mapper::toDto)
-                    .collect(toList());
-        } catch (Exception e) {
-            throw new ServiceException(e);
-        }
+            throws RuntimeException {
+        return certificateDao.getAll().stream()
+                .map(mapper::toDto)
+                .collect(toList());
+    }
+
+    @Override
+    @Cacheable
+    @Transactional(readOnly = true)
+    public CertificateDto getByName(
+            final String name)
+            throws RuntimeException {
+        return mapper.toDto(
+                certificateDao.getByName(name));
+    }
+
+    @Override
+    @Transactional
+    @CacheEvict(allEntries = true)
+    public boolean delete(
+            final Long id)
+            throws RuntimeException {
+        return certificateDao.delete(id);
     }
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable("certificates")
-    public CertificateDto getByName(final String name)
-            throws ServiceException {
-        try {
-            return mapper.toDto(certificateDao.getByName(name));
-        } catch (Exception e) {
-            throw new ServiceException(
-                    "Certificate %d not found", e);
-        }
-    }
-
-
-    @Override
-    @Transactional
-    @CacheEvict(value = "certificates", allEntries = true)
-    public boolean delete(final Long id)
-            throws ServiceException {
-        try {
-            return certificateDao.delete(id);
-        } catch (Exception e) {
-            throw new ServiceException(e);
-        }
+    public List<CertificateDto> getAllBy(Criteria criteria)
+            throws RuntimeException {
+        return certificateDao
+                .getAllBy(criteria).stream()
+                .map(mapper::toDto)
+                .collect(toList());
     }
 
     @Override
     @Transactional
-    @CachePut("certificates")
+    @CacheEvict(allEntries = true)
     public boolean update(
             final CertificateDto certificateDto)
-            throws ServiceException {
-        try {
-            return certificateDao.update(
-                    mapper.toEntity(certificateDto));
-        } catch (Exception e) {
-            throw new ServiceException(certificateDto.toString());
-        }
+            throws RuntimeException {
+        return certificateDao.update(
+                mapper.toEntity(certificateDto));
+    }
+
+    @Override
+    public List<CertificateWithoutTagDto> getAllWithoutTags()
+           throws RuntimeException {
+            return certificateDao.getAll().stream()
+                    .map(mapper::toDtoWithoutTags)
+                    .collect(toList());
     }
 
     @Override
     @Transactional
-    @CacheEvict(value = "certificates", allEntries = true)
-    public boolean save(CertificateDto certificateDto)
-            throws ServiceException {
-        try {
-            return certificateDao.save(
-                    mapper.toEntity(certificateDto));
-        } catch (Exception e) {
-            throw new ServiceException(e);
-        }
+    @CacheEvict(allEntries = true)
+    public boolean save(
+            final CertificateDto certificateDto)
+            throws RuntimeException {
+        return certificateDao.save(
+                mapper.toEntity(certificateDto));
     }
 }

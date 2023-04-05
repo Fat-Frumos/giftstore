@@ -1,25 +1,23 @@
 package com.epam.esm.service;
 
-import com.epam.esm.domain.Tag;
 import com.epam.esm.dto.TagDto;
-import com.epam.esm.exception.ServiceException;
 
 import java.util.List;
 
 public interface TagService extends BaseService<TagDto> {
 
     @Override
-    TagDto getById(Long id) throws ServiceException;
+    TagDto getById(Long id) throws RuntimeException;
 
     @Override
-    TagDto getByName(String name) throws ServiceException;
+    TagDto getByName(String name) throws RuntimeException;
 
     @Override
-    List<TagDto> getAll() throws ServiceException;
+    List<TagDto> getAll() throws RuntimeException;
 
     @Override
-    boolean save(TagDto tag) throws ServiceException;
+    boolean save(TagDto tag) throws RuntimeException;
 
     @Override
-    boolean delete(Long id) throws ServiceException;
+    boolean delete(Long id) throws RuntimeException;
 }

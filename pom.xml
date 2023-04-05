@@ -12,6 +12,7 @@
     <url>https://www.esm.epam.com</url>
 
     <properties>
+        <java.version>11</java.version>
         <lombok.version>1.18.26</lombok.version>
         <logging.version>2.20.0</logging.version>
         <spring.version>5.2.19.RELEASE</spring.version>
@@ -31,12 +32,6 @@
             <version>${lombok.version}</version>
             <scope>provided</scope>
         </dependency>
-        <!-- Logging -->
-<!--        <dependency>-->
-<!--            <groupId>org.apache.logging.log4j</groupId>-->
-<!--            <artifactId>log4j-api</artifactId>-->
-<!--            <version>${logging.version}</version>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>

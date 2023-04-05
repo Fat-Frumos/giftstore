@@ -29,4 +29,4 @@ jobs:
         run: sudo systemctl restart tomcat9
 
       - name: Start Tomcat
-        run: sudo service tomcat7 start
+        run: sudo service tomcat9 start
