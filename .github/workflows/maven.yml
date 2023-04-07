@@ -1,4 +1,4 @@
-name: Run REST-API with Maven(Gift-shop)
+name: Java CI with Maven(Gift-shop)
 
 on:
   push:
@@ -13,18 +13,17 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Set up JDK 16
-        uses: actions/setup-java@v2
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
         with:
-          java-version: '16'
+          java-version: '11'
+          distribution: 'temurin'
+          cache: maven
       - name: Build with Maven
         run: mvn -B package --file pom.xml
 
       - name: Ip
         run: ip address
 
-      - name: find Jar
+      - name: find file
         run: find . -name api-0.0.1-SNAPSHOT.jar
-
-      - name: run java
-        run: java -jar ./api/target/api-0.0.1-SNAPSHOT.jar
