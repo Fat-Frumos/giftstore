@@ -1,2 +1,0 @@
-rootProject.name = 'gift'
-include('app', 'service', 'dao', 'domain', 'exception', 'controller', 'web', 'api' , 'core', 'utils')
