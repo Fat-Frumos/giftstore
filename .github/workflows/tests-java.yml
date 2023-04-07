@@ -23,7 +23,7 @@ jobs:
         run: sudo apt-get update
 
       - name: package file
-        run: mvn -B package --file pom.xml
+        run: mvn clean package -DskipTests -Dmaven.compiler.source=11 -Dmaven.compiler.target=11
 
       - name: check path
         run: ls -la && pwd
