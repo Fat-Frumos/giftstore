@@ -1,4 +1,4 @@
-name: Java install openjdk-8-jdk
+name: Java install openjdk-11-jdk
 
 on:
   push:
@@ -18,9 +18,6 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
           cache: maven
-
-      - name: sudo apt-get update
-        run: sudo apt-get update
 
       - name: package file
         run: mvn -B package --file pom.xml

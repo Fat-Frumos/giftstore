@@ -5,6 +5,6 @@ RUN mvn clean package -DskipTests -Dmaven.compiler.target=11
 
 # Run stage
 FROM openjdk:11-jdk-slim
-COPY --from=build /target/certificate.jar demo.jar
+COPY --from=build ./api/target/api-0.0.1-SNAPSHOT.jar.jar demo.jar
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","demo.jar", "&"]
