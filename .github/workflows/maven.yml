@@ -36,7 +36,7 @@ jobs:
           cache: maven
 
       - name: package file
-        run: mvn -B package --file pom.xml
+        run: mvn -B package --file pom.xml -X
 
       - name: check path
         run: ls -la && pwd
