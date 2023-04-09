@@ -1,4 +1,4 @@
-name: Java install openjdk-11-jdk
+name: Run openjdk-11-jdk
 
 on:
   push:
@@ -19,17 +19,14 @@ jobs:
           distribution: 'adopt'
           cache: maven
 
-      - name: sudo apt-get update
-        run: sudo apt-get update
-
       - name: package file
-        run: mvn clean package -DskipTests -Dmaven.compiler.source=11 -Dmaven.compiler.target=11
+        run: mvn -B package --file pom.xml
 
       - name: check path
         run: ls -la && pwd
 
-      - name: find Tomcat
-        run: find . -name gift.war
+      - name: find Jar
+        run: find . -name api-0.0.1-SNAPSHOT.jar
 
       - name: run java
         run: java -jar ./api/target/api-0.0.1-SNAPSHOT.jar
