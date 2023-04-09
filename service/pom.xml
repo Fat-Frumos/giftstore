@@ -21,7 +21,7 @@
         <dependency>
             <groupId>com.epam.esm</groupId>
             <artifactId>model</artifactId>
-            <version>11</version>
+            <version>${parent.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
