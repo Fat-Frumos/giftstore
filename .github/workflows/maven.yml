@@ -25,11 +25,11 @@ jobs:
          java-home: ${{ env.JAVA_HOME }}
          goals: 'clean install'
 
-      - name: package file
-        run: mvn -B package --file pom.xml -X
+     - name: package file
+       run: mvn -B package --file pom.xml -X
 
-      - name: check path
-        run: ls -la && pwd
+     - name: check path
+       run: ls -la && pwd
 
-      - name: find Jar
-        run: find . -name api-0.0.1-SNAPSHOT.jar
+     - name: find Jar
+       run: find . -name api-0.0.1-SNAPSHOT.jar
