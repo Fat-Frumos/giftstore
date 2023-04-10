@@ -38,5 +38,5 @@ jobs:
       - name: find Jar
         run: find . -name api-0.0.1-SNAPSHOT.jar
 
-      - name: run java
+#      - name: run java
 #        run: java -jar ./api/target/api-0.0.1-SNAPSHOT.jar
