@@ -3,6 +3,7 @@ package com.epam.esm.model.dao;
 import com.epam.esm.model.domain.GiftCertificate;
 import com.epam.esm.model.domain.Tag;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -76,9 +77,9 @@ public class HtmlParser {
         links.add("<h2 class=\\\"css-vrgepf e8seki10\\\">(.*?)</h2>");
         links.add("<p>(.*?)</p>");
 
-        IntStream.iterate(0, i -> i < links.size(), i -> i + 4)
-                .parallel()
-                .forEach(HtmlParser::extracted);
+        for (int i = 0; i < links.size(); i += 4) {
+            HtmlParser.extracted(i);
+        }
 
         System.out.println(tags.stream().map(Tag::toString).collect(Collectors.joining(", ")));
         System.out.println(String.join(", ", tagNames));
@@ -125,13 +126,19 @@ public class HtmlParser {
 
     private static String getString(int i) {
         try (InputStream in = new URL(links.get(i)).openStream()) {
-            return new String(in.readAllBytes(), StandardCharsets.UTF_8)
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+
+            int bytesRead;
+            while ((bytesRead = in.read(buffer)) != -1) {
+                out.write(buffer, 0, bytesRead);
+            }
+            return new String(out.toByteArray(), StandardCharsets.UTF_8)
                     .replaceAll("Message", "Gift")
                     .replaceAll("Card", "Certificate")
                     .replaceAll("&#8217;", "'")
                     .replaceAll("#\\d{4};|[^\\x00-\\x7F]|\\{\\{.*?\\}\\}|~|_|\\.", "")
                     .trim();
-
         } catch (Exception e) {
             System.err.printf("%s%n", e.getMessage());
         }
