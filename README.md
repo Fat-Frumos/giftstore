@@ -40,8 +40,7 @@ Along with it you can send the operations that you can perform on the resource. 
 
 The system should be extended to expose the following REST APIs:
 1. Change single field of gift certificate (e.g. implement the possibility to change only duration of a certificate or only price).
-2. Add new entity User.
-    * implement only get operations for user entity.
+2. + Add new entity User. implement only get operations for user entity.
 3. Make an order on gift certificate for a user (user should have an ability to buy a certificate).
 4. Get information about user’s orders.
 5. Get information about user’s order: cost and timestamp of a purchase.
@@ -56,7 +55,7 @@ The system should be extended to expose the following REST APIs:
 ##### Application requirements
 
 1. JDK version: 8. Use Streams, java.time.*, an etc. where it is appropriate. 
-    (the JDK version can be increased in agreement with the mentor/group coordinator/run coordinator)
+   (the JDK version can be increased in agreement with the mentor/group coordinator/run coordinator)
 2. Application packages root: com.epam.esm.
 3. Java Code Convention is mandatory (exception: margin size –120 characters).
 4. Apache Maven, latest version. Multi-module project.
@@ -71,8 +70,8 @@ This submodule covers following topics:
 1. ORM
 2. JPA & Hibernate
 3. Transactions
-   ORM stands for Object Relational Mapping. It’s a bit of an abstract concept – 
-4. but basically it’s a technique that allows us to query and change data from the database in an object oriented way.
+   ORM stands for Object Relational Mapping. 
+4. It’s a bit of an abstract concept – but basically it’s a technique that allows us to query and change data from the database in an object oriented way.
 5. ORMs provide a high-level abstraction upon a relational database that allows a developer to write 
 6. Java code instead of SQL to create, read, update and delete data and schemas in their database. 
 7. Developers can use the programming language they are comfortable with to work with a database instead of writing SQL statements or stored procedures. 

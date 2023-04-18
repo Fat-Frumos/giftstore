@@ -23,7 +23,7 @@ public class EntityBuilder {
     private static final List<String> NAMES = extractFromUrl("https://raw.githubusercontent.com/Fat-Frumos/Cars/master/giftnames.txt");
     public static final List<String> USERNAMES = extractFromUrl("https://raw.githubusercontent.com/Fat-Frumos/Cars/master/usernames.txt");
     public static final List<String> DESC = extractFromUrl("https://raw.githubusercontent.com/Fat-Frumos/Cars/master/all.txt");
-    private static final List<GiftCertificate> certificates = new ArrayList<>();
+    private static final List<Certificate> certificates = new ArrayList<>();
 
     public static String getRandomElement(List<String> list) {
         return list.remove(RANDOM.nextInt(list.size()));
@@ -49,9 +49,9 @@ public class EntityBuilder {
         return String.format("Get a %s %s %s for %s", name, brand, tag, desc);
     }
 
-    public static List<GiftCertificate> generateCertificates(final int size) {
+    public static List<Certificate> generateCertificates(final int size) {
         IntStream.range(0, size)
-                .mapToObj(i -> GiftCertificate.builder()
+                .mapToObj(i -> Certificate.builder()
                         .name(getRandomElement(NAMES))
                         .description(generateDesc())
                         .tags(setTags()).build())
@@ -74,4 +74,4 @@ public class EntityBuilder {
         return users;
     }
 }
-//        System.err.println(USERNAMES.size() + " names");
+

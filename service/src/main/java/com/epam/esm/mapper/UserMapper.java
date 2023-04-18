@@ -2,41 +2,19 @@ package com.epam.esm.mapper;
 
 import com.epam.esm.model.domain.User;
 import com.epam.esm.model.dto.UserDto;
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
 
-@Slf4j
-@Component
-@NoArgsConstructor
-public class UserMapper implements EntityMapper<User, UserDto> {
-    public static final UserMapper MAPPER = new UserMapper();
+import java.util.List;
 
-    public static UserMapper getInstance() {
-        return MAPPER;
-    }
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = {CertificateMapper.class})
+public interface UserMapper {
 
-    @Override
-    public UserDto toDto(final User user) {
-        if (user == null) {
-            throw new NullPointerException("User must not be null");
-        }
-        return UserDto.builder()
-                .id(user.getId())
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .build();
-    }
+    UserDto toDto(User user);
 
-    @Override
-    public User toEntity(final UserDto userDto) {
-        if (userDto == null) {
-            throw new NullPointerException("User must not be null");
-        }
-        return User.builder()
-                .id(userDto.getId())
-                .username(userDto.getUsername())
-                .email(userDto.getEmail())
-                .build();
-    }
+    User toEntity(UserDto dto);
+
+    @Mapping(target = "tags", source = "certificates", qualifiedByName = "toCertificateDtoList")
+    List<UserDto> toDtoList(Iterable<User> users);
 }

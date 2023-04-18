@@ -1,5 +1,6 @@
 package com.epam.esm.api.config;
 
+import lombok.NonNull;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -18,21 +19,26 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
-    public static final String[] CLASSPATH_RESOURCE_LOCATIONS = {
+    private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {
             "classpath:/META-INF/resources/", "classpath:/resources/",
-            "classpath:/static/", "classpath:/public/" };
+            "classpath:/static/", "classpath:/public/","/favicon.ico" };
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/favicon.ico")
-                .addResourceLocations("classpath:/static/")
+        registry.addResourceHandler(CLASSPATH_RESOURCE_LOCATIONS)
+                .addResourceLocations(CLASSPATH_RESOURCE_LOCATIONS)
                 .setCacheControl(CacheControl.maxAge(30, TimeUnit.DAYS))
                 .resourceChain(true)
                 .addResolver(new PathResourceResolver() {
                     @Override
-                    protected Resource getResource(String resourcePath, Resource location) throws IOException {
+                    protected Resource getResource(
+                            @NonNull String resourcePath,
+                            @NonNull Resource location) throws IOException {
                         Resource resource = location.createRelative(resourcePath);
-                        return resource.exists() && resource.isReadable() ? resource : new ClassPathResource("/static/favicon.ico");
+                        return resource.exists()
+                                && resource.isReadable()
+                                ? resource
+                                : new ClassPathResource("/static/favicon.ico");
                     }
                 });
     }

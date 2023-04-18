@@ -34,7 +34,7 @@ class TestUserDao {
 //
 //    @Test
 //    void getNames() {
-//        List<User> all = userRepository.findAll();
+//        Iterable<User> all = userRepository.findAll();
 //        System.out.println(all);
 //        assertNotNull(all);
 //    }

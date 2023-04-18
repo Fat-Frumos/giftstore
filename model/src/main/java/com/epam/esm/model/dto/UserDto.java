@@ -1,15 +1,15 @@
 package com.epam.esm.model.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serializable;
+
 @Data
 @Builder
-@AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class UserDto extends BaseDto {
+public class UserDto implements Serializable {
 
     private Long id;
     private String username;

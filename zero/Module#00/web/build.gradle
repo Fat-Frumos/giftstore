@@ -1,0 +1,13 @@
+plugins {
+    id 'com.epam.esm.java-common-conventions'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(':service')
+    implementation project(':domain')
+    implementation project(':exception')
+}
