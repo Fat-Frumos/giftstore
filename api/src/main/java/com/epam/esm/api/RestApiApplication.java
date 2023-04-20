@@ -7,7 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @SpringBootApplication
 @ComponentScan(basePackages = "com.epam.esm")
-@EntityScan(basePackages = "com.epam.esm.model.domain")
+@EntityScan(basePackages = "com.epam.esm.model.entity")
 @EnableJpaRepositories(basePackages = "com.epam.esm.model.dao")
 public class RestApiApplication {
     public static void main(String[] args) {

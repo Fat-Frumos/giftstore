@@ -1,6 +1,6 @@
 package com.epam.esm.mapper;
 
-import com.epam.esm.model.domain.*;
+import com.epam.esm.model.entity.*;
 import com.epam.esm.model.dto.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;

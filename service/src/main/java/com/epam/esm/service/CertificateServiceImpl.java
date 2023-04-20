@@ -3,8 +3,8 @@ package com.epam.esm.service;
 import com.epam.esm.exception.CertificateNotFoundException;
 import com.epam.esm.mapper.CertificateMapper;
 import com.epam.esm.model.dao.CertificateRepository;
-import com.epam.esm.model.domain.Certificate;
 import com.epam.esm.model.dto.CertificateDto;
+import com.epam.esm.model.entity.Certificate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.StreamSupport;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 @Transactional
@@ -38,8 +41,10 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Override
     public List<CertificateDto> getAll() {
-        return mapper.toDtoList(
-                repository.findAll());
+        return StreamSupport
+                .stream(repository.findAll().spliterator(), false)
+                .map(mapper::toDto)
+                .collect(toList());
     }
 
     public Page<CertificateDto> getAll(Pageable pageable) {

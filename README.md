@@ -39,9 +39,9 @@ In REST when you request a resource you get the details of the resource in the r
 Along with it you can send the operations that you can perform on the resource. And this is what HATEOAS does.
 
 The system should be extended to expose the following REST APIs:
-1. Change single field of gift certificate (e.g. implement the possibility to change only duration of a certificate or only price).
+1. + Change single field of gift certificate (e.g. implement the possibility to change only duration of a certificate or only price).
 2. + Add new entity User. implement only get operations for user entity.
-3. Make an order on gift certificate for a user (user should have an ability to buy a certificate).
+3. + Make an order on gift certificate for a user (user should have an ability to buy a certificate).
 4. Get information about user’s orders.
 5. Get information about user’s order: cost and timestamp of a purchase.
     * The order cost should not be changed if the price of the gift certificate is changed.

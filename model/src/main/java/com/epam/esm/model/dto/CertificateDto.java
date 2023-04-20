@@ -24,11 +24,4 @@ public class CertificateDto implements Serializable {
     private Timestamp lastUpdateDate;
     private int duration;
     private Set<TagDto> tags;
-
-    @Override
-    public String toString() {
-        return String.format(
-                "{id=%d, name='%s', description='%s', price=%s, duration=%d, tags=%s}",
-                id, name, description, price, duration, tags);
-    }
 }

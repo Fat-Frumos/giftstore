@@ -3,7 +3,7 @@ package com.epam.esm.service;
 import com.epam.esm.exception.CertificateNotFoundException;
 import com.epam.esm.mapper.CertificateMapper;
 import com.epam.esm.model.dao.CertificateRepository;
-import com.epam.esm.model.domain.Certificate;
+import com.epam.esm.model.entity.Certificate;
 import com.epam.esm.model.dto.CertificateDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

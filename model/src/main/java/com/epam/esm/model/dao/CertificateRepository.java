@@ -1,6 +1,6 @@
 package com.epam.esm.model.dao;
 
-import com.epam.esm.model.domain.Certificate;
+import com.epam.esm.model.entity.Certificate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;

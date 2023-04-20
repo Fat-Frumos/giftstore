@@ -1,6 +1,6 @@
 package com.epam.esm.service;
 
-import com.epam.esm.model.domain.Certificate;
+import com.epam.esm.model.entity.Certificate;
 import com.epam.esm.model.dto.CertificateDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
