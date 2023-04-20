@@ -1,91 +1,67 @@
 package com.epam.esm.mapper;
 
-import com.epam.esm.domain.Certificate;
-import com.epam.esm.domain.Tag;
 import com.epam.esm.dto.CertificateDto;
 import com.epam.esm.dto.CertificateWithoutTagDto;
-import com.epam.esm.dto.TagDto;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import com.epam.esm.entity.Certificate;
+import org.mapstruct.InjectionStrategy;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
 
-import java.time.Instant;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
-import static java.util.stream.Collectors.toSet;
+/**
+ * This interface maps Certificate and CertificateDto objects to each other using the MapStruct library.
+ * <p>
+ * It uses the SPRING component model, InjectionStrategy, and TagMapper as a dependency.
+ */
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING,
+        uses = {TagMapper.class},
+        injectionStrategy = InjectionStrategy.CONSTRUCTOR)
+public interface CertificateMapper {
+    /**
+     * Maps a CertificateDto object to a Certificate object.
+     *
+     * @param certificateDto the CertificateDto object to map
+     * @return the mapped Certificate object
+     */
+    @Mapping(target = "tags", source = "tags", qualifiedByName = "toTagSet")
+    Certificate toEntity(CertificateDto certificateDto);
 
-@Slf4j
-@Component
-public final class CertificateMapper implements EntityMapper<Certificate, CertificateDto> {
-    public static final CertificateMapper mapper = new CertificateMapper();
-    public static final TagMapper tagMapper = TagMapper.getInstance();
+    /**
+     * Maps a Certificate object to a CertificateDto object.
+     *
+     * @param certificate the Certificate object to map
+     * @return the mapped CertificateDto object
+     */
+    @Mapping(target = "tags", source = "tags", qualifiedByName = "toTagDtoSet")
+    CertificateDto toDto(Certificate certificate);
 
-    public static CertificateMapper getInstance() {
-        return mapper;
-    }
+    /**
+     * Maps a list of Certificate objects to a list of CertificateDto objects.
+     *
+     * @param certificates the list of Certificate objects to map
+     * @return the mapped list of CertificateDto objects
+     */
+    @Mapping(target = "tags", source = "tags", qualifiedByName = "toTagDtoSet")
+    List<CertificateDto> toDtoList(List<Certificate> certificates);
 
-    private CertificateMapper() {
-    }
+    /**
+     * Maps a list of CertificateDto objects to a list of Certificate objects.
+     *
+     * @param certificateDtos the list of CertificateDto objects to map
+     * @return the mapped list of Certificate objects
+     */
+    @Mapping(target = "tags", source = "tags", qualifiedByName = "toTagSet")
+    List<Certificate> toListEntity(List<CertificateDto> certificateDtos);
 
-    @Override
-    public CertificateDto toDto(final Certificate certificate) {
-        try {
-            Set<Tag> tags = certificate.getTags();
-            Set<TagDto> tagsDto = new HashSet<>();
-            if (tags != null) {
-                tagsDto = tags.stream()
-                        .map(tagMapper::toDto)
-                        .collect(toSet());
-            }
-            return CertificateDto.builder()
-                    .id(certificate.getId())
-                    .name(certificate.getName())
-                    .description(certificate.getDescription())
-                    .price(certificate.getPrice())
-                    .createDate(certificate.getCreateDate())
-                    .lastUpdateDate(Instant.now())
-                    .duration(certificate.getDuration())
-                    .tags(tagsDto)
-                    .build();
-        } catch (Exception e) {
-            throw new RuntimeException("Certificate must not be null");
-        }
-    }
-
-    @Override
-    public Certificate toEntity(final CertificateDto certificateDto) {
-        try {
-            Set<TagDto> tagsDto = certificateDto.getTags();
-            Set<Tag> tags = new HashSet<>();
-            if (tagsDto != null) {
-                tags = tagsDto.stream()
-                        .map(tagMapper::toEntity)
-                        .collect(toSet());
-            }
-            return Certificate.builder()
-                    .id(certificateDto.getId())
-                    .name(certificateDto.getName())
-                    .description(certificateDto.getDescription())
-                    .price(certificateDto.getPrice())
-                    .createDate(certificateDto.getCreateDate())
-                    .lastUpdateDate(certificateDto.getLastUpdateDate())
-                    .duration(certificateDto.getDuration())
-                    .tags(tags)
-                    .build();
-        } catch (Exception e) {
-            throw new RuntimeException("Certificate must not be null");
-        }
-    }
-
-    public CertificateWithoutTagDto toDtoWithoutTags(Certificate certificate) {
-        return CertificateWithoutTagDto.builder()
-                .id(certificate.getId())
-                .name(certificate.getName())
-                .description(certificate.getDescription())
-                .price(certificate.getPrice())
-                .createDate(certificate.getCreateDate())
-                .lastUpdateDate(Instant.now())
-                .duration(certificate.getDuration())
-                .build();
-    }
+    /**
+     * Maps a list of Certificate objects to a list
+     * of CertificateWithoutTagDto objects, without tags information.
+     *
+     * @param certificateList the list of Certificate objects to map
+     * @return the mapped list of CertificateWithoutTagDto objects, without tags information
+     */
+    @Mapping(target = "tags", source = "tags", qualifiedByName = "toTagDtoSet")
+    List<CertificateWithoutTagDto> toDtoWithoutTagsList(List<Certificate> certificateList);
 }

@@ -1,15 +1,16 @@
 package com.epam.esm.config;
 
+import com.epam.esm.handler.ErrorHandlerController;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.lang.NonNull;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -17,84 +18,103 @@ import org.springframework.transaction.annotation.TransactionManagementConfigure
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.sql.DataSource;
-import java.util.List;
 
+/**
+ * Configures the application's web environment.
+ * Enables web MVC, transaction management,
+ * and component scanning for the specified base package.
+ * <p>
+ * Provides configuration for the in-memory H2 database
+ * and sets up a {@link JdbcTemplate} for interacting with the database.
+ * <p>
+ * Provides configuration for HTTP headers and an error handler controller.
+ */
 @EnableWebMvc
-@EnableCaching
 @Configuration
 @RequiredArgsConstructor
 @EnableTransactionManagement
 @ComponentScan("com.epam.esm")
-@PropertySource(value = {"classpath:application.properties"}, ignoreResourceNotFound = true)
+@PropertySource(
+        value = {"classpath:application.properties"},
+        ignoreResourceNotFound = true)
 public class AppConfig implements TransactionManagementConfigurer {
+    private DataSource dataSource;
 
-    @Value("${spring.datasource.username}")
-    private String username;
-
-    @Value("${spring.datasource.driverClassName}")
-    private String driverClassName;
-
-    @Value("${spring.datasource.password}")
-    private String password;
-
-    @Value("${spring.datasource.url}")
-    private String url;
-
-    private DataSource dataSource() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(driverClassName);
-        dataSource.setUrl(url);
-        dataSource.setUsername(username);
-        dataSource.setPassword(password);
+    /**
+     * Configures the in-memory H2 database
+     * and returns the embedded database for the application.
+     *
+     * @return the configured embedded database
+     */
+    @Bean
+    public DataSource dataSource() {
+        if (dataSource == null) {
+            dataSource = createDataSource();
+        }
         return dataSource;
     }
 
-    @Bean
-    @Profile("prod")
-    public DataSource dataSourceProd() {
-        return dataSource();
+    private DataSource createDataSource() {
+        return new EmbeddedDatabaseBuilder()
+                .setType(EmbeddedDatabaseType.H2)
+                .addScript("classpath:db/schema.sql")
+                .addScript("classpath:db/data.sql")
+                .ignoreFailedDrops(true)
+                .setName("db")
+                .build();
     }
 
+    /**
+     * Configures a {@link JdbcTemplate} for interacting with the database.
+     * Creates and returns a new JdbcTemplate instance.
+     *
+     * @return a new JdbcTemplate instance
+     */
     @Bean
-    @Profile("prod")
-    public JdbcTemplate jdbcTemplateProd() {
-        return new JdbcTemplate(dataSourceProd());
+    public JdbcTemplate jdbcTemplate() {
+        return new JdbcTemplate(dataSource());
     }
 
-    @Bean
-    @Profile("dev")
-    public DataSource dataSourceDev() {
-        return dataSource();
-    }
-
-    @Bean
-    @Profile("dev")
-    public JdbcTemplate jdbcTemplateDev() {
-        return new JdbcTemplate(dataSourceDev());
-    }
-
+    /**
+     * Creates and returns a new HttpHeaders instance.
+     *
+     * @return the configured HTTP headers
+     */
     @Bean
     public HttpHeaders httpHeaders() {
         return new HttpHeaders();
     }
 
+    /**
+     * Configures a transaction manager
+     * for managing transactions with the database.
+     *
+     * @return the configured transaction manager
+     */
     @Bean
     public PlatformTransactionManager transactionManager() {
         return new DataSourceTransactionManager(dataSource());
     }
 
-    @Bean
+    /**
+     * Configures the transaction manager to be used
+     * for managing transactions with the database.
+     *
+     * @return the configured transaction manager
+     */
     @NonNull
     @Override
     public PlatformTransactionManager annotationDrivenTransactionManager() {
         return transactionManager();
     }
 
+    /**
+     * Creates and returns a new ErrorHandlerController instance.
+     *
+     * @return a new ErrorHandlerController instance
+     */
     @Bean
-    public CacheManager cacheManager() {
-        ConcurrentMapCacheManager cacheManager =
-                new ConcurrentMapCacheManager("certificates", "tags");
-        cacheManager.setCacheNames(List.of("certificates", "tags"));
-        return cacheManager;
+    public ErrorHandlerController errorHandlerController() {
+        return new ErrorHandlerController();
     }
 }

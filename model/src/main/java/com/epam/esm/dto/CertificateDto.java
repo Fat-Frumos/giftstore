@@ -7,43 +7,87 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Set;
 
-import static java.lang.String.format;
-
+/**
+ * This is a data transfer object (DTO) class for certificates.
+ * It is used to transfer certificate data
+ * between different layers of the application.
+ * <p>
+ * The class contains fields for certificate attributes
+ * such as name, description, price, duration, and tags.
+ */
 @Data
 @Builder
-@EqualsAndHashCode(callSuper=false)
-public class CertificateDto extends BaseDto {
+public class CertificateDto implements Serializable {
 
+    /**
+     * The unique identifier for the certificate.
+     */
     private Long id;
+    /**
+     * The name of the certificate.
+     */
+    @NotBlank(message = "Name cannot be blank")
     private String name;
+    /**
+     * The description of the certificate.
+     */
+    @NotBlank(message = "Description cannot be blank")
     private String description;
+    /**
+     * The price of the certificate.
+     */
+    @NotNull(message = "Price cannot be null")
     private BigDecimal price;
+    /**
+     * The creation date of the certificate.
+     */
     @JsonFormat(timezone = "GMT+03:00", pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     private Instant createDate;
+    /**
+     * The last update date of the certificate.
+     */
     @JsonFormat(timezone = "GMT+03:00", pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     private Instant lastUpdateDate;
+    /**
+     * The duration of the certificate in days.
+     */
+    @NotNull(message = "Duration cannot be null")
     private int duration;
+    /**
+     * The set of tags associated with the certificate.
+     */
+    @EqualsAndHashCode.Exclude
     private Set<TagDto> tags;
 
-    @Override
-    public String toString() {
-        return format(
-                "{id=%d, name='%s', description='%s', price=%s, duration=%d, tags=%s}",
-                id, name, description, price, duration, tags);
-    }
+    /**
+     * Constructs a new CertificateDto with the specified values.
+     *
+     * @param id             the unique identifier for the certificate
+     * @param name           the name of the certificate
+     * @param description    the description of the certificate
+     * @param price          the price of the certificate
+     * @param createDate     the creation date of the certificate
+     * @param lastUpdateDate the last update date of the certificate
+     * @param duration       the duration of the certificate in days
+     * @param tags           the set of tags associated with the certificate
+     */
     @JsonCreator
-    public CertificateDto(@JsonProperty("id") Long id,
-                          @JsonProperty("name") String name,
-                          @JsonProperty("description") String description,
-                          @JsonProperty("price") BigDecimal price,
-                          @JsonProperty("createDate") Instant createDate,
-                          @JsonProperty("lastUpdateDate") Instant lastUpdateDate,
-                          @JsonProperty("duration") int duration,
-                          @JsonProperty("tags") Set<TagDto> tags) {
+    public CertificateDto(
+            @JsonProperty("id") final Long id,
+            @JsonProperty("name") final String name,
+            @JsonProperty("description") final String description,
+            @JsonProperty("price") final BigDecimal price,
+            @JsonProperty("createDate") final Instant createDate,
+            @JsonProperty("lastUpdateDate") final Instant lastUpdateDate,
+            @JsonProperty("duration") final int duration,
+            @JsonProperty("tags") final Set<TagDto> tags) {
         this.id = id;
         this.name = name;
         this.description = description;

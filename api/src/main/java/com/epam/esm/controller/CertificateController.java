@@ -2,16 +2,10 @@ package com.epam.esm.controller;
 
 import com.epam.esm.criteria.Criteria;
 import com.epam.esm.criteria.SortOrder;
-import com.epam.esm.exception.CertificateIsExistsException;
-import com.epam.esm.exception.CertificateNotFoundException;
-import com.epam.esm.handler.ErrorResponse;
+import com.epam.esm.dto.CertificateWithoutTagDto;
 import com.epam.esm.dto.CertificateDto;
 import com.epam.esm.service.CertificateService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -20,118 +14,65 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
+import java.util.List;
 
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/certificates")
 public class CertificateController {
     private final CertificateService certificateService;
 
-    @ResponseBody
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> getCertificateById(
-            @PathVariable("id") final Long id) {
-        try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            return new ResponseEntity<>(
-                    certificateService.getById(id), headers, OK);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            return new ResponseEntity<>(
-                    new ErrorResponse(
-                            e.getMessage(), 40401), NOT_FOUND);
-        }
+    @GetMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE)
+    public CertificateDto getCertificateById(@PathVariable final Long id) {
+        return certificateService.getById(id);
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> getAll() {
-        try {
-            return new ResponseEntity<>(
-                    certificateService.getAllWithoutTags(),
-                    new HttpHeaders(), OK);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return new ResponseEntity<>(NOT_FOUND);
-        }
+    @GetMapping(produces = APPLICATION_JSON_VALUE)
+    public List<CertificateWithoutTagDto> getAll() {
+        return certificateService.getAllWithoutTags();
     }
 
-    @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> search(
-            @RequestParam(value = "tagName", required = false) String tagName,
-            @RequestParam(value = "name", required = false) String name,
-            @RequestParam(value = "description", required = false) String description,
-            @RequestParam(value = "date", required = false) Instant date,
-            @RequestParam(value = "order", required = false, defaultValue = "UNSORTED")
-            SortOrder order) {
-        try {
-            Criteria criteria = Criteria.builder().tagName(tagName).name(name).date(date).description(description).sortOrder(order).build();
-            return new ResponseEntity<>(
-                    certificateService.getAllBy(criteria),
-                    new HttpHeaders(), OK);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return new ResponseEntity<>(NOT_FOUND);
-        }
+    @GetMapping(value = "/search", produces = APPLICATION_JSON_VALUE)
+    public List<CertificateDto> search(
+            @RequestParam(required = false) final String name,
+            @RequestParam(required = false) final Instant date,
+            @RequestParam(required = false) final String tagName,
+            @RequestParam(required = false) final String description,
+            @RequestParam(required = false, defaultValue = "UNSORTED") final SortOrder order) {
+        Criteria criteria = Criteria
+                .builder()
+                .tagName(tagName)
+                .name(name).date(date)
+                .description(description)
+                .sortOrder(order)
+                .build();
+        return certificateService.getAllBy(criteria);
     }
 
-    @ResponseBody
-    @PatchMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public final ResponseEntity<Object> update(
-            @PathVariable("id") final Long id,
-            @RequestBody final CertificateDto certificateDto) {
-        try {
-            if (certificateService.getById(id) != null) {
-                certificateDto.setId(id);
-                return new ResponseEntity<>(
-                        certificateService.update(certificateDto),
-                        new HttpHeaders(), OK);
-            }
-            throw new CertificateNotFoundException(String.valueOf(id));
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return new ResponseEntity<>(NOT_FOUND);
-        }
+    @PatchMapping(consumes = APPLICATION_JSON_VALUE)
+    public final CertificateDto update(
+            @RequestBody final CertificateDto dto) {
+        return certificateService.update(dto);
     }
 
-    @ResponseBody
-    @PostMapping
-    public final ResponseEntity<Object> create(
-            @RequestBody final CertificateDto certificateDto) {
-        try {
-            if (certificateService.getByName(certificateDto.getName()) == null) {
-                return new ResponseEntity<>(
-                        certificateService.save(certificateDto),
-                        new HttpHeaders(), OK);
-            } else {
-                throw new CertificateIsExistsException(certificateDto.getName());
-            }
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return new ResponseEntity<>(NOT_FOUND);
-        }
+    @ResponseStatus(CREATED)
+    @PostMapping(consumes = APPLICATION_JSON_VALUE)
+    public final CertificateDto create(
+            @RequestBody final CertificateDto dto) {
+        return certificateService.save(dto);
     }
 
-    @ResponseBody
+    @ResponseStatus(OK)
     @DeleteMapping(value = "/{id}")
-    public final ResponseEntity<Void> delete(
-            @PathVariable("id") final Long id) {
-        try {
-            return certificateService.delete(id)
-                    ? new ResponseEntity<>(OK)
-                    : new ResponseEntity<>(NOT_FOUND);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
-        }
+    public void delete(@PathVariable final Long id) {
+        certificateService.delete(id);
     }
 }

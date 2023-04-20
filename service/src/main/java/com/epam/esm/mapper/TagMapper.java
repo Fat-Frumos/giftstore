@@ -1,41 +1,70 @@
 package com.epam.esm.mapper;
 
-import com.epam.esm.domain.Tag;
 import com.epam.esm.dto.TagDto;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import com.epam.esm.entity.Tag;
+import org.mapstruct.InjectionStrategy;
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingConstants;
+import org.mapstruct.Named;
 
-@Slf4j
-@Component
-public class TagMapper implements EntityMapper<Tag, TagDto> {
-    public static final TagMapper mapper = new TagMapper();
+import java.util.Set;
 
-    public static TagMapper getInstance() {
-        return mapper;
+import static java.util.stream.Collectors.toSet;
+
+/**
+ * This is a Spring component that serves as a mapper between Tag and TagDto objects.
+ * <p>
+ * It uses the MapStruct library to automatically generate the mapping code.
+ * <p>
+ * The mapper supports converting a Tag object to a TagDto object and vice versa,
+ * <p>
+ * as well as converting sets of Tag and TagDto objects to each other.
+ */
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING,
+        injectionStrategy = InjectionStrategy.CONSTRUCTOR)
+public interface TagMapper {
+    /**
+     * Maps a Tag object to a TagDto object.
+     *
+     * @param tag The Tag object to be mapped.
+     * @return The resulting TagDto object.
+     */
+    TagDto toDto(Tag tag);
+
+    /**
+     * Maps a TagDto object to a Tag object.
+     *
+     * @param dto The TagDto object to be mapped.
+     * @return The resulting Tag object.
+     */
+    Tag toEntity(TagDto dto);
+
+    /**
+     * Maps a set of TagDto objects to a set of Tag objects.
+     *
+     * @param tagDtos The set of TagDto objects to be mapped.
+     * @return The resulting set of Tag objects.
+     */
+    @Named("toTagSet")
+    default Set<Tag> toTagSet(Set<TagDto> tagDtos) {
+
+        return tagDtos == null ? null
+                : tagDtos.stream()
+                .map(this::toEntity)
+                .collect(toSet());
     }
 
-    private TagMapper() {
-    }
-
-    @Override
-    public TagDto toDto(final Tag tag) {
-        if (tag == null) {
-            throw new NullPointerException("Tag must not be null");
-        }
-        return TagDto.builder()
-                .id(tag.getId())
-                .name(tag.getName())
-                .build();
-    }
-
-    @Override
-    public Tag toEntity(TagDto tagDto) {
-        if (tagDto == null) { // TODO Tests
-            throw new NullPointerException("Tag must not be null");
-        }
-        return Tag.builder()
-                .id(tagDto.getId())
-                .name(tagDto.getName())
-                .build();
+    /**
+     * Maps a set of Tag objects to a set of TagDto objects.
+     *
+     * @param tags The set of Tag objects to be mapped.
+     * @return The resulting set of TagDto objects.
+     */
+    @Named("toTagDtoSet")
+    default Set<TagDto> toTagDtoSet(Set<Tag> tags) {
+        return tags == null ? null
+                : tags.stream()
+                .map(this::toDto)
+                .collect(toSet());
     }
 }
