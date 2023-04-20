@@ -1,32 +1,32 @@
-name: Deploy to Tomcat
-on:
-  push:
-    branches: [ master ]
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      
-      - name: Build project
-        run: mvn clean package
-      
-      - name: find Tomcat
-        run: find . -name gift.war
-
-      - name: tomcat7 file
-        run: sudo apt-get update && sudo apt-get install tomcat9
-
-      - name: Copy WAR file
-        run: sudo mkdir -p /usr/share/tomcat7/webapps/
-
-      - name: Copy WAR file
-        run: sudo cp ./api/target/*.war /usr/share/tomcat7/webapps/
-
-      - name: Restart Tomcat
-        run: sudo systemctl restart tomcat9
-
-      - name: Start Tomcat
-        run: sudo service tomcat9 start
+#name: Deploy to Tomcat
+#on:
+#  push:
+#    branches: [ master ]
+#
+#jobs:
+#  deploy:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v2
+#
+#      - name: Build project
+#        run: mvn clean package
+#
+#      - name: find Tomcat
+#        run: find . -name gift.war
+#
+#      - name: tomcat7 file
+#        run: sudo apt-get update && sudo apt-get install tomcat9
+#
+#      - name: Copy WAR file
+#        run: sudo mkdir -p /usr/share/tomcat7/webapps/
+#
+#      - name: Copy WAR file
+#        run: sudo cp ./api/target/*.war /usr/share/tomcat7/webapps/
+#
+#      - name: Restart Tomcat
+#        run: sudo systemctl restart tomcat9
+#
+#      - name: Start Tomcat
+#        run: sudo service tomcat9 start

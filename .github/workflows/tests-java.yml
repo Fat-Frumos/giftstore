@@ -2,9 +2,9 @@ name: Java install openjdk-8-jdk
 
 on:
   push:
-    branches: [ module#2 ]
+    branches: [ master ]
   pull_request:
-    branches: [ module#2 ]
+    branches: [ master ]
 
 jobs:
   build:
