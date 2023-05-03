@@ -4,7 +4,6 @@ import com.epam.esm.entity.Tag;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.query.sqm.SortOrder;
 
 import java.util.EnumMap;
 import java.util.Set;

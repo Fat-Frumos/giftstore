@@ -2,6 +2,7 @@ package com.epam.esm.dao;
 
 import com.epam.esm.criteria.Criteria;
 import com.epam.esm.criteria.FilterParams;
+import com.epam.esm.criteria.SortOrder;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
 import jakarta.persistence.EntityManager;
@@ -12,7 +13,6 @@ import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-import org.hibernate.query.sqm.SortOrder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -72,7 +72,7 @@ class CertificateDaoImplTest {
                 .offset(0L)
                 .page(0L)
                 .size(25L)
-                .sortOrder(SortOrder.ASCENDING)
+                .sortOrder(SortOrder.ASC)
                 .filterParams(FilterParams.ID)
                 .build();
 

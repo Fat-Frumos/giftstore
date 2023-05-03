@@ -2,6 +2,7 @@ package com.epam.esm.dao;
 
 import com.epam.esm.criteria.Criteria;
 import com.epam.esm.criteria.FilterParams;
+import com.epam.esm.criteria.SortOrder;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
@@ -17,7 +18,6 @@ import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.query.sqm.SortOrder;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -72,7 +72,7 @@ public class CertificateDaoImpl implements CertificateDao {
         if (criteria.getSortOrder() != null && criteria.getFilterParams() != null) {
             String sortBy = criteria.getFilterParams().name().toLowerCase();
             Expression<?> sortByExpression = root.get(sortBy);
-            query.orderBy(criteria.getSortOrder() == SortOrder.ASCENDING
+            query.orderBy(criteria.getSortOrder() == SortOrder.ASC
                     ? builder.asc(sortByExpression)
                     : builder.desc(sortByExpression));
         }
