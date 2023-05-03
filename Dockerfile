@@ -4,7 +4,7 @@ COPY . .
 RUN mvn clean package -DskipTests -Dmaven
 
 # Run stage
-FROM openjdk:8-jdk-alpine
+FROM openjdk:17-jdk-slim-buster
 # VOLUME /tmp
 ADD m2 m2
 # ADD api-1.0.0.jar app.jar
