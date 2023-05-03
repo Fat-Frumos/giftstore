@@ -1,4 +1,4 @@
-name: Java CI with Maven(Gift-shop)
+name: Build and Test Java 17
 
 on:
   push:
@@ -7,23 +7,27 @@ on:
     branches: [ develop ]
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        java-version: [ 17 ]
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Java
+      - name: Set up JDK ${{ matrix.java-version }}
         uses: actions/setup-java@v2
         with:
-          java-version: '17'
-          cache: maven
-      - name: Build with Maven
-        run: mvn -B package --file pom.xml
+          java-version: ${{ matrix.java-version }}
 
-      - name: Ip
-        run: ip address
+      - name: Build with Maven
+        run: mvn -B clean package --file pom.xml
+
+      - name: Run Tests
+        run: mvn -B test --file pom.xml
 
       - name: find file
         run: find . -name api-1.0.0.jar
