@@ -1,0 +1,40 @@
+name: Java install openjdk-8-jdk and Run Jar
+
+on:
+  push:
+    branches: [ develop ]
+  pull_request:
+    branches: [ develop ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java-version: [ 8.0.192, 8, 11.0.3, 17, 18-ea ]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK ${{ matrix.java-version }}
+        uses: actions/setup-java@v2
+        with:
+          java-version: ${{ matrix.java-version }}
+          distribution: 'zulu'
+          cache: maven
+      - name: Build with Maven
+        run: mvn -B package --file pom.xml
+
+      - name: sudo apt-get update
+        run: sudo apt-get update
+
+      - name: package file
+        run: mvn -B package --file pom.xml
+
+      - name: check path
+        run: ls -la && pwd
+
+      - name: find Tomcat
+        run: find . -name api-1.0.0.jar
+
+      - name: run java
+        run: java -jar ./api/target/api-1.0.0.jar

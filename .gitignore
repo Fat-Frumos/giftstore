@@ -1,6 +1,6 @@
 # Compiled class file
 *.class
-
+*.gif
 # Log file
 *.log
 *.log.*

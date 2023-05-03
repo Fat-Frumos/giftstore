@@ -1,5 +1,85 @@
-# Java External Lab
-## Module 03
+# External Lab
+## REST API:
+#### Web service for Gift Certificates system
+
+#### Commands:
+
+Clean, install, and generate report
+
+`mvn clean install site -P test`
+
+Test report
+
+`mvn surefire-report:report`
+
+Show dependency tree
+
+`mvn dependency:tree`
+
+Compile the code v.11 and package in file, skip the tests
+
+`mvn clean package -DskipTests -Dmaven.compiler.target=11`
+
+Build the project with Maven Tool
+
+`mvn -B package --file pom.xml`
+
+Run Tomcat server, show debug information
+
+`mvn tomcat7:run -X`
+
+Run Tomcat server, show debug information
+
+`java -jar ./api/target/api-1.0.0.jar --thin.dryrun`
+
+
+### Business requirements
+
+#### Develop web service for Gift Certificates system with the following entities (many-to-many):
+
+- Gift_Certificates
+  - id               SERIAL PRIMARY KEY,
+  - name             VARCHAR(55),
+  - description      TEXT,
+  - price            DECIMAL(10, 2),
+  - create_date      TIMESTAMP,
+  - last_update_date TIMESTAMP,
+  - duration         INTEGER
+
+- Tags
+  - id   SERIAL PRIMARY KEY,
+  - name VARCHAR(255) NOT NULL
+
+#### The system should expose REST APIs to perform the following operations:
+
+- CRUD operations for GiftCertificate. If new tags are passed during creation/modification – they should be created in the DB. For update operation - update only fields, that pass in request, others should not be updated. Batch insert is out of scope.
+
+- CRD operations for Tag.
+ 
+- Get certificates with tags(all params are optional and can be used in conjunction):
+  - by tag name (ONE tag)
+  - search by part of name/description (can be implemented, using DB function call)
+  - sort by date or by name ASC/DESC (extra task: implement ability to apply both sort type at the same time).
+
+### Application requirements
+- Lombok
+- JDK version: 8 – use Streams, java.time.*, etc. where it is possible.
+- Application packages root: com.epam.esm
+- Any widely-used connection pool could be used. (Database Connection Pool)
+- JDBC / Spring JDBC Template should be used for data access.
+- Use transactions where it’s necessary. (Transaction Manager)
+- Java Code Convention is mandatory (exception: margin size – 120 chars).
+- Build tool: Gradle.
+- Multi-module project.
+- Web server: Apache Tomcat
+- Application container: Spring IoC. Spring Framework.
+- Database: PostgreSQL
+- Testing: JUnit 5.+, Mockito.
+- Service layer should be covered with unit tests not less than 80%.
+- Repository layer should be tested using integration tests with an in-memory embedded database (all operations with certificates).
+
+## Practice
+
 ### Task
 #### General requirements
 
@@ -18,7 +98,7 @@
         • “errorCode”: 40401
         • }
 
-   where *errorCode is your custom code (it can be based on http status and requested resource - certificate or tag)
+   where `*errorCode` is your custom code (it can be based on http status and requested resource - certificate or tag)
 8. Abstraction should be used everywhere to avoid code duplication.
 9. Several configurations should be implemented.
 
@@ -30,37 +110,30 @@ Migrate your existing Spring application from a previous module to a Spring Boot
 
 ##### Business requirements
 
-This submodule is an extension of REST API Basics, and it covers such topics as pagination, sorting, filtering and HATEOAS. 
-Please imagine that your application has a lot of data, so when you make a GET request it will return, for instance, 1 million records. 
-This will take much time to process such request and return the result to the consumer of your API. 
-That is exactly what pagination, sorting, and filtering can solve. The other topic is HATEOAS what stands for the phrase 
-"Hypermedia As The Engine Of Application State". When you are viewing a web page, you see data on it and can perform some actions with this data. 
-In REST when you request a resource you get the details of the resource in the response. 
-Along with it you can send the operations that you can perform on the resource. And this is what HATEOAS does.
+This submodule is an extension of REST API Basics, and it covers such topics as pagination, sorting, filtering and HATEOAS. Please imagine that your application has a lot of data, so when you make a GET request it will return, for instance, 1 million records. This will take much time to process such request and return the result to the consumer of your API. That is exactly what pagination, sorting, and filtering can solve. The other topic is HATEOAS what stands for the phrase "Hypermedia As The Engine Of Application State". When you are viewing a web page, you see data on it and can perform some actions with this data. In REST when you request a resource you get the details of the resource in the response. Along with it you can send the operations that you can perform on the resource. And this is what HATEOAS does.
 
 The system should be extended to expose the following REST APIs:
-1. + Change single field of gift certificate (e.g. implement the possibility to change only duration of a certificate or only price).
-2. + Add new entity User. implement only get operations for user entity.
-3. + Make an order on gift certificate for a user (user should have an ability to buy a certificate).
+1. Change single field of gift certificate (e.g. implement the possibility to change only duration of a certificate or only price).
+2. Add new entity User.(implement only get operations for user entity.)
+3. Make an order on gift certificate for a user (user should have an ability to buy a certificate).
 4. Get information about user’s orders.
 5. Get information about user’s order: cost and timestamp of a purchase.
-    * The order cost should not be changed if the price of the gift certificate is changed.
+   (The order cost should not be changed if the price of the gift certificate is changed).
 6. Get the most widely used tag of a user with the highest cost of all orders.
-    * Create separate endpoint for this query.
-    * Demonstrate SQL execution plan for this query (explain).
+   - Create separate endpoint for this query.
+   - Demonstrate SQL execution plan for this query (explain).
 7. Search for gift certificates by several tags (“and” condition).
 8. Pagination should be implemented for all GET endpoints. Please, create a flexible and non-erroneous solution. Handle all exceptional cases.
 9. Support HATEOAS on REST endpoints.
 
 ##### Application requirements
 
-1. JDK version: 8. Use Streams, java.time.*, an etc. where it is appropriate. 
-   (the JDK version can be increased in agreement with the mentor/group coordinator/run coordinator)
+1. JDK version: 8. Use Streams, java.time.*, an etc. where it is appropriate. (the JDK version can be increased in agreement with the mentor/group coordinator/run coordinator)
 2. Application packages root: com.epam.esm.
 3. Java Code Convention is mandatory (exception: margin size –120 characters).
-4. Apache Maven, latest version. Multi-module project.
+4. Apache Maven/Gradle, latest version. Multi-module project.
 5. Spring Framework, the latest version.
-6. Database: PostgreSQL, latest version.
+6. Database: PostgreSQL/MySQL, latest version.
 7. Testing: JUnit, the latest version, Mockito.
 8. Service layer should be covered with unit tests not less than 80%.
 
@@ -70,18 +143,7 @@ This submodule covers following topics:
 1. ORM
 2. JPA & Hibernate
 3. Transactions
-   ORM stands for Object Relational Mapping. 
-4. It’s a bit of an abstract concept – but basically it’s a technique that allows us to query and change data from the database in an object oriented way.
-5. ORMs provide a high-level abstraction upon a relational database that allows a developer to write 
-6. Java code instead of SQL to create, read, update and delete data and schemas in their database. 
-7. Developers can use the programming language they are comfortable with to work with a database instead of writing SQL statements or stored procedures. 
-8. A JPA (Java Persistence API) is a specification of Java which is used to access, manage, and persist data between Java object and relational database. 
-   It is considered as a standard approach for Object Relational Mapping. JPA can be seen as a bridge between object-oriented domain models 
-   and relational database systems. Being a specification, JPA doesn't perform any operation by itself. Thus, it requires implementation. 
-   So, ORM tools like Hibernate, TopLink, and iBatis implements JPA specifications for data persistence. 
-   A transaction usually means a sequence of information exchange and related work (such as database updating)
-   that is treated as a unit for the purposes of satisfying a request and for ensuring database integrity. 
-   For a transaction to be completed and database changes to made permanent, a transaction has to be completed in its entirety.
+   ORM stands for Object Relational Mapping. It’s a bit of an abstract concept – but basically it’s a technique that allows us to query and change data from the database in an object oriented way. ORMs provide a high-level abstraction upon a relational database that allows a developer to write Java code instead of SQL to create, read, update and delete data and schemas in their database. Developers can use the programming language they are comfortable with to work with a database instead of writing SQL statements or stored procedures. A JPA (Java Persistence API) is a specification of Java which is used to access, manage, and persist data between Java object and relational database. It is considered as a standard approach for Object Relational Mapping. JPA can be seen as a bridge between object-oriented domain models and relational database systems. Being a specification, JPA doesn't perform any operation by itself. Thus, it requires implementation. So, ORM tools like Hibernate, TopLink, and iBatis implements JPA specifications for data persistence. A transaction usually means a sequence of information exchange and related work (such as database updating) that is treated as a unit for the purposes of satisfying a request and for ensuring database integrity. For a transaction to be completed and database changes to made permanent, a transaction has to be completed in its entirety.
 
 ##### Application requirements
 
@@ -96,11 +158,10 @@ This submodule covers following topics:
 
 # Demo
 ## Practical part
-
 1. Generate for a demo at least
-    - 1000 users
-    - 1000 tags
-    - 10’000 gift certificates (should be linked with tags and users)
-      All values should look like more -or-less meaningful: random words, but not random letters
+   - 1000 users
+   - 1000 tags
+   - 10’000 gift certificates (should be linked with tags and users)
+    All values should look like more -or-less meaningful: random words, but not random letters
 2. Demonstrate API using Postman tool (prepare for demo Postman collection with APIs)
 3. (Optional) Build & run application using command line
