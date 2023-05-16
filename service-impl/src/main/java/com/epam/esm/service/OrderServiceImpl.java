@@ -20,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -30,7 +29,6 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 
 @Service
-@Validated
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 

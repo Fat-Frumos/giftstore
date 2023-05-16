@@ -3,7 +3,6 @@ package com.epam.esm.service;
 import com.epam.esm.criteria.Criteria;
 import com.epam.esm.dto.CertificateDto;
 import com.epam.esm.dto.CertificateWithoutTagDto;
-import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 
@@ -16,7 +15,6 @@ import java.util.List;
  * <p>
  * are valid before any operation is performed.
  */
-@Validated
 public interface CertificateService {
     /**
      * Retrieves the certificate with the specified ID.

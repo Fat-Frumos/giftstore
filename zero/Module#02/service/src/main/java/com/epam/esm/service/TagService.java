@@ -1,7 +1,6 @@
 package com.epam.esm.service;
 
 import com.epam.esm.dto.TagDto;
-import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 
@@ -9,7 +8,6 @@ import java.util.List;
  * The TagService interface provides
  * operations to manage tags.
  */
-@Validated
 public interface TagService {
     /**
      * Retrieves a tag by ID.

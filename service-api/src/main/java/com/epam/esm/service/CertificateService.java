@@ -4,11 +4,9 @@ import com.epam.esm.criteria.Criteria;
 import com.epam.esm.dto.CertificateDto;
 import com.epam.esm.dto.CertificateWithoutTagDto;
 import com.epam.esm.dto.TagDto;
-import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 
-@Validated
 public interface CertificateService {
     CertificateDto getById(Long id);
 
