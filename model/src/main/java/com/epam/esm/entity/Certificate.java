@@ -42,11 +42,11 @@ public class Certificate implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
-    @Column(nullable = false)
+    @Column(nullable = false, length = 512)
     private String name;
     @Column(nullable = false)
     private BigDecimal price;
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1024)
     private String description;
     @Column(name = "create_date", nullable = false)
     private Timestamp createDate;
@@ -78,14 +78,13 @@ public class Certificate implements Serializable {
     @JsonManagedReference
     private Set<Tag> tags = new HashSet<>();
 
-
-//    @Builder.Default
-//    @ToString.Exclude
-//    @EqualsAndHashCode.Exclude
-//    @ManyToMany(
-//            mappedBy = "certificates",
-//            cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-//    private Set<Order> orders = new HashSet<>();
+    @Builder.Default
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @ManyToMany(
+            mappedBy = "certificates",
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private Set<Order> orders = new HashSet<>();
 
     public Certificate addTag(
             final Tag tag) {
