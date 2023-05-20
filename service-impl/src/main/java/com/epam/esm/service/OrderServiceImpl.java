@@ -25,8 +25,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
-
-import static java.util.stream.Collectors.toList;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -39,7 +38,7 @@ public class OrderServiceImpl implements OrderService {
     private final CertificateMapper certificateMapper;
 
     @Override
-    @Transactional(rollbackFor = Exception.class, isolation = Isolation.REPEATABLE_READ)
+    @Transactional(rollbackFor = Exception.class, isolation = Isolation.READ_COMMITTED)
     public OrderDto save(final Order order) {
         return orderMapper.toDto(orderDao.save(order));
     }
@@ -47,8 +46,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional(readOnly = true)
     public OrderDto getById(Long id) {
-        Order order = orderDao.getById(id).orElseThrow(() -> new OrderNotFoundException(
-                String.format("Order with id %d not found", id)));
+        Order order = orderDao.getById(id)
+                .orElseThrow(() -> new OrderNotFoundException(
+                        String.format("Order with id %d not found", id)));
         return orderMapper.toDto(order);
     }
 
@@ -56,26 +56,21 @@ public class OrderServiceImpl implements OrderService {
     @Transactional(readOnly = true)
     public OrderDto createOrder(
             final Long userId,
-            final List<Long> certificateIds) {
-        User user = userDao.getById(userId)
+            final Set<Long> certificateIds) {
+        User user = userDao.getById(userId) // TODO
                 .orElseThrow(() -> new UserNotFoundException(
                         String.format("User with id %d not found", userId)));
-
-        List<Certificate> certificates = certificateDao.findAllByIds(certificateIds);
-
+        Set<Certificate> certificates = certificateDao.findAllByIds(certificateIds); // TODO
         if (certificates.size() != certificateIds.size()) {
             throw new CertificateNotFoundException("One or more certificates not found");
         }
-
-        BigDecimal cost = certificates.stream()
-                .map(Certificate::getPrice)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
         Order order = Order.builder()
                 .user(user)
                 .certificates(certificates)
                 .orderDate(Timestamp.valueOf(LocalDateTime.now()))
-                .cost(cost)
+                .cost(certificates.stream()
+                        .map(Certificate::getPrice)
+                        .reduce(BigDecimal.ZERO, BigDecimal::add))
                 .build();
         Order saved = orderDao.save(order);
         return orderMapper.toDto(saved);
@@ -86,18 +81,16 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderDto> getUserOrders(
             final User user,
             final Criteria criteria) {
-        return orderDao.getUserOrders(user, criteria)
-                .stream()
-                .map(orderMapper::toDto)
-                .collect(toList());
+        return orderMapper.toDtoList(
+                orderDao.getUserOrders(user, criteria));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<OrderDto> getAll() {
-        return orderDao.getAll().stream()
-                .map(orderMapper::toDto)
-                .collect(toList());
+    public List<OrderDto> getAll(
+            final Criteria criteria) {
+        return orderMapper.toDtoList(
+                orderDao.getAll(criteria));
     }
 
     @Override
@@ -123,30 +116,25 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional(readOnly = true)
     public List<CertificateDto> getCertificatesByTags(
-            final Criteria criteria) {
-        return certificateDao
-                .getAll(criteria)
-                .stream()
-                .map(certificateMapper::toDto)
-                .collect(toList());
+            final List<String> tagNames) {
+        return certificateMapper.toDtoList(
+                certificateDao.findByTagNames(tagNames));
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<OrderDto> getAllByUserId(
             final Long userId) {
-        return orderDao.findOrdersByUserId(userId)
-                .stream()
-                .map(orderMapper::toDto)
-                .collect(toList());
+        return orderMapper.toDtoList(
+                orderDao.findOrdersByUserId(userId));
     }
 
     @Override
     @Transactional(readOnly = true)
     public Certificate findCertificateById(
             final Long id) {
-        return certificateDao.getById(id).orElseThrow(
-                () -> new CertificateNotFoundException(
+        return certificateDao.getById(id)
+                .orElseThrow(() -> new CertificateNotFoundException(
                         "Certificate not found"));
     }
 }

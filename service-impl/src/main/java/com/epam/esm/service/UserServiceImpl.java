@@ -1,5 +1,6 @@
 package com.epam.esm.service;
 
+import com.epam.esm.criteria.Criteria;
 import com.epam.esm.dao.UserDao;
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.entity.User;
@@ -11,8 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
-
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -21,13 +20,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserDto getById(Long id) {
+    public UserDto getById(
+            final Long id) {
         return mapper.toDto(findById(id));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public User findById(Long id) {
+    public User findById(
+            final Long id) {
         return userDao.getById(id)
                 .orElseThrow(() -> new UserNotFoundException(
                         String.format("User not found with id %d", id)));
@@ -35,9 +36,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<UserDto> getAll() {
-        return userDao.getAll().stream()
-                .map(mapper::toDto)
-                .collect(toList());
+    public List<UserDto> getAll(
+            final Criteria criteria) {
+        return mapper.toDtoList(
+                userDao.getAll(criteria));
     }
 }

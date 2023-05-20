@@ -1,5 +1,6 @@
 package com.epam.esm.service;
 
+import com.epam.esm.criteria.Criteria;
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.entity.User;
 
@@ -10,5 +11,5 @@ public interface UserService {
 
     UserDto getById(Long id);
 
-    List<UserDto> getAll();
+    List<UserDto> getAll(Criteria criteria);
 }

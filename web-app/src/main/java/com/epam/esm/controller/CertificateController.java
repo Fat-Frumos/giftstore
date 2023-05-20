@@ -4,7 +4,6 @@ import com.epam.esm.assembler.CertificateAssembler;
 import com.epam.esm.criteria.Criteria;
 import com.epam.esm.criteria.FilterParams;
 import com.epam.esm.dto.CertificateDto;
-import com.epam.esm.dto.Linkable;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.service.CertificateService;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.swing.SortOrder;
 import java.util.List;
+import java.util.Set;
 
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
@@ -38,16 +38,15 @@ public class CertificateController {
     private final CertificateAssembler assembler;
     private final CertificateService certificateService;
 
-    @GetMapping(value = "/{id}",
-            produces = APPLICATION_JSON_VALUE)
-    public EntityModel<Linkable> getCertificateById(
+    @GetMapping(value = "/{id}")
+    public EntityModel<CertificateDto> getCertificateById(
             @PathVariable final Long id) {
         return assembler.toModel(
                 certificateService.getById(id));
     }
 
-    @GetMapping(produces = APPLICATION_JSON_VALUE)
-    public CollectionModel<EntityModel<Linkable>> getAll(
+    @GetMapping
+    public CollectionModel<EntityModel<CertificateDto>> getAll(
             @RequestParam(defaultValue = "UNSORTED") SortOrder sort,
             @RequestParam(defaultValue = "ID") FilterParams params,
             @RequestParam(defaultValue = "0") int page,
@@ -62,26 +61,23 @@ public class CertificateController {
                                 .build()));
     }
 
-    @GetMapping(value = "/", produces = APPLICATION_JSON_VALUE)
-    public CollectionModel<EntityModel<Linkable>> search(
+    @GetMapping(value = "/")
+    public CollectionModel<EntityModel<CertificateDto>> search(
             @RequestParam(required = false) List<String> tagNames) {
         return assembler.toCollectionModel(
                 certificateService.findCertificatesByTags(tagNames));
     }
 
-    @PatchMapping(value = "/{id}",
-            consumes = APPLICATION_JSON_VALUE,
-            produces = APPLICATION_JSON_VALUE)
-    public EntityModel<Linkable> update(
-            @RequestBody final CertificateDto dto,
-            @PathVariable final Long id) {
+    @PatchMapping(value = "/", consumes = APPLICATION_JSON_VALUE)
+    public EntityModel<CertificateDto> update(
+            @RequestBody final CertificateDto dto) {
         return assembler.toModel(
-                certificateService.update(dto, id));
+                certificateService.update(dto));
     }
 
     @ResponseStatus(CREATED)
     @PostMapping(consumes = APPLICATION_JSON_VALUE)
-    public EntityModel<Linkable> create(
+    public EntityModel<CertificateDto> create(
             @RequestBody final CertificateDto dto) {
         return assembler.toModel(
                 certificateService.save(dto));
@@ -94,10 +90,23 @@ public class CertificateController {
         return new ResponseEntity<>(NO_CONTENT);
     }
 
-    @GetMapping(value = "/{id}/tags",
-            produces = APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{id}/tags")
     public List<TagDto> getTagsByCertificateId(
             @PathVariable final Long id) {
         return certificateService.findTagsByCertificateId(id);
+    }
+
+    @GetMapping(value = "/{ids}")
+    public CollectionModel<EntityModel<CertificateDto>>
+    getCertificatesByIds(
+            @PathVariable final Set<Long> ids) {
+        return assembler.toCollectionModel(
+                certificateService.getByIds(ids));
+    }
+    @GetMapping(value = "/users/{id}")
+    public CollectionModel<EntityModel<CertificateDto>> getUserCertificates(
+            @PathVariable final Long id) {
+        return assembler.toCollectionModel(
+                certificateService.getCertificatesByUserId(id));
     }
 }

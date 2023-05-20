@@ -3,7 +3,6 @@ package com.epam.esm.assembler;
 import com.epam.esm.controller.CertificateController;
 import com.epam.esm.criteria.FilterParams;
 import com.epam.esm.dto.CertificateDto;
-import com.epam.esm.dto.Linkable;
 import com.epam.esm.dto.TagDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -73,7 +72,7 @@ class CertificateAssemblerTest {
                 .tags(new HashSet<>())
                 .build();
 
-        EntityModel<Linkable> entity = certificateAssembler.toModel(certificateDto);
+        EntityModel<CertificateDto> entity = certificateAssembler.toModel(certificateDto);
 
         assertNotNull(entity);
         assertNotNull(entity.getContent());
@@ -87,7 +86,7 @@ class CertificateAssemblerTest {
     @Test
     void toModelReturnsEntityModel() {
 
-        EntityModel<Linkable> result = certificateAssembler.toModel(certificateDto);
+        EntityModel<CertificateDto> result = certificateAssembler.toModel(certificateDto);
         assertEquals(certificateDto, result.getContent());
         assertNotNull(result.getLink("self"));
         assertNotNull(result.getLink("tags"));
@@ -117,7 +116,7 @@ class CertificateAssemblerTest {
                 linkTo(methodOn(CertificateController.class).getAll(SortOrder.UNSORTED, FilterParams.ID, 0,25)).withSelfRel()
         ));
 
-        CollectionModel<EntityModel<Linkable>> result =
+        CollectionModel<EntityModel<CertificateDto>> result =
                 certificateController.getAll(SortOrder.UNSORTED, FilterParams.ID, 0,25);
 
         assertEquals(1, result.getContent().size());
@@ -139,7 +138,7 @@ class CertificateAssemblerTest {
                 .tags(new HashSet<>())
                 .build();
         Iterable<CertificateDto> certificateDtos = Arrays.asList(certificateDto, certificateDto2);
-        CollectionModel<EntityModel<Linkable>> result = certificateAssembler.toCollectionModel(certificateDtos);
+        CollectionModel<EntityModel<CertificateDto>> result = certificateAssembler.toCollectionModel(certificateDtos);
         assertEquals(2, result.getContent().size());
         assertNotNull(result.getLink("self"));
     }
@@ -166,16 +165,16 @@ class CertificateAssemblerTest {
                 )))
                 .build();
 
-        EntityModel<Linkable> model = certificateAssembler.toModel(dto);
+        EntityModel<CertificateDto> model = certificateAssembler.toModel(dto);
 
         assertEquals(dto.getId(), model.getContent().getId());
-        assertEquals(dto.getName(), ((CertificateDto) model.getContent()).getName());
-        assertEquals(dto.getDescription(), ((CertificateDto) model.getContent()).getDescription());
-        assertEquals(dto.getPrice(), ((CertificateDto) model.getContent()).getPrice());
-        assertEquals(dto.getDuration(), ((CertificateDto) model.getContent()).getDuration());
-        assertEquals(dto.getCreateDate(), ((CertificateDto) model.getContent()).getCreateDate());
-        assertEquals(dto.getLastUpdateDate(), ((CertificateDto) model.getContent()).getLastUpdateDate());
-        assertEquals(dto.getTags().size(), ((CertificateDto) model.getContent()).getTags().size());
+        assertEquals(dto.getName(), (model.getContent()).getName());
+        assertEquals(dto.getDescription(), (model.getContent()).getDescription());
+        assertEquals(dto.getPrice(), (model.getContent()).getPrice());
+        assertEquals(dto.getDuration(), (model.getContent()).getDuration());
+        assertEquals(dto.getCreateDate(), (model.getContent()).getCreateDate());
+        assertEquals(dto.getLastUpdateDate(), (model.getContent()).getLastUpdateDate());
+        assertEquals(dto.getTags().size(), (model.getContent()).getTags().size());
         Link selfLink = model.getLink("self").orElse(null);
         assertNotNull(selfLink);
         assertEquals("/certificates/" + dto.getId(), selfLink.getHref());
