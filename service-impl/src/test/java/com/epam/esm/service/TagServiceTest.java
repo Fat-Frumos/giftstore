@@ -1,6 +1,5 @@
 package com.epam.esm.service;
 
-import com.epam.esm.criteria.Criteria;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.TagDaoImpl;
 import com.epam.esm.dto.TagDto;
@@ -16,6 +15,9 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -48,11 +50,7 @@ class TagServiceTest {
     private final String tagName = "Spring";
     private final Tag tag = Tag.builder().id(id).name(tagName).build();
     private final TagDto tagDto = TagDto.builder().name(tagName).build();
-    private final Criteria criteria = Criteria.builder()
-            .page(25)
-            .size(0)
-            .sortOrder(SortOrder.ASCENDING)
-            .build();
+    private final Pageable pageable = PageRequest.of(0, 25, Sort.by("name").ascending());
 
     @BeforeEach
     void setup() {
@@ -94,23 +92,23 @@ class TagServiceTest {
     @Test
     @DisplayName("Should return all tags")
     void testGetAllShouldReturnAllTags() {
-        when(tagDao.getAll(criteria)).thenReturn(tags);
+        when(tagDao.getAll(pageable)).thenReturn(tags);
         when(tagMapper.toDto(any(Tag.class))).thenReturn(
                 TagDto.builder().id(tags.get(0).getId()).name(tags.get(0).getName()).build(),
                 TagDto.builder().id(tags.get(1).getId()).name(tags.get(1).getName()).build(),
                 TagDto.builder().id(tags.get(2).getId()).name(tags.get(2).getName()).build()
         );
-        List<TagDto> actualTagDtos = tagService.getAll(criteria);
+        List<TagDto> actualTagDtos = tagService.getAll(pageable);
         IntStream.range(0, actualTagDtos.size()).forEach(i -> assertEquals(tagDtos.get(i), actualTagDtos.get(i)));
     }
 
     @Test
     @DisplayName("Should return all tags")
     void testGetAllShouldReturnAllTag() {
-        when(tagDao.getAll(criteria)).thenReturn(tags);
+        when(tagDao.getAll(pageable)).thenReturn(tags);
         when(tagMapper.toDto(any())).thenReturn(tagDtos.get(0), tagDtos.get(1), tagDtos.get(2));
-        assertEquals(tagDtos, tagService.getAll(criteria));
-        verify(tagDao, times(1)).getAll(criteria);
+        assertEquals(tagDtos, tagService.getAll(pageable));
+        verify(tagDao, times(1)).getAll(pageable);
         verify(tagMapper, times(3)).toDto(any());
     }
 
@@ -119,12 +117,12 @@ class TagServiceTest {
     void testGetAllWhenNoTags() {
         List<Tag> tags = Collections.emptyList();
         List<TagDto> tagDtos = Collections.emptyList();
-        when(tagDao.getAll(criteria)).thenReturn(tags);
+        when(tagDao.getAll(pageable)).thenReturn(tags);
 
-        List<TagDto> result = tagService.getAll(criteria);
+        List<TagDto> result = tagService.getAll(pageable);
 
         assertEquals(tagDtos, result);
-        verify(tagDao, times(1)).getAll(criteria);
+        verify(tagDao, times(1)).getAll(pageable);
         verify(tagMapper, times(0)).toDto(any());
     }
 
@@ -132,8 +130,8 @@ class TagServiceTest {
     @DisplayName("Should return empty list when no tags are found")
     @MethodSource("provideEmptyTagLists")
     void testGetAllShouldReturnEmptyList(List<Tag> emptyTagList) {
-        when(tagDao.getAll(criteria)).thenReturn(emptyTagList);
-        List<TagDto> actualTagDtos = tagService.getAll(criteria);
+        when(tagDao.getAll(pageable)).thenReturn(emptyTagList);
+        List<TagDto> actualTagDtos = tagService.getAll(pageable);
         assertTrue(actualTagDtos.isEmpty());
     }
 
@@ -149,11 +147,11 @@ class TagServiceTest {
     void testGetAllWhenNoTag() {
         List<Tag> tags = Collections.emptyList();
         List<TagDto> tagDtos = Collections.emptyList();
-        when(tagDao.getAll(criteria)).thenReturn(tags);
-        List<TagDto> result = tagService.getAll(criteria);
+        when(tagDao.getAll(pageable)).thenReturn(tags);
+        List<TagDto> result = tagService.getAll(pageable);
 
         assertEquals(tagDtos, result);
-        verify(tagDao, times(1)).getAll(criteria);
+        verify(tagDao, times(1)).getAll(pageable);
         verify(tagMapper, times(0)).toDto(any());
     }
 

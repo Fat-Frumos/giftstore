@@ -1,12 +1,11 @@
 package com.epam.esm.service;
 
-import com.epam.esm.criteria.Criteria;
 import com.epam.esm.dao.CertificateDao;
 import com.epam.esm.dao.OrderDao;
 import com.epam.esm.dao.UserDao;
 import com.epam.esm.dto.CertificateDto;
 import com.epam.esm.dto.OrderDto;
-import com.epam.esm.dto.UserWithoutOrderDto;
+import com.epam.esm.dto.UserSlimDto;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.Tag;
@@ -25,6 +24,10 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -57,7 +60,6 @@ class OrderServiceImplTest {
     private CertificateMapper certificateMapper;
     @InjectMocks
     private OrderServiceImpl orderService;
-    private final Criteria criteria = Criteria.builder().page(0).size(25).build();
     private final Long orderId = 1L;
     private final Long userId = 1L;
     Set<Long> certificateIds = new HashSet<>();
@@ -74,12 +76,12 @@ class OrderServiceImplTest {
             .email("Emma-Liam@gmail.com")
             .build();
 
-    private final UserWithoutOrderDto userDto2 = UserWithoutOrderDto.builder()
+    private final UserSlimDto userDto2 = UserSlimDto.builder()
             .id(2L)
             .username("Emma-Liam")
             .email("Emma-Liam@gmail.com")
             .build();
-    private final UserWithoutOrderDto userDto = UserWithoutOrderDto.builder()
+    private final UserSlimDto userDto = UserSlimDto.builder()
             .id(userId)
             .username("Olivia-Noah")
             .email("Olivia-Noah@gmail.com")
@@ -118,11 +120,11 @@ class OrderServiceImplTest {
     private final List<CertificateDto> certificateDtos = Arrays.asList(certificateDto, certificateDto2);
     private final Order order = Order.builder().id(1L).user(user).certificates(Collections.singleton(certificate)).build();
     private final Order order2 = Order.builder().id(2L).user(user2).certificates(Collections.singleton(certificate2)).build();
-    private final  OrderDto orderDto = OrderDto.builder().id(id).user(userDto).certificateDtos(Collections.singleton(certificateDto)).build();
+    private final OrderDto orderDto = OrderDto.builder().id(id).user(userDto).certificateDtos(Collections.singleton(certificateDto)).build();
     private final OrderDto orderDto2 = OrderDto.builder().id(id2).user(userDto2).certificateDtos(Collections.singleton(certificateDto2)).build();
     private final List<OrderDto> orderDtos = Arrays.asList(orderDto, orderDto2);
     private final List<Order> orders = Arrays.asList(order, order2);
-
+    private final Pageable pageable = PageRequest.of(0, 25, Sort.by("name").ascending());
 
     @BeforeEach
     public void setUp() {
@@ -134,7 +136,7 @@ class OrderServiceImplTest {
     @Test
     @DisplayName("Get Order by ID")
     void testGetById() {
-    
+
         when(orderDao.getById(orderId)).thenReturn(Optional.of(order));
         when(orderMapper.toDto(order)).thenReturn(orderDto);
 
@@ -231,7 +233,7 @@ class OrderServiceImplTest {
         List<Order> expectedOrders = Collections.singletonList(order);
         List<OrderDto> expectedOrderDtos = Collections.singletonList(OrderDto.builder()
                 .id(orderId)
-                .user(UserWithoutOrderDto.builder()
+                .user(UserSlimDto.builder()
                         .username(firstName + "-" + lastName)
                         .email(email)
                         .build())
@@ -244,16 +246,16 @@ class OrderServiceImplTest {
                         .build()))
                 .build());
 
-        when(orderDao.getUserOrders(user, criteria)).thenReturn(expectedOrders);
+        when(orderDao.getUserOrders(user, pageable)).thenReturn(expectedOrders);
         when(orderMapper.toDtoList(expectedOrders)).thenReturn(expectedOrderDtos);
 
-        List<OrderDto> actualOrderDtos = orderService.getUserOrders(user, criteria);
+        Page<OrderDto> actualOrderDtos = orderService.getUserOrders(user, pageable);
 
-        assertEquals(expectedOrderDtos.size(), actualOrderDtos.size());
-        assertEquals(expectedOrderDtos.get(0).getId(), actualOrderDtos.get(0).getId());
-        assertEquals(expectedOrderDtos.get(0).getUser().getEmail(), actualOrderDtos.get(0).getUser().getEmail());
+        assertEquals(expectedOrderDtos.size(), actualOrderDtos.getContent().size());
+        assertEquals(expectedOrderDtos.get(0).getId(), actualOrderDtos.getContent().get(0).getId());
+        assertEquals(expectedOrderDtos.get(0).getUser().getEmail(), actualOrderDtos.getContent().get(0).getUser().getEmail());
 
-        verify(orderDao).getUserOrders(user, criteria);
+        verify(orderDao).getUserOrders(user, pageable);
         verify(orderMapper).toDtoList(expectedOrders);
         verifyNoMoreInteractions(orderDao, orderMapper);
     }
@@ -273,7 +275,7 @@ class OrderServiceImplTest {
 
     @Test
     @DisplayName("Test get user order")
-    void getUserOrderTest(){
+    void getUserOrderTest() {
 
         when(orderDao.getUserOrder(user, orderId)).thenReturn(Optional.of(order));
         when(orderMapper.toDto(order)).thenReturn(orderDto);
@@ -310,7 +312,7 @@ class OrderServiceImplTest {
         List<Order> expectedOrders = Collections.singletonList(order);
         List<OrderDto> expectedOrderDtos = Collections.singletonList(OrderDto.builder()
                 .id(id)
-                .user(UserWithoutOrderDto.builder()
+                .user(UserSlimDto.builder()
                         .username(firstName + "-" + lastName)
                         .email(email)
                         .build())
@@ -323,13 +325,12 @@ class OrderServiceImplTest {
                         .build()))
                 .build());
 
-        when(orderDao.getAll(criteria)).thenReturn(expectedOrders);
+        when(orderDao.getAll(pageable)).thenReturn(expectedOrders);
         when(orderMapper.toDtoList(expectedOrders)).thenReturn(expectedOrderDtos);
-
-        List<OrderDto> result = orderService.getAll(criteria);
+        Page<OrderDto> result = orderService.getAll(pageable);
 
         assertNotNull(result);
-        assertEquals(expectedOrderDtos, result);
+        assertEquals(expectedOrderDtos, result.getContent());
     }
 
     @ParameterizedTest
@@ -347,7 +348,7 @@ class OrderServiceImplTest {
         List<Order> expectedOrders = Collections.singletonList(order);
         List<OrderDto> expectedOrderDtos = Collections.singletonList(OrderDto.builder()
                 .id(id)
-                .user(UserWithoutOrderDto.builder()
+                .user(UserSlimDto.builder()
                         .username(firstName + "-" + lastName)
                         .email(email)
                         .build())
@@ -363,8 +364,9 @@ class OrderServiceImplTest {
         when(orderDao.findOrdersByUserId(id)).thenReturn(expectedOrders);
         when(orderMapper.toDtoList(expectedOrders)).thenReturn(expectedOrderDtos);
 
-        List<OrderDto> actualOrderDtos = orderService.getAllByUserId(id);
-        assertEquals(expectedOrderDtos, actualOrderDtos);
+        Page<OrderDto> actualOrderDtos = orderService.getAllByUserId(id);
+
+        assertEquals(expectedOrderDtos, actualOrderDtos.getContent());
         verify(orderDao).findOrdersByUserId(id);
         verify(orderMapper).toDtoList(expectedOrders);
     }
@@ -393,17 +395,17 @@ class OrderServiceImplTest {
     @DisplayName("Get All Orders")
     void getAllOrdersTest() {
 
-        when(orderDao.getAll(criteria)).thenReturn(orders);
+        when(orderDao.getAll(pageable)).thenReturn(orders);
         when(orderMapper.toDtoList(orders)).thenReturn(orderDtos);
 
-        List<OrderDto> result = orderService.getAll(criteria);
+        Page<OrderDto> result = orderService.getAll(pageable);
 
         assertNotNull(result);
-        assertEquals(orders.size(), result.size());
+        assertEquals(orders.size(), result.getContent().size());
 
         for (int i = 0; i < orders.size(); i++) {
             Order order = orders.get(i);
-            OrderDto orderDto = result.get(i);
+            OrderDto orderDto = result.getContent().get(i);
 
             assertEquals(order.getId(), orderDto.getId());
             assertEquals(order.getUser().getUsername(), orderDto.getUser().getUsername());
@@ -427,7 +429,7 @@ class OrderServiceImplTest {
                 assertEquals(certificate.getDuration(), certificateDto.getDuration());
             }
         }
-        verify(orderDao).getAll(criteria);
+        verify(orderDao).getAll(pageable);
         verifyNoMoreInteractions(orderDao, orderMapper);
     }
 
@@ -458,15 +460,15 @@ class OrderServiceImplTest {
 
         when(certificateDao.findByTagNames(tagNames)).thenReturn(certificates);
         when(certificateMapper.toDtoList(certificates)).thenReturn(certificateDtos);
-        List<CertificateDto> result = orderService.getCertificatesByTags(tagNames);
+
+        Page<CertificateDto> result = orderService.getCertificatesByTags(tagNames);
 
         assertNotNull(result);
-        assertEquals(certificates.size(), result.size());
+        assertEquals(certificates.size(), result.getContent().size());
 
         for (int i = 0; i < certificates.size(); i++) {
             Certificate certificate = certificates.get(i);
-            CertificateDto certificateDto = result.get(i);
-
+            CertificateDto certificateDto = result.getContent().get(i);
             assertEquals(certificate.getId(), certificateDto.getId());
             assertEquals(certificate.getName(), certificateDto.getName());
             assertEquals(certificate.getDescription(), certificateDto.getDescription());

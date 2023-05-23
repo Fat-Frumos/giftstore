@@ -1,6 +1,5 @@
 package com.epam.esm.service;
 
-import com.epam.esm.criteria.Criteria;
 import com.epam.esm.dao.UserDao;
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.entity.Certificate;
@@ -17,6 +16,9 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -43,11 +45,11 @@ class UserServiceImplTest {
     @InjectMocks
     private UserServiceImpl userService;
 
-    private Criteria criteria;
+    private Pageable pageable;
 
     @BeforeEach
     public void setUp() {
-        criteria = Criteria.builder().page(0).size(25).build();
+        pageable = PageRequest.of(0, 25, Sort.by("name").ascending());
     }
 
     @ParameterizedTest
@@ -70,12 +72,12 @@ class UserServiceImplTest {
                 UserDto.builder().id(id1 + 1).username(username2).email(email2).build()
         );
 
-        when(userDao.getAll(criteria)).thenReturn(users);
+        when(userDao.getAll(pageable)).thenReturn(users);
         when(mapper.toDtoList(users)).thenReturn(expectedDtos);
 
-        assertEquals(expectedDtos, userService.getAll(criteria));
+        assertEquals(expectedDtos, userService.getAll(pageable).getContent());
 
-        verify(userDao).getAll(criteria);
+        verify(userDao).getAll(pageable);
         verify(mapper).toDtoList(users);
         verifyNoMoreInteractions(userDao, mapper);
     }
@@ -125,7 +127,10 @@ class UserServiceImplTest {
             "4, Amelia, Elijah, Amelia-Elijah@gmail.com, 40, SQL, description, 40, 75",
             "5, Ava, Leo, Ava-Leo@gmail.com, 50, Programming, description, 50, 90"
     })
-    void testFindByIdWithOrder(Long userId, String firstName, String lastName, String email, long certificateId, String name, String description, BigDecimal price, int duration) {
+    void testFindByIdWithOrder(Long userId, String firstName, String lastName, String email,
+                               long certificateId, String name, String description,
+                               BigDecimal price, int duration) {
+
         Certificate certificate = Certificate.builder().id(certificateId).name(name).description(description).duration(duration).build();
         Order order = Order.builder().id(certificateId).cost(price).certificates(Collections.singleton(certificate)).build();
         User expectedUser = User.builder().id(userId).username(firstName + "-" + lastName).orders(Collections.singleton(order)).email(email).build();
@@ -148,7 +153,10 @@ class UserServiceImplTest {
             "4, Amelia, Elijah, Amelia-Elijah@gmail.com, 40, SQL, description, 40, 75",
             "5, Ava, Leo, Ava-Leo@gmail.com, 50, Programming, description, 50, 90"
     })
-    void getByIdWithOrderTest(Long userId, String firstName, String lastName, String email, long certificateId, String name, String description, BigDecimal price, int duration) {
+    void getByIdWithOrderTest(Long userId, String firstName, String lastName, String email,
+                              long certificateId, String name, String description,
+                              BigDecimal price, int duration) {
+
         Certificate certificate = Certificate.builder().id(certificateId).name(name).description(description).duration(duration).build();
         Order order = Order.builder().id(certificateId).cost(price).certificates(Collections.singleton(certificate)).build();
         User expectedUser = User.builder().id(userId).username(firstName + "-" + lastName).orders(Collections.singleton(order)).email(email).build();

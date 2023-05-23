@@ -1,6 +1,5 @@
 package com.epam.esm.service;
 
-import com.epam.esm.criteria.Criteria;
 import com.epam.esm.dao.CertificateDao;
 import com.epam.esm.dao.OrderDao;
 import com.epam.esm.dao.UserDao;
@@ -17,6 +16,9 @@ import com.epam.esm.exception.UserNotFoundException;
 import com.epam.esm.mapper.CertificateMapper;
 import com.epam.esm.mapper.OrderMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -78,19 +80,21 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<OrderDto> getUserOrders(
+    public Page<OrderDto> getUserOrders(
             final User user,
-            final Criteria criteria) {
-        return orderMapper.toDtoList(
-                orderDao.getUserOrders(user, criteria));
+            final Pageable pageable) {
+        List<OrderDto> dtos = orderMapper.toDtoList(
+                orderDao.getUserOrders(user, pageable));
+        return new PageImpl<>(dtos, pageable, dtos.size());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<OrderDto> getAll(
-            final Criteria criteria) {
-        return orderMapper.toDtoList(
-                orderDao.getAll(criteria));
+    public Page<OrderDto> getAll(
+            final Pageable pageable) {
+        List<OrderDto> dtos = orderMapper.toDtoList(
+                orderDao.getAll(pageable));
+        return new PageImpl<>(dtos, pageable, dtos.size());
     }
 
     @Override
@@ -115,18 +119,19 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CertificateDto> getCertificatesByTags(
+    public Page<CertificateDto> getCertificatesByTags(
             final List<String> tagNames) {
-        return certificateMapper.toDtoList(
+        List<CertificateDto> dtos = certificateMapper.toDtoList(
                 certificateDao.findByTagNames(tagNames));
+        return new PageImpl<>(dtos, Pageable.unpaged(), dtos.size());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<OrderDto> getAllByUserId(
-            final Long userId) {
-        return orderMapper.toDtoList(
+    public Page<OrderDto> getAllByUserId(final Long userId) {
+        List<OrderDto> dtos = orderMapper.toDtoList(
                 orderDao.findOrdersByUserId(userId));
+        return new PageImpl<>(dtos, Pageable.unpaged(), dtos.size());
     }
 
     @Override

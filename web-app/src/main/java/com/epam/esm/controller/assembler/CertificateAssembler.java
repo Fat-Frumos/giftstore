@@ -1,16 +1,17 @@
-package com.epam.esm.assembler;
+package com.epam.esm.controller.assembler;
 
 import com.epam.esm.controller.CertificateController;
 import com.epam.esm.controller.OrderController;
-import com.epam.esm.criteria.FilterParams;
 import com.epam.esm.dto.CertificateDto;
 import lombok.NonNull;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
 
-import javax.swing.SortOrder;
 import java.util.stream.StreamSupport;
 
 import static java.util.stream.Collectors.toList;
@@ -43,7 +44,7 @@ public class CertificateAssembler
                         .map(this::toModel)
                         .collect(toList()),
                 linkTo(methodOn(CertificateController.class)
-                        .getAll(SortOrder.UNSORTED, FilterParams.ID, 0, 25))
+                        .getAll(PageRequest.of(0, 25, Sort.by(Sort.Direction.ASC, "id"))))
                         .withSelfRel());
     }
 }

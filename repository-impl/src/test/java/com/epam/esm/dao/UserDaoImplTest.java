@@ -1,6 +1,5 @@
 package com.epam.esm.dao;
 
-import com.epam.esm.criteria.Criteria;
 import com.epam.esm.entity.User;
 import jakarta.persistence.EntityGraph;
 import jakarta.persistence.EntityManager;
@@ -19,6 +18,9 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,7 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
-import static com.epam.esm.criteria.CertificateQueries.SELECT_USER_BY_NAME;
+import static com.epam.esm.dao.Queries.SELECT_USER_BY_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -57,7 +59,7 @@ class UserDaoImplTest {
     private Root<User> root;
     @Mock
     private EntityGraph<User> graph;
-    private final Criteria criteria = Criteria.builder().page(0).size(25).build();
+    private final Pageable pageable = PageRequest.of(0, 25, Sort.by("name").ascending());
     private final Long id = 1L;
     private final User user = User.builder().id(id).username("Spring").email("spring@i.ua").build();
 
@@ -151,7 +153,7 @@ class UserDaoImplTest {
         when(typedQuery.setMaxResults(anyInt())).thenReturn(typedQuery);
         when(typedQuery.getResultList()).thenReturn(users);
 
-        List<User> result = userDao.getAll(criteria);
+        List<User> result = userDao.getAll(pageable);
         assertEquals(users, result);
 
         verify(entityManagerFactory).createEntityManager();

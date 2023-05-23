@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,7 +30,8 @@ import java.util.Set;
 @Table(name = "tag")
 public class Tag implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tag_sequence")
+    @SequenceGenerator(name = "tag_sequence", sequenceName = "tag_id_seq", allocationSize = 1)
     private Long id;
     @Column(name = "name", nullable = false, unique = true)
     private String name;

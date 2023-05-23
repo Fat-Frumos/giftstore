@@ -13,6 +13,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,7 +36,8 @@ import java.util.Set;
 @Table(name = "gift_certificates")
 public class Certificate implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "certificate_sequence")
+    @SequenceGenerator(name = "certificate_sequence", sequenceName = "gift_certificate_id_seq", allocationSize = 1)
     private Long id;
     @Column(nullable = false, length = 512)
     private String name;
@@ -59,6 +61,9 @@ public class Certificate implements Serializable {
     @PreUpdate
     public void preUpdate() {
         lastUpdateDate = new Timestamp(System.currentTimeMillis());
+        if (createDate == null) {
+            createDate = new Timestamp(System.currentTimeMillis());
+        }
     }
 
     @Builder.Default

@@ -1,23 +1,28 @@
 package com.epam.esm.service;
 
-import com.epam.esm.criteria.Criteria;
 import com.epam.esm.dao.CertificateDao;
 import com.epam.esm.dto.CertificateDto;
+import com.epam.esm.dto.PostCertificate;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.exception.CertificateNotFoundException;
 import com.epam.esm.mapper.CertificateMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -38,10 +43,9 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CertificateDto> getAll(
-            final Criteria criteria) {
-        return mapper.toDtoList(
-                certificateDao.getAll(criteria));
+    public Page<CertificateDto> getAll(final Pageable pageable) {
+        List<CertificateDto> dtos = mapper.toDtoList(certificateDao.getAll(pageable));
+        return new PageImpl<>(dtos, pageable, dtos.size());
     }
 
     @Override
@@ -66,25 +70,29 @@ public class CertificateServiceImpl implements CertificateService {
     @Transactional(rollbackFor = Exception.class)
     public CertificateDto update(
             final CertificateDto dto) {
+        log.info("DTO: " + dto);
         Certificate updated = certificateDao.update(
                 mapper.toEntity(dto));
+        log.info("UPDATED: " + updated);
         return mapper.toDto(updated);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<CertificateDto> getAllWithoutTags(
-            final Criteria criteria) {
-        return mapper.toDtoList(
-                certificateDao.getAll(criteria));
+    public Page<CertificateDto> getAllSlimTags(
+            final Pageable pageable) {
+        List<CertificateDto> dtos = mapper.toDtoList(
+                certificateDao.getAll(pageable));
+        return new PageImpl<>(dtos, pageable, dtos.size());
+
     }
 
     @Override
-    @Transactional(
-            rollbackFor = Exception.class,
-            isolation = Isolation.READ_COMMITTED)
-    public CertificateDto save(final CertificateDto dto) {
-        Certificate saved = certificateDao.save(mapper.toEntity(dto));
+    @Transactional(rollbackFor = Exception.class)
+    public CertificateDto save(
+            final PostCertificate postDto) {
+        Certificate saved = certificateDao.save(
+                mapper.toEntity(postDto));
         return mapper.toDto(saved);
     }
 
@@ -96,25 +104,29 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CertificateDto> findCertificatesByTags(
+    public Page<CertificateDto> findAllByTags(
             final List<String> tagNames) {
-        return tagNames != null
+        Pageable pageable = PageRequest.of(0, 25, Sort.by("name").ascending());
+        List<CertificateDto> dtos = tagNames
+                != null
                 ? mapper.toDtoList(certificateDao.findByTagNames(tagNames))
-                : mapper.toDtoList(certificateDao.getAll(
-                        Criteria.builder().page(0).size(25).build())); //TODO
+                : mapper.toDtoList(certificateDao.getAll(pageable));
+        return new PageImpl<>(dtos, pageable, dtos.size());
     }
 
     @Override
-    public List<CertificateDto> getCertificatesByUserId(
+    public Page<CertificateDto> getCertificatesByUserId(
             final Long id) {
-        return mapper.toDtoList(
+        List<CertificateDto> dtos = mapper.toDtoList(
                 certificateDao.getCertificatesByUserId(id));
+        return new PageImpl<>(dtos, Pageable.unpaged(), dtos.size());
     }
 
     @Override
-    public Set<CertificateDto> getByIds(
+    public Page<CertificateDto> getByIds(
             final Set<Long> ids) {
-        return new HashSet<>(mapper.toDtoList(
-                new ArrayList<>(certificateDao.findAllByIds(ids))));
+        List<CertificateDto> dtos = mapper.toDtoList(
+                new ArrayList<>(certificateDao.findAllByIds(ids)));
+        return new PageImpl<>(dtos, Pageable.unpaged(), dtos.size());
     }
 }

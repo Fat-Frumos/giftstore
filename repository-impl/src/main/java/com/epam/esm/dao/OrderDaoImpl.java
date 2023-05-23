@@ -1,6 +1,5 @@
 package com.epam.esm.dao;
 
-import com.epam.esm.criteria.Criteria;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.Tag;
@@ -22,6 +21,7 @@ import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashSet;
@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.epam.esm.criteria.CertificateQueries.SELECT_ORDER_BY_NAME;
+import static com.epam.esm.dao.Queries.SELECT_ORDER_BY_NAME;
 
 @Repository
 @RequiredArgsConstructor
@@ -39,7 +39,7 @@ public class OrderDaoImpl implements OrderDao {
     private final EntityManagerFactory factory;
 
     @Override
-    public List<Order> getAll(Criteria criteria) {
+    public List<Order> getAll(final Pageable pageable) {
         try (EntityManager entityManager = factory.createEntityManager()) {
             CriteriaBuilder builder = entityManager.getCriteriaBuilder();
             CriteriaQuery<Order> query = builder.createQuery(Order.class);
@@ -54,8 +54,8 @@ public class OrderDaoImpl implements OrderDao {
             query.select(root);
 
             return entityManager.createQuery(query)
-                    .setFirstResult(criteria.getPage() * criteria.getSize())
-                    .setMaxResults(criteria.getSize())
+                    .setFirstResult(pageable.getPageNumber() * pageable.getPageSize())
+                    .setMaxResults(pageable.getPageSize())
                     .getResultList();
         }
     }
@@ -107,7 +107,7 @@ public class OrderDaoImpl implements OrderDao {
                 transaction.commit();
                 return order;
             } catch (Exception e) {
-                if (transaction.isActive()){
+                if (transaction.isActive()) {
                     transaction.rollback();
                 }
                 throw new PersistenceException(e);
@@ -136,7 +136,7 @@ public class OrderDaoImpl implements OrderDao {
 
     public List<Order> getUserOrders(
             final User user,
-            final Criteria criteria) {
+            final Pageable pageable) {
         try (EntityManager entityManager =
                      factory.createEntityManager()) {
             CriteriaBuilder builder = entityManager.getCriteriaBuilder();
@@ -151,8 +151,8 @@ public class OrderDaoImpl implements OrderDao {
 
             return entityManager.createQuery(query)
                     .setHint("jakarta.persistence.fetchgraph", graph)
-                    .setMaxResults(criteria.getSize())
-                    .setFirstResult(criteria.getPage() * criteria.getSize())
+                    .setMaxResults(pageable.getPageSize())
+                    .setFirstResult(pageable.getPageNumber() * pageable.getPageSize())
                     .getResultList();
         }
     }

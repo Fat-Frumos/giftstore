@@ -1,8 +1,10 @@
 package com.epam.esm.service;
 
-import com.epam.esm.criteria.Criteria;
 import com.epam.esm.dto.CertificateDto;
+import com.epam.esm.dto.PostCertificate;
 import com.epam.esm.dto.TagDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Set;
@@ -10,7 +12,7 @@ import java.util.Set;
 public interface CertificateService {
     CertificateDto getById(Long id);
 
-    List<CertificateDto> getAll(Criteria criteria);
+    Page<CertificateDto> getAll(Pageable pageable);
 
     CertificateDto getByName(String name);
 
@@ -18,15 +20,15 @@ public interface CertificateService {
 
     CertificateDto update(CertificateDto dto);
 
-    List<CertificateDto> getAllWithoutTags(Criteria criteria);
+    Page<CertificateDto> getAllSlimTags(Pageable pageable);
 
-    CertificateDto save(CertificateDto dto);
+    CertificateDto save(PostCertificate dto);
 
     List<TagDto> findTagsByCertificateId(Long id);
 
-    List<CertificateDto> findCertificatesByTags(List<String> tagNames);
+    Page<CertificateDto> findAllByTags(List<String> tagNames);
 
-    List<CertificateDto> getCertificatesByUserId(Long userId);
+    Page<CertificateDto> getCertificatesByUserId(Long userId);
 
-    Set<CertificateDto> getByIds(Set<Long> ids);
+    Page<CertificateDto> getByIds(Set<Long> ids);
 }

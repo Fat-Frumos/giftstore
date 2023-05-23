@@ -1,15 +1,15 @@
-package com.epam.esm.assembler;
+package com.epam.esm.controller.assembler;
 
 import com.epam.esm.controller.TagController;
-import com.epam.esm.criteria.FilterParams;
 import com.epam.esm.dto.TagDto;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
-import javax.swing.SortOrder;
 import java.util.stream.StreamSupport;
 
 import static java.util.stream.Collectors.toList;
@@ -52,6 +52,6 @@ public class TagAssembler
                         .map(this::toModel)
                         .collect(toList()),
                 linkTo(methodOn(TagController.class)
-                        .getAll(SortOrder.UNSORTED, FilterParams.ID, 0, 25)).withSelfRel());
+                        .getAll(PageRequest.of(0, 25, Sort.by("id").ascending()))).withSelfRel());
     }
 }

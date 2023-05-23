@@ -1,6 +1,5 @@
 package com.epam.esm.dao;
 
-import com.epam.esm.criteria.Criteria;
 import com.epam.esm.entity.User;
 import com.epam.esm.exception.UserAlreadyExistsException;
 import jakarta.persistence.EntityGraph;
@@ -13,12 +12,13 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
-import static com.epam.esm.criteria.CertificateQueries.SELECT_USER_BY_NAME;
+import static com.epam.esm.dao.Queries.SELECT_USER_BY_NAME;
 
 @Repository
 @RequiredArgsConstructor
@@ -27,7 +27,7 @@ public class UserDaoImpl implements UserDao {
     private final EntityManagerFactory factory;
 
     @Override
-    public List<User> getAll(final Criteria criteria) {
+    public List<User> getAll(final Pageable pageable) {
         try (EntityManager entityManager = factory.createEntityManager()) {
             CriteriaBuilder builder = entityManager.getCriteriaBuilder();
             CriteriaQuery<User> query = builder.createQuery(User.class);
@@ -40,8 +40,8 @@ public class UserDaoImpl implements UserDao {
 
             return entityManager.createQuery(query)
                     .setHint("jakarta.persistence.fetchgraph", graph)
-                    .setFirstResult(criteria.getPage() * criteria.getSize())
-                    .setMaxResults(criteria.getSize())
+                    .setFirstResult(pageable.getPageNumber() * pageable.getPageSize())
+                    .setMaxResults(pageable.getPageSize())
                     .getResultList();
         }
     }

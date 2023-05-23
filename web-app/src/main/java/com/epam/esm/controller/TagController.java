@@ -1,11 +1,12 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.assembler.TagAssembler;
-import com.epam.esm.criteria.Criteria;
-import com.epam.esm.criteria.FilterParams;
+import com.epam.esm.controller.assembler.TagAssembler;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.service.TagService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
@@ -16,12 +17,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
-
-import javax.swing.SortOrder;
 
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
@@ -43,22 +40,15 @@ public class TagController {
 
     @GetMapping
     public CollectionModel<EntityModel<TagDto>> getAll(
-            @RequestParam(defaultValue = "UNSORTED") SortOrder sort,
-            @RequestParam(defaultValue = "ID") FilterParams params,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "25") int size) {
+            @PageableDefault(size = 25, sort = {"id"},
+                    direction = Sort.Direction.ASC)
+            final Pageable pageable) {
         return tagAssembler.toCollectionModel(
-                tagService.getAll(Criteria
-                        .builder()
-                        .filterParams(params)
-                        .sortOrder(sort)
-                        .page(page)
-                        .size(size)
-                        .build()));
+                tagService.getAll(pageable));
     }
 
+    @PostMapping
     @ResponseStatus(CREATED)
-    @PostMapping(consumes = APPLICATION_JSON_VALUE)
     public TagDto create(
             @RequestBody final TagDto tagDto) {
         return tagService.save(tagDto);
@@ -68,7 +58,6 @@ public class TagController {
     public ResponseEntity<HttpStatus> delete(
             @PathVariable final Long id) {
         tagService.delete(id);
-        return new ResponseEntity<>(
-                NO_CONTENT);
+        return new ResponseEntity<>(NO_CONTENT);
     }
 }

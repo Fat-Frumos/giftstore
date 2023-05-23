@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,8 +30,9 @@ import java.util.Set;
 public class User implements Serializable {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_sequence")
+    @SequenceGenerator(name = "user_sequence", sequenceName = "user_id_seq", allocationSize = 1)
     @Column(name = "user_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     @Column(name = "username", nullable = false, unique = true)
     private String username;

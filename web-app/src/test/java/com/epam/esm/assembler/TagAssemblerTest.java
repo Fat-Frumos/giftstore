@@ -1,17 +1,18 @@
 package com.epam.esm.assembler;
 
 import com.epam.esm.controller.TagController;
-import com.epam.esm.criteria.FilterParams;
+import com.epam.esm.controller.assembler.TagAssembler;
 import com.epam.esm.dto.TagDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -43,7 +44,7 @@ class TagAssemblerTest {
         List<EntityModel<TagDto>> expectedModels = tagDtos.stream()
                 .map(tagDto -> EntityModel.of(tagDto,
                         linkTo(methodOn(TagController.class).getById(tagDto.getId())).withSelfRel(),
-                        linkTo(methodOn(TagController.class).getAll(SortOrder.UNSORTED, FilterParams.ID, 0, 25)).withRel("tags"),
+                        linkTo(methodOn(TagController.class).getAll(PageRequest.of(0, 25, Sort.by("id").ascending()))).withRel("tags"),
                         linkTo(methodOn(TagController.class).delete(tagDto.getId())).withRel("delete")))
                 .collect(toList());
 

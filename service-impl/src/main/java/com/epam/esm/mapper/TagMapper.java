@@ -14,11 +14,11 @@ import static java.util.stream.Collectors.toSet;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING,
         injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface TagMapper {
-        TagDto toDto(Tag tag);
+    TagDto toDto(Tag tag);
 
-        Tag toEntity(TagDto dto);
+    Tag toEntity(TagDto dto);
 
-        @Named("toTagSet")
+    @Named("toTagSet")
     default Set<Tag> toTagSet(Set<TagDto> tagDtos) {
         return tagDtos == null ? null
                 : tagDtos.stream()
@@ -26,7 +26,7 @@ public interface TagMapper {
                 .collect(toSet());
     }
 
-        @Named("toTagDtoSet")
+    @Named("toTagDtoSet")
     default Set<TagDto> toTagDtoSet(Set<Tag> tags) {
         return tags == null ? null
                 : tags.stream()

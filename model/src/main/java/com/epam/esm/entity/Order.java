@@ -12,6 +12,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,10 +34,10 @@ import java.util.Set;
 @AllArgsConstructor
 @Table(name = "orders")
 public class Order implements Serializable {
-
     @Id
     @Column(name = "order_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "order_sequence")
+    @SequenceGenerator(name = "order_sequence", sequenceName = "order_id_seq", allocationSize = 1)
     private Long id;
     @Column(name = "order_date", nullable = false)
     private Timestamp orderDate;

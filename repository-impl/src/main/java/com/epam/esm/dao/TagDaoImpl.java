@@ -1,6 +1,5 @@
 package com.epam.esm.dao;
 
-import com.epam.esm.criteria.Criteria;
 import com.epam.esm.entity.Tag;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -11,6 +10,7 @@ import jakarta.persistence.PersistenceUnit;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -52,15 +52,15 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public List<Tag> getAll(Criteria criteria) {
+    public List<Tag> getAll(final Pageable pageable) {
         try (EntityManager entityManager
                      = factory.createEntityManager()) {
             CriteriaQuery<Tag> query = entityManager
                     .getCriteriaBuilder()
                     .createQuery(Tag.class);
             query.select(query.from(Tag.class));
-            return entityManager.createQuery(query).setMaxResults(criteria.getSize())
-                    .setFirstResult(criteria.getPage() * criteria.getSize()).getResultList();
+            return entityManager.createQuery(query).setMaxResults(pageable.getPageSize())
+                    .setFirstResult(pageable.getPageNumber() * pageable.getPageSize()).getResultList();
         }
     }
 

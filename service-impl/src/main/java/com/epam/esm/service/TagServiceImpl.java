@@ -1,12 +1,12 @@
 package com.epam.esm.service;
 
-import com.epam.esm.criteria.Criteria;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.TagNotFoundException;
 import com.epam.esm.mapper.TagMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,8 +45,8 @@ public class TagServiceImpl implements TagService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<TagDto> getAll(Criteria criteria) {
-        return tagDao.getAll(criteria)
+    public List<TagDto> getAll(Pageable pageable) {
+        return tagDao.getAll(pageable)
                 .stream()
                 .map(tagMapper::toDto)
                 .collect(toList());  //TODO

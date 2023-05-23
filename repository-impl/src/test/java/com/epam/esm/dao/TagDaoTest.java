@@ -1,8 +1,6 @@
 package com.epam.esm.dao;
 
-import com.epam.esm.criteria.Criteria;
 import com.epam.esm.entity.Tag;
-import jakarta.persistence.Entity;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -22,6 +20,9 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.Arrays;
 import java.util.List;
@@ -58,7 +59,7 @@ class TagDaoTest {
     @Mock
     CriteriaBuilder builder;
     private TagDaoImpl tagDao;
-    private final Criteria criteria = Criteria.builder().page(0).size(25).build();
+    private final Pageable pageable = PageRequest.of(0, 25, Sort.by("name").ascending());
     private final Long id = 1L;
     private final String tagName = "Spring";
     private final Tag tag = Tag.builder().id(id).name(tagName).build();
@@ -211,10 +212,10 @@ class TagDaoTest {
         when(entityManager.createQuery(query)).thenReturn(typedQuery);
         when(typedQuery.getResultList()).thenReturn(tags);
         when(entityManagerFactory.createEntityManager()).thenReturn(entityManager);
-        when(typedQuery.setFirstResult(criteria.getPage() * criteria.getSize())).thenReturn(typedQuery);
-        when(typedQuery.setMaxResults(criteria.getSize())).thenReturn(typedQuery);
+        when(typedQuery.setFirstResult(pageable.getPageNumber() * pageable.getPageSize())).thenReturn(typedQuery);
+        when(typedQuery.setMaxResults(pageable.getPageSize())).thenReturn(typedQuery);
 
-        List<Tag> result = tagDao.getAll(criteria);
+        List<Tag> result = tagDao.getAll(pageable);
 
         assertEquals(tags, result);
 

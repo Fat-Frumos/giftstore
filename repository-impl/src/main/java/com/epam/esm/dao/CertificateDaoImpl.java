@@ -1,6 +1,5 @@
 package com.epam.esm.dao;
 
-import com.epam.esm.criteria.Criteria;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
@@ -17,6 +16,8 @@ import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
@@ -26,13 +27,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.epam.esm.criteria.CertificateQueries.SELECT_ALL_BY_IDS;
-import static com.epam.esm.criteria.CertificateQueries.SELECT_BY_NAME;
-import static com.epam.esm.criteria.CertificateQueries.SELECT_CERTIFICATES_BY_USER_ID;
-import static com.epam.esm.criteria.CertificateQueries.SELECT_TAGS_BY_ID;
-import static com.epam.esm.criteria.CertificateQueries.SELECT_TAGS_BY_NAME;
+import static com.epam.esm.dao.Queries.SELECT_ALL_BY_IDS;
+import static com.epam.esm.dao.Queries.SELECT_BY_NAME;
+import static com.epam.esm.dao.Queries.SELECT_CERTIFICATES_BY_USER_ID;
+import static com.epam.esm.dao.Queries.SELECT_TAGS_BY_ID;
+import static com.epam.esm.dao.Queries.SELECT_TAGS_BY_NAME;
 import static java.util.stream.Collectors.toSet;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class CertificateDaoImpl implements CertificateDao {
@@ -61,7 +63,7 @@ public class CertificateDaoImpl implements CertificateDao {
     }
 
     @Override
-    public List<Certificate> getAll(Criteria criteria) {
+    public List<Certificate> getAll(Pageable pageable) {
         try (EntityManager entityManager = factory.createEntityManager()) {
             CriteriaBuilder builder = entityManager.getCriteriaBuilder();
             CriteriaQuery<Certificate> query = builder.createQuery(Certificate.class);
@@ -72,8 +74,8 @@ public class CertificateDaoImpl implements CertificateDao {
             query.select(root);
 
             return entityManager.createQuery(query)
-                    .setFirstResult(criteria.getPage() * criteria.getSize())
-                    .setMaxResults(criteria.getSize())
+                    .setFirstResult(pageable.getPageNumber() * pageable.getPageSize())
+                    .setMaxResults(pageable.getPageSize())
                     .getResultList();
         }
     }
@@ -87,7 +89,7 @@ public class CertificateDaoImpl implements CertificateDao {
     }
 
     @Override
-    public Certificate save(final Certificate certificate) {
+    public Certificate save(Certificate certificate) {
         try (EntityManager entityManager = factory.createEntityManager()) {
             EntityTransaction transaction = entityManager.getTransaction();
             try {
@@ -102,9 +104,9 @@ public class CertificateDaoImpl implements CertificateDao {
                                 .orElse(tag))
                         .collect(toSet());
                 certificate.setTags(tagSet);
-                Certificate saved = entityManager.merge(certificate);
+                entityManager.persist(certificate);
                 transaction.commit();
-                return saved;
+                return certificate;
             } catch (Exception e) {
                 if (transaction.isActive()) {
                     transaction.rollback();
@@ -138,7 +140,7 @@ public class CertificateDaoImpl implements CertificateDao {
             EntityTransaction transaction = entityManager.getTransaction();
             try {
                 transaction.begin();
-                Certificate existed = entityManager.getReference(Certificate.class, certificate.getId());
+                Certificate existed = entityManager.find(Certificate.class, certificate.getId());
 
                 if (existed == null) {
                     throw new CertificateNotFoundException("Certificate not found with id " + certificate.getId());
