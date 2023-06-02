@@ -1,10 +1,11 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.controller.assembler.CertificateAssembler;
-import com.epam.esm.controller.assembler.TagAssembler;
+import com.epam.esm.assembler.CertificateAssembler;
+import com.epam.esm.assembler.TagAssembler;
 import com.epam.esm.dto.CertificateDto;
-import com.epam.esm.dto.PostCertificate;
+import com.epam.esm.dto.PatchCertificateDto;
 import com.epam.esm.dto.TagDto;
+import com.epam.esm.entity.Criteria;
 import com.epam.esm.service.CertificateService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,61 +30,121 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Set;
 
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
+/**
+ * Controller class for handling certificate-related operations.
+ * {@link RestController} to indicate that it is a Spring MVC controller,
+ * {@link RequestMapping} with a value of "/certificates" to map requests,
+ * and {@link CrossOrigin} with origins set to "*"
+ * and allowed headers set to "GET", "POST", "PUT", and "DELETE"
+ * to enable Cross-Origin Resource Sharing (CORS).
+ */
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/certificates")
 @CrossOrigin(origins = "*", allowedHeaders = {"GET", "POST", "PUT", "DELETE"})
 public class CertificateController {
-
+    /**
+     * The Certificate assembler for converting Certificate entities to DTOs.
+     */
     private final CertificateAssembler assembler;
+    /**
+     * The tag assembler for converting tag entities to DTOs.
+     */
     private final TagAssembler tagAssembler;
+    /**
+     * The Certificate service for performing tag-related operations.
+     */
     private final CertificateService certificateService;
 
-    @GetMapping(value = "/{id}")
+    /**
+     * Retrieves a certificate by its ID.
+     *
+     * @param id the ID of the certificate
+     * @return the EntityModel representation of the certificate
+     */
+    @GetMapping("/{id}")
     public EntityModel<CertificateDto> getCertificateById(
             @Valid @PathVariable final Long id) {
         return assembler.toModel(
                 certificateService.getById(id));
     }
 
+    /**
+     * Retrieves all certificates.
+     *
+     * @param pageable the pageable information for pagination and sorting
+     * @return the CollectionModel representation of all slim certificates
+     */
     @GetMapping
     public CollectionModel<EntityModel<CertificateDto>> getAll(
             @PageableDefault(size = 25, sort = {"id"},
-                    direction = Sort.Direction.ASC)
-            @Valid final Pageable pageable) {
+                    direction = Sort.Direction.ASC) final Pageable pageable) {
         return assembler.toCollectionModel(
-                certificateService.getAllSlimTags(pageable));
+                certificateService.getCertificates(pageable));
     }
 
-    @GetMapping(value = "/")
+    /**
+     * Searches for certificates by tag names.
+     *
+     * @param pageable the list of tag names to search for
+     * @return the CollectionModel representation of the search results
+     */
+    @GetMapping(value = "/search")
     public CollectionModel<EntityModel<CertificateDto>> search(
-            @RequestParam(required = false) List<String> tagNames) {
+            @RequestParam(required = false) final String name,
+            @RequestParam(required = false) final String description,
+            @RequestParam(required = false) final List<String> tagNames,
+            @PageableDefault(size = 25, sort = {"id"},
+                    direction = Sort.Direction.ASC) final Pageable pageable) {
         return assembler.toCollectionModel(
-                certificateService.findAllByTags(tagNames));
+                certificateService.findAllBy(
+                        Criteria.builder()
+                                .name(name)
+                                .description(description)
+                                .tagNames(tagNames).build(),
+                        pageable));
     }
 
+    /**
+     * Updates a certificate.
+     *
+     * @param id  the ID of the certificate to update
+     * @param dto the updated certificate data
+     * @return the EntityModel representation of the updated certificate
+     */
     @PatchMapping(value = "/{id}")
     public EntityModel<CertificateDto> update(
-            @Valid @PathVariable final Long id,
-            @Valid @RequestBody final CertificateDto dto) {
+            @PathVariable final Long id,
+            @RequestBody final PatchCertificateDto dto) {
         dto.setId(id);
-        return assembler.toModel(
-                certificateService.update(dto));
+        log.debug(dto.toString());
+        return assembler.toModel(certificateService.update(dto));
     }
 
+    /**
+     * Creates a new certificate.
+     *
+     * @param dto the data of the certificate to create
+     * @return the created certificate
+     */
     @PostMapping
     @ResponseStatus(CREATED)
     public CertificateDto create(
-            @Valid @RequestBody final PostCertificate dto) {
+            @Valid @RequestBody final CertificateDto dto) {
         return certificateService.save(dto);
     }
 
+    /**
+     * Deletes a certificate by its ID.
+     *
+     * @param id the ID of the certificate to delete
+     * @return the HTTP status response
+     */
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<HttpStatus> delete(
             @PathVariable final Long id) {
@@ -91,6 +152,12 @@ public class CertificateController {
         return new ResponseEntity<>(NO_CONTENT);
     }
 
+    /**
+     * Retrieves the tags associated with a certificate.
+     *
+     * @param id the ID of the certificate
+     * @return the CollectionModel representation of the tags
+     */
     @GetMapping(value = "/{id}/tags")
     public CollectionModel<EntityModel<TagDto>> getTagsByCertificateId(
             @PathVariable final Long id) {
@@ -98,18 +165,29 @@ public class CertificateController {
                 certificateService.findTagsByCertificateId(id));
     }
 
-    @GetMapping(value = "/orders/{ids}")
-    public CollectionModel<EntityModel<CertificateDto>>
-    getCertificatesByIds(
-            @PathVariable final Set<Long> ids) {
-        return assembler.toCollectionModel(
-                certificateService.getByIds(ids));
-    }
-
+    /**
+     * Retrieves the certificates associated with a user.
+     *
+     * @param id the ID of the user
+     * @return the CollectionModel representation of the certificates
+     */
     @GetMapping(value = "/users/{id}")
     public CollectionModel<EntityModel<CertificateDto>> getUserCertificates(
             @PathVariable final Long id) {
         return assembler.toCollectionModel(
                 certificateService.getCertificatesByUserId(id));
+    }
+
+    /**
+     * Retrieves all certificates associated with an order.
+     *
+     * @param id the ID of the order
+     * @return the CollectionModel representation of the certificates
+     */
+    @GetMapping(value = "/orders/{id}")
+    public CollectionModel<EntityModel<CertificateDto>> getAllByOrderId(
+            @PathVariable final Long id) {
+        return assembler.toCollectionModel(
+                certificateService.getByOrderId(id));
     }
 }

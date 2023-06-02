@@ -1,8 +1,7 @@
-DELETE
-FROM gift_certificates;
+DELETE FROM gift_certificates;
 
 INSERT INTO gift_certificates (id, create_date, description, duration,  last_update_date, name, price )
-VALUES (1, NOW(), 'May the joy of this festive season light your life with love, peace and hope. Selamat Hari Raya! Kiehl''s', 26, NOW(), 'New hears for your ears! New Year''s Day', 49.00),
+VALUES (1, NOW(), 'May the joy of this festive season light your life with love, peace and hope', 26, NOW(), 'New hears for your ears! New Year''s Day', 49.00),
 (2, NOW(), 'Mazel tov on your Bar Mitzvah! [Send to a 13 year old Jewish boy] Jeopardy!', 19, NOW(), 'This is a day to remember. May Day Revolution (bridge day)', 21.00),
 (3, NOW(), 'Get yourself a double whatever with an extra shot of something. Canadian Natural Resources', 22, NOW(), 'With heartfelt condolences Janmashtami', 18.00),
 (4, NOW(), 'Congratulations on your new little someone to love. Ace Radio', 28, NOW(), 'Get whatever you want! Ullortuneq', 85.00),
@@ -10,7 +9,7 @@ VALUES (1, NOW(), 'May the joy of this festive season light your life with love,
 (6, NOW(), 'They''ve always wanted a vintage Herms Kelly bag or Cartier tank watch. This gift card will get them a little closer. Levi\2019s', 14, NOW(), 'Friends make life more beautiful. Birth Anniversary Of His Majesty the King Holiday', 92.00),
 (7, NOW(), 'Gift cards: Almost as magical as flying reindeer. Glad', 25, NOW(), 'Min 3 Days Booking Abolition Day', 17.00),
 (8, NOW(), 'Sending loads of love your way for a speedy recovery! Tencent', 28, NOW(), 'Wishing you a blessed Easter! Official holiday announced on Christmas, New Year', 68.00),
-(9, NOW(), 'Thanks for thinking of me. Your referral is very much appreciated. H&M', 14, NOW(), 'Candles to enjoy life; Decorations to light life; Presents to share success; Fire Crackers to burn evils; Sweets to sweeten success, And worship to thank god! Wish you a joyous and prosperous Diwali! Navami of Durga Puja', 15.00),
+(9, NOW(), 'Thanks for thinking of me. Your referral is very much appreciated. H&M', 14, NOW(), 'Candles to enjoy life; Decorations to light life; Presents to share success; Fire Crackers to burn evils; Sweets to sweeten success', 15.00),
 (10, NOW(), 'Welcome aboard! Its good to have you with us. American Airlines', 26, NOW(), 'Uber Gift Certificate St. Stephen''s Day', 39.00),
 (11, NOW(), 'Thank you for making me feel so comfortable Cooper', 30, NOW(), 'May all the dreams youre dreaming soon turn into dreams come true. Constitution Day', 44.00),
 (12, NOW(), 'Trust methis is better than me shopping for you! Beanie Babies', 15, NOW(), 'Yummy for you! Krishna Jayanthi', 90.00),

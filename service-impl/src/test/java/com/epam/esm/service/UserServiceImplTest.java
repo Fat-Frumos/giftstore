@@ -7,7 +7,6 @@ import com.epam.esm.entity.Order;
 import com.epam.esm.entity.User;
 import com.epam.esm.exception.UserNotFoundException;
 import com.epam.esm.mapper.UserMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,22 +34,13 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
-
     @Mock
     private UserDao userDao;
-
     @Mock
     private UserMapper mapper;
-
     @InjectMocks
     private UserServiceImpl userService;
-
-    private Pageable pageable;
-
-    @BeforeEach
-    public void setUp() {
-        pageable = PageRequest.of(0, 25, Sort.by("name").ascending());
-    }
+    private final Pageable pageable = PageRequest.of(0, 25, Sort.by("name").ascending());
 
     @ParameterizedTest
     @DisplayName("Get all users")
@@ -72,12 +62,12 @@ class UserServiceImplTest {
                 UserDto.builder().id(id1 + 1).username(username2).email(email2).build()
         );
 
-        when(userDao.getAll(pageable)).thenReturn(users);
+        when(userDao.getAllBy(pageable)).thenReturn(users);
         when(mapper.toDtoList(users)).thenReturn(expectedDtos);
 
         assertEquals(expectedDtos, userService.getAll(pageable).getContent());
 
-        verify(userDao).getAll(pageable);
+        verify(userDao).getAllBy(pageable);
         verify(mapper).toDtoList(users);
         verifyNoMoreInteractions(userDao, mapper);
     }

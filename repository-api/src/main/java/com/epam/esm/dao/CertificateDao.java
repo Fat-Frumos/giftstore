@@ -1,25 +1,71 @@
 package com.epam.esm.dao;
 
-import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.Certificate;
+import com.epam.esm.entity.Criteria;
+import com.epam.esm.entity.Tag;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Set;
 
+/**
+ * This interface provides methods for accessing
+ * and manipulating Certificates in the data source.
+ */
 public interface CertificateDao extends Dao<Certificate> {
-
-    List<Certificate> getAll(Pageable pageable);
-
+    /**
+     * Finds a certificate by its ID.
+     *
+     * @param id the ID of the certificate to find
+     * @return the found certificate, or null if not found
+     */
     Certificate findById(Long id);
 
+    /**
+     * Updates the specified certificate.
+     *
+     * @param certificate the certificate to update
+     * @return the updated certificate
+     */
     Certificate update(Certificate certificate);
 
-    List<TagDto> findTagsByCertificateId(Long id);
+    /**
+     * Finds the tags associated with a certificate specified by ID.
+     *
+     * @param id the ID of the certificate
+     * @return the list of tags associated with the certificate
+     */
+    List<Tag> findTagsByCertificateId(Long id);
 
-    List<Certificate> findByTagNames(List<String> tagNames);
+    /**
+     * Finds certificates that have any of the specified tag names.
+     *
+     * @param criteria the list of tag names to search for
+     * @return the list of certificates matching the tag names
+     */
+    List<Certificate> findByCriteria(Criteria criteria, Pageable pageable);
 
+    /**
+     * Retrieves all certificates associated with a specific user ID.
+     *
+     * @param userId the ID of the user
+     * @return the list of certificates associated with the user
+     */
     List<Certificate> getCertificatesByUserId(Long userId);
 
-    Set<Certificate> findAllByIds(Set<Long> certificateIds);
+    /**
+     * Retrieves a set of certificates by their IDs.
+     *
+     * @param certificateIds the set of certificate IDs
+     * @return the set of certificates matching the IDs
+     */
+    List<Certificate> findAllByIds(Set<Long> certificateIds);
+
+    /**
+     * Retrieves all certificates associated with a specific order ID.
+     *
+     * @param id the ID of the order
+     * @return the set of certificates associated with the order
+     */
+    Set<Certificate> findAllByOrderId(Long id);
 }
