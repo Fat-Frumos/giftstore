@@ -1,5 +1,6 @@
 package com.epam.esm.config;
 
+import com.epam.esm.repository.UserRepository;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -7,8 +8,17 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.CacheControl;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.BeanIds;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -30,6 +40,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 @EnableWebMvc
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
+
     /**
      * The context path of the server servlet.
      */
@@ -41,20 +52,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
     private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {
             "classpath:/META-INF/resources/", "classpath:/resources/",
             "classpath:/static/", "classpath:/public/", "/favicon.ico"};
-
-    /**
-     * Configures cross-origin resource sharing (CORS) mappings.
-     *
-     * @param registry the CORS registry
-     */
-    @Override
-    public void addCorsMappings(
-            final CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedMethods("GET", "POST", "PUT", "DELETE")
-                .allowedHeaders("*")
-                .allowedOrigins("*");
-    }
 
     /**
      * Adds view controllers for specific paths.
@@ -140,5 +137,75 @@ public class WebMvcConfig implements WebMvcConfigurer {
         requestHandler.setLocations(Collections.singletonList(new ClassPathResource("/")));
         requestHandler.setCacheControl(CacheControl.maxAge(30, TimeUnit.DAYS));
         return requestHandler;
+    }
+
+    /**
+     * Creates an instance of the authentication provider used for user authentication.
+     *
+     * @param userDetailsService The UserDetailsService implementation.
+     * @param passwordEncoder    The PasswordEncoder implementation.
+     * @return An AuthenticationProvider instance.
+     */
+    @Bean
+    public AuthenticationProvider authenticationProvider(
+            final UserDetailsService userDetailsService,
+            final PasswordEncoder passwordEncoder) {
+        DaoAuthenticationProvider authProvider =
+                new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder);
+        return authProvider;
+    }
+
+    /**
+     * Creates an instance of the UserDetailsService.
+     *
+     * @param userRepository The UserRepository implementation.
+     * @return A UserDetailsService instance.
+     */
+    @Bean
+    public UserDetailsService userDetailsService(
+            final UserRepository userRepository) {
+        return username -> userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException(
+                        String.format("User not found with name %s", username)));
+    }
+
+    /**
+     * Creates an instance of the PasswordEncoder.
+     *
+     * @return A PasswordEncoder instance.
+     */
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    /**
+     * Creates an instance of the AuthenticationManager.
+     *
+     * @param config The AuthenticationConfiguration.
+     * @return An AuthenticationManager instance.
+     * @throws Exception If an error occurs during the creation of the AuthenticationManager.
+     */
+    @Bean(BeanIds.AUTHENTICATION_MANAGER)
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration config)
+            throws Exception {
+        return config.getAuthenticationManager();
+    }
+
+    /**
+     * Creates a SecurityContextLogoutHandler bean.
+     *
+     * @return The configured SecurityContextLogoutHandler bean.
+     */
+    @Bean
+    public SecurityContextLogoutHandler logoutHandler() {
+        SecurityContextLogoutHandler logoutHandler =
+                new SecurityContextLogoutHandler();
+        logoutHandler.setInvalidateHttpSession(true);
+        logoutHandler.setClearAuthentication(true);
+        return logoutHandler;
     }
 }

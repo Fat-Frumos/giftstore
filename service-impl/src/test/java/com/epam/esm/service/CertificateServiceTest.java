@@ -43,7 +43,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
 class CertificateServiceTest {
     @Mock
     private CertificateDao certificateDao = mock(CertificateDaoImpl.class);
@@ -268,11 +267,11 @@ class CertificateServiceTest {
     void getByName(Long id, String name) {
         CertificateDto certificateDto = CertificateDto.builder().id(id).name(name).build();
         Optional<Certificate> certificate = Optional.of(Certificate.builder().id(id).name(name).build());
-        when(certificateDao.getByName(name)).thenReturn(certificate);
+        when(certificateDao.findByUsername(name)).thenReturn(certificate);
         when(certificateMapper.toDto(certificate.get())).thenReturn(certificateDto);
         CertificateDto result = service.getByName(name);
         assertEquals(certificateDto, result);
-        verify(certificateDao).getByName(name);
+        verify(certificateDao).findByUsername(name);
         verify(certificateMapper).toDto(certificate.get());
     }
 
@@ -330,11 +329,11 @@ class CertificateServiceTest {
 
         Certificate certificate = Certificate.builder().id(id).name(name).build();
         CertificateDto certificateDto = CertificateDto.builder().id(id).name(name).build();
-        when(certificateDao.getByName(name)).thenReturn(Optional.of(certificate));
+        when(certificateDao.findByUsername(name)).thenReturn(Optional.of(certificate));
         when(certificateMapper.toDto(certificate)).thenReturn(certificateDto);
         CertificateDto result = service.getByName(name);
 
-        verify(certificateDao, times(1)).getByName(name);
+        verify(certificateDao, times(1)).findByUsername(name);
         verify(certificateMapper, times(1)).toDto(certificate);
         assertEquals(certificateDto, result);
     }
@@ -342,12 +341,12 @@ class CertificateServiceTest {
     @Test
     @DisplayName("Get certificate by non-existent name")
     void getCertificateByNonExistentName() {
-        when(certificateDao.getByName("NonExistentCertificate"))
+        when(certificateDao.findByUsername("NonExistentCertificate"))
                 .thenReturn(Optional.empty());
         assertThrows(CertificateNotFoundException.class, () ->
                 service.getByName("NonExistentCertificate"));
         verify(certificateDao, times(1))
-                .getByName("NonExistentCertificate");
+                .findByUsername("NonExistentCertificate");
     }
 
     @DisplayName("Test Get Certificate By Name")
@@ -366,7 +365,7 @@ class CertificateServiceTest {
         CertificateDto certificateDto = CertificateDto.builder()
                 .id(id).name(name).description(description)
                 .duration(duration).price(price).build();
-        when(certificateDao.getByName(name)).thenReturn(Optional.of(certificate));
+        when(certificateDao.findByUsername(name)).thenReturn(Optional.of(certificate));
         when(certificateMapper.toDto(certificate)).thenReturn(certificateDto);
         CertificateDto dto = service.getByName(name);
 
@@ -376,7 +375,7 @@ class CertificateServiceTest {
         assertEquals(new BigDecimal("10"), certificateDto.getPrice());
         assertEquals(30, certificateDto.getDuration());
         assertEquals(certificateDto, dto);
-        verify(certificateDao, times(1)).getByName(name);
+        verify(certificateDao, times(1)).findByUsername(name);
         verify(certificateMapper, times(1)).toDto(certificate);
     }
 

@@ -22,6 +22,9 @@ import java.util.Set;
 public class PatchCertificateDto
         extends RepresentationModel<CertificateDto> {
 
+    /**
+     * The ID of the certificate.
+     */
     private Long id;
     /**
      * The price of the certificate.
@@ -35,14 +38,26 @@ public class PatchCertificateDto
      */
     @Min(value = 0, message = "Duration must be a positive number or zero.")
     @Max(value = 365, message = "Duration must be less than or equal to 365.")
-    private Integer duration;
+    private int duration;
 
+    /**
+     * Set of TagDto objects associated with this entity.
+     * This field is excluded from the generated toString() and equals() / hashCode() methods.
+     */
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<TagDto> tags;
 
+    /**
+     * Handles unknown properties during deserialization.
+     * Throws an exception indicating that the field is not allowed for update.
+     *
+     * @param key   the name of the unknown property
+     * @param value the value of the unknown property
+     * @throws IllegalArgumentException if an unknown property is encountered
+     */
     @JsonAnySetter
-    public void handleUnknown(String key, Object value) {
+    public void handleUnknown(final String key, final Object value) {
         throw new IllegalArgumentException(
                 String.format("Field %s is not allowed for update: %s", key, value));
     }
@@ -51,7 +66,7 @@ public class PatchCertificateDto
     public PatchCertificateDto(
             @JsonProperty("id") Long id,
             @JsonProperty("price") BigDecimal price,
-            @JsonProperty("duration") Integer duration,
+            @JsonProperty("duration") int duration,
             @JsonProperty("tags") Set<TagDto> tags) {
         this.id = id;
         this.price = price;

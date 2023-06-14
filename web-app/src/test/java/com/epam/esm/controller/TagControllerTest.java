@@ -1,116 +1,109 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.dao.TagDao;
 import com.epam.esm.dto.TagDto;
-import com.epam.esm.handler.ErrorHandlerController;
 import com.epam.esm.service.TagService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.hateoas.EntityModel;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 
-import static org.mockito.Mockito.when;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.http.RequestEntity.post;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-//@SpringBootTest(webEnvironment = RANDOM_PORT, classes = {TagDaoImpl.class})
-@ExtendWith(MockitoExtension.class)
+@Transactional
+@DirtiesContext
+@SpringBootTest
+@AutoConfigureMockMvc
 class TagControllerTest {
-
-    @InjectMocks
-    public TagController controller;
-    @Mock
-    private TagService service;
-    @Mock
-    private TagDao dao;
-
-    private ObjectMapper objectMapper;
+    String admin = "ROLE_ADMIN";
+    @Autowired
     private MockMvc mockMvc;
-    private TagDto dto;
-    final long id = 1;
-    final String name = "Mazda";
 
-    @BeforeEach
-    public void init() {
-        dto = TagDto.builder().id(id).name(name).build();
-        mockMvc = MockMvcBuilders.standaloneSetup(controller)
-                .setControllerAdvice(new ErrorHandlerController())
-                .build();
-    }
+    @MockBean
+    private TagService tagService;
 
-//    @Test
-//    void readTests() throws Exception {
-//        mockMvc.perform(get("/tags/" + id))
-//                .andExpect(status().is2xxSuccessful())
-//                .andExpect(jsonPath("$.id").value(id))
-//                .andExpect(jsonPath("$.name").value(name));
-//    }
-//
-//    @Test
-//    void getByIdTest() throws Exception {
-//        mockMvc.perform(get("/tags/{id}", id))
-//                .andExpect(status().is2xxSuccessful())
-//                .andExpect(jsonPath("$.id").value(id))
-//                .andExpect(jsonPath("$.name").value(name));
-//    }
-
-
-//    @Test
-//    void createTest() throws Exception {
-//        when(service.save(dto)).thenReturn(dto);
-//
-//        mockMvc.perform(post("/certificates")
-//                        .contentType(APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(dto)))
-//                .andExpect(status().is2xxSuccessful())
-//                .andExpect(jsonPath("$.id").value(id))
-//                .andExpect(jsonPath("$.name").value(name));
-//    }
-
-
-//    @Test
-//    void readTest() throws Exception {
-//
-//        when(service.getById(id)).thenReturn(dto);
-//
-//        mockMvc.perform(get("/tags/" + id))
-//                .andExpect(status().is2xxSuccessful())
-//                .andExpect(jsonPath("$.id").value(id))
-//                .andExpect(jsonPath("$.name").value(name));
-//    }
+    long id = 1L;
+    String tagName = "Summer";
+    long id2 = 2L;
+    String tagName2 = "Winter";
+    TagDto tagDto = TagDto.builder().id(id).name(tagName).build();
 
     @Test
-    void deleteTest() throws Exception {
-        final long id = 1;
-        mockMvc.perform(delete("/tags/" + id))
-                .andExpect(status().isNoContent());
+    @DisplayName("Test getById - Retrieves a tag by ID")
+    void getByIdTest() throws Exception {
+
+        given(tagService.getById(id)).willReturn(tagDto);
+
+        mockMvc.perform(get("/tags/{id}", id)
+                        .with(jwt().authorities(new SimpleGrantedAuthority(admin))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(id))
+                .andExpect(jsonPath("$.name").value(tagName));
     }
 
-    //
-//    @Test
-//    void testCreateTag() {
-//        Tag tag = Tag.builder().build();
-//        Tag savedTag = dao.save(tag);
-//        assertNotNull(savedTag.getId());
-//    }
+    @Test
+    @DisplayName("Test getAll - Retrieves all tags with pagination")
+    void getAllTest() throws Exception {
 
-//    @Test
-//    void createTagTest() throws Exception {
-//        String filename = "certificate.json";
-//        String json = FileReader.read(filename);
-//        mockMvc.perform(post("/tags")
-//                        .content(json)
-//                        .contentType(APPLICATION_JSON))
-//                .andExpect(status().is2xxSuccessful());
-//    }
+        TagDto tagDto1 = TagDto.builder()
+                .id(id)
+                .name(tagName)
+                .build();
+        TagDto tagDto2 = TagDto.builder()
+                .id(id2)
+                .name(tagName2)
+                .build();
+        List<TagDto> tagDtoList = Arrays.asList(tagDto, tagDto1, tagDto2);
+        given(tagService.getAll(any())).willReturn(tagDtoList);
+
+        mockMvc.perform(get("/tags")
+                        .with(jwt().authorities(new SimpleGrantedAuthority(admin))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$._embedded.tagDtoList[0].id").value(id))
+                .andExpect(jsonPath("$._embedded.tagDtoList[0].name").value(tagName));
+    }
+
+    @Test
+    @DisplayName("Create Test - Verify successful creation of a tag")
+    void createTest() throws Exception {
+
+        given(tagService.save(tagDto)).willReturn(tagDto);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        mockMvc.perform(post("/tags")
+                        .with(jwt().authorities(new SimpleGrantedAuthority(admin)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(tagDto)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.name").value(tagName));
+    }
+
+    @Test
+    @DisplayName("Test delete - Deletes a tag by ID")
+    void deleteTest() throws Exception {
+        mockMvc.perform(delete("/tags/{id}", id)
+                        .with(jwt().authorities(new SimpleGrantedAuthority(admin))))
+                .andExpect(status().isNoContent());
+        verify(tagService, times(1)).delete(id);
+    }
 }

@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequiredArgsConstructor
+//@PreAuthorize("hasRole('ADMIN')")
 @RequestMapping(path = "/users")
 public class UserController {
     /**

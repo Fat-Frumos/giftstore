@@ -1,0 +1,52 @@
+When do you want to use @SpringBootTest annotation?	For Spring Boot JUnit integration tests
+What is required to use @SpringBootTest with JUnit 4?	@RunWith(SpringRunner.class)
+How are mocked bean injected with @SpringBootTest?	@MockBean
+How are spies injected with @SpringBootTest?	@SpyBean
+In what two formats is the Web environment supplied to @SpringBootTest?	Mocked, embedded
+How can the context be customized with @SpringBootTest?	@TestConfiguration annotated classes
+What are five test auto configurations supported by @SpringBootTest?	MVC, JSON, JPA, JDBC, MongoDB
+What does @SpringBootTest auto-configure?	ApplicationContext, test itself
+What nine useful test modules does spring-boot-starter-test bring to the classpath?	JUnit, Spring Test, Spring Boot Test, AssertJ, Hamcrest, Mockito, JSONassert, JsonPath, XMLUnit
+What is the minimum requirement for any integration test?	It should test at least two non-mocked components
+What are two ways to write integration tests for a Spring Boot web application?	@AutoConfigureMockMvc, @SpringBootTest(webEnvironment)
+When do you want to use @WebMvcTest?	When you want a web-layer integration test
+What two cases does @WebMvcTest support?	@WebMvcTest(SomeController.class), @WebMvcTest
+What nine resource types does @WebMvcTest auto-configure?	Mock Mvc, @Controller, @ControllerAdvice, @JsonComponent, @Converter, @GenericConverter, @Filter, @WebMvcConfigurer, @HandlerMethodArgumentResolver annotated classes
+What is the main difference between @MockBean and @Mock?	@MockBean creates and injects into Application Context, while @Mock only creates the mocked bean, which is injected into the target class with @InjectMocks
+When do you use @DataJpaTest?	For integration tests of JPA components Entities and Repositories
+What four things does @DataJpaTest auto-configure?	In-memory embedded database, @Entity beans, Spring Data Repositories, TestEntityManager
+How do you disable the auto-configuration of the in-memory embedded database in @DataJpaTest?	@AutoConfigureTestDatabase(replace = Replace.NONE)
+True or false: Every @DataJpaTest is transactional by default	True
+What four things are ReflectionTestUtils methods useful for?	Changing the value of a constant, changing the value of a non-public field, invoking a non-public setter method, invoking a non-public configuration or lifecycle callback method
+What are the five packages provided by Spring that are useful for unit tests?	org.springframework.{ test.util, test.web, mock.env, mock.jndi, mock.web }
+What type of tests typically use Spring?	Integration tests
+What are the four goals of Spring's integration testing support?	Spring container caching between tests, dependency injection of test fixture instances, transaction management, Spring-specific base classes to assist writing tests
+What Spring test annotation is used to determine how to load and configure an ApplicationContext for integration tests?	@ContextConfiguration
+What is Spring test annotation @BootstrapWith for?	For low-level control of how the Spring TestContext Framework is created
+What are the four modes of @DirtiesContext at the class level?	BEFORE_CLASS, BEFORE_EACH_TEST_METHOD, AFTER_EACH_TEST_METHOD, AFTER_CLASS
+What is the default mode of @DirtiesContext at the class level?	AFTER_CLASS
+What are the two modes of @DirtiesContext at the method level?	BEFORE_METHOD, AFTER_METHOD
+What is the default mode of @DirtiesContext at the method level?	AFTER_METHOD
+Which Spring test class-level annotation is used to declare which bean definition profiles should be active when loading an ApplicationContext for an integration test?	@ActiveProfiles
+What is Spring class-level test annotation @TestPropertySource for?	To give the locations of properties files and inlined properties to be added to the set of PropertySources in the Environment for an integration test ApplicationContext
+What is Spring class-level test annotation @WebAppConfiguration for?	To declare that the ApplicationContext loaded for an integration test should be a WebApplicationContext that uses a MockServletContext
+What two Spring test annotations can be used to commit after a transactional test method has completed?	@Commit, @Rollback(false)
+Which Spring test annotation is used is used to configure SQL scripts to be run against a given database during integration tests?	@Sql
+Which Spring test annotation is used is used to aggregate several @Sql annotations?	@SqlGroup
+What are the four Spring test SQL annotations?	@Sql, @SqlGroup, @SqlConfig, @SqlMergeMode
+How can you create a shared application context in a JUnit integration test?	Include a reference to the application configuration class either by extending it in a test base class or including it in the @ContextConfiguration on an annotation, public abstract class or interface
+What annotation can be used to force Spring to create a new application context in a test?	@DirtiesContext
+When do you use @Transactional in testing?	To mark code that should execute under a transaction and maybe rollback, allowing other tests use clear state
+How are mocked beans configured for Mockito or EasyMock integration tests?	A public static inner @Configuration class with a @Bean method that returns a mocked subject
+What three setup elements are required in Mockito unit tests?	@RunWith(MockitoJUnitRunner.class), @InjectMocks for the subject, @Mock for the mocked subject dependencies
+What three setup elements are required in EasyMock unit tests?	@RunWith(EasyMockRunner.class), @TestSubject for the subject, @Mock for the mocked subject dependencies
+How can you add configuration to a Spring Boot test?	A nested @TestConfiguration class
+How can you exclude Spring Boot test configuration classes from being picked up by @ComponentScan?	@TestConfiguration on the top of a class in src/test/java
+How can you test a mock server environment with @SpringBootTest?	@AutoConfigureMockMvc, annotate any MockMvc fields with @Autowired
+How can you test only the web layer with @SpringBootTest?	@WebMvcTest
+How can you test only a controller, SomeController, with @SpringBootTest?	@WebMvcTest(SomeController.class)
+How can you test with a running server with @SpringBootTest?	@SpringBootTest(webEnvironment=WebEnvironment.*)
+With what nine features does Spring Boot simplify writing tests?	@SpringBootTest, @MockBean, @SpyBean, @WebMvcTest, provides web environments, provides algorithm for Tests environment auto-configuration, offers test auto-configurations for many commonly-used technology, spring-boot-starter-test module, @ConditionalOn... annotations
+How does @SpringBootTest interact with @SpringBootApplication and @SpringBootConfiguration?	@SpringBootTest uses SpringBootTestContextBootstrapper to locate the @SpringBootConfiguration annotated class that SpringBootContextLoader converts to an ApplicationContext
+What are the four WebEnvironment modes for @SpringBootTest(webEnvironment)?	MOCK (default), RANDOM_PORT, DEFINED_PORT, NONE
+What six things can @SpringBootTest do?	Can use SpringBootContextLoader as the ContextLoader, searches for a @SpringBootConfiguration, offers Environment properties attribute, offers args attribute, supports webEnvironment, registers TestRestTemplate and WebTestClient beans

@@ -1,0 +1,213 @@
+How does Spring Boot know what to configure?	Spring Boot searches for META-INF/spring.factories on the classpath, looking for org.springframework.boot.autoconfigure.EnableAutoConfiguration entries
+What is a Spring Boot Auto Configuration class?	A @Configuration class annotated with the @ConditionalOn annotations
+What does @EnableAutoConfiguration do?	Turns on Spring Context auto-configuration
+What is Spring auto configuration?	Auto-configuration guesses the Spring Beans that should be created for an application
+What set of annotations is @SpringBootApplication equivalent to?	@Configuration, @EnableAutoConfiguration, @ComponentScan
+Does Spring Boot perform component scanning?	Yes
+Where does Spring Boot do component scanning by default?	In the same root package as @SpringBootApplication annotated class
+How do you change the default behavior of @SpringBootApplication component scanning?	With scanBasePackages or scanBasePackageClasses within @SpringBootApplication
+What module gives the auto-configuration for Spring Boot DataSource and JdbcTemplate?	spring-boot-autoconfigure
+How is the META-INF/spring.factories file used?	It is consumed by SpringFactoriesLoader class, which is used by AutoConfigurationImportSelector enabled by @EnableAutoConfiguration
+What four annotations can be used with a class annotated with @Configuration	@ConditionalOnClass, @PropertySource, @EnableConfigurationProperties, @ConfigurationProperties
+What are six subjects for the @ConditionalOn annotations?	Class, Bean, Java, Property, Resource, CloudPlatform
+How should @ConfigurationProperties be used?	To annotate a @Configuration POJO
+In what three ways can any configuration class be excluded?	@EnableAutoConfiguration's "exclude" or "excludeName" parameter or spring.autoconfigure.exclude
+What annotation can be used to import XML configuration?	@ImportResource
+What annotation can be used to import additional configuration classes?	@Import
+What value does Spring Boot Actuator provide?	Provides features required for an application to be production-ready
+What are the two protocols you can use to access actuator endpoints?	HTTP, JMX
+What two actuator endpoints are exposed by default via the Web?	info, health
+What are two ways to access JMX?	Locally by PID and remotely via sockets
+How can you disable all actuator endpoints that are default enabled?	management.endpoints.enabled-by-default=false
+How can you enable Actuator endpoints via a property?	management.endpoint.${ENDPOINT_NAME}.enabled=true
+What four Actuator endpoints are enabled by default just for web applications?	prometheus, heapdump, jolokia, logfile
+True or false: the shutdown Actuator endpoint is disabled by default	True
+What three things does the auditevents Actuator endpoint require to be enabled?	management.auditevents.enabled=true, management.endpoint.auditevents.enabled=true, AuditEventRepositoryBean
+What does the httptrace Actuator endpoint require to be enabled?	HttpTraceRepositoryBean
+How can you selectively exclude Actuator web endpoints exposure?	management.endpoints.web.exposure.exclude
+How can you selectively include Actuator web endpoints exposure?	management.endpoints.web.exposure.include
+How can you selectively include Actuator JMX endpoints exposure?	management.endpoints.jmx.exposure.include
+How can you selectively exclude Actuator JMX endpoints exposure?	management.endpoints.jmx.exposure.exclude
+How can you enable navigation through Actuator Endpoints via HATEOAS?	Add spring-boot-starter-hateoas dependency
+What is Actuator info endpoint for?	To provide arbitrary, non-sensitive, custom defined data, available at runtime
+What are two ways to supply information for the Actuator info endpoint?	Define info.* properties or implement the InfoContributor bean
+True or false: The logging Actuator HTTP endpoint is enabled by default	False
+How do you change the logging level for a package with the HTTP logging Actuator endpoint?	POST to /actuator/loggers/${LOGGER_NAME}
+How do you access an endpoint using a tag?	tag=KEY:VALUE
+How do you access an endpoint using multiple tags?	tag=KEY:VALUE elements separated by &
+True or false: The metrics Actuator endpoint is exposed to the web by default	False
+What are six example Actuator metrics?	CPU usage, CPU core count, memory usage, max memory available, threads info, GC status
+How do you create a custom metric with or without tags?	With MeterRegistry from Micrometer Application Metrics Facade
+What are eight Micrometer meter primitives that can be exposed via /actuator/metrics?	Counter, Gauge, Timer, TimeGauge, DistributionSummary, LongTaskTimer, FunctionCounter, FunctionTimer
+What two properties can be used to change the level of details exposed by the /actuator/health endpoints?	management.endpoint.health.{show-details or show-components}
+What value for /actuator/health endpoint exposure properties offers role-based access?	when-authorized shows information to users with roles from property management.endpoint.health.roles
+How do you implement a custom Actuator health indicator?	Implement HealthIndicator as a @Component
+What are five out of the many health indicators provided out-of-the-box?	Application, DiskSpace, DataSource, JMS, MailHealth
+What are the five Health Indicator status states?	UP, DOWN, OUT_OF_SERVICE, UNKNOWN, Custom Defined
+How is Actuator Health Indicator status determined?	OrderedHealthAggregator aggregates statuses and takes the first status after sorting
+To which HTTP status code does the UP Health Indicator status map?	200
+To which HTTP status code does the UNKNOWN Health Indicator status map?	200
+To which HTTP status code does the DOWN Health Indicator status map?	503
+To which HTTP status code does the OUT_OF_SERVICE Health Indicator status map?	503
+What property can be used to change the default HTTP mapping of Health Indicator status?	management.health.status.http-mapping
+How do you change the Health Indicator status severity order?	management.health.status.order
+What provides Actuator external monitoring system integration?	Micrometer Application Metrics Facade
+What are six external monitoring systems supported by Spring Boot?	Dynatrace, Elastic, Ganglia, Graphite, New Relic, Prometheus
+What step is required to add an external monitoring system to a Spring Boot app?	Add dependency as micrometer-registry-${monitoring-system-name}
+What is an Actuator tag?	A tag filters query results by one or several dimensions, especially useful for the metrics endpoint
+What is the root to use in application.properties file to configure any Actuator properties?	management
+What are 14 Spring Boot actuator endpoints that are not specific to web applications?	auditevents, beans, env, health, httptrace, info, loggers, metrics, mappings, scheduledtasks, configprops, shutdown, startup, threaddump
+What Spring Boot object can be used to register and unregister health indicators at runtime?	HealthContributorRegistry
+What are the two ways to disable all Actuator HTTP endpoints?	management.server.port=-1, management.endpoints.web.exposure.exclude=*
+How can you disable the several auto-configured Spring Boot InfoContributor beans?	Set the management.info.defaults.enabled property
+How can you write a custom Actuator health indicator?	Implement the HealthIndicator interface
+What is a checked exception?	Extends java.lang.Exception, must be declared in method signature and handled or re-thrown by client code
+What are two pros of checked exceptions?	Adds more detail to APIs, compile-time checking
+What are two cons of checked exceptions?	Clutter, coupling
+What is an unchecked exception?	Extends java.lang.RuntimeException, does not have to be explicitly declared in method signature or handled by client code
+What are two pros of unchecked exceptions?	Less clutter, coupling
+What are two cons of unchecked exceptions?	No compile-time checking, may miss exception-handling
+Which of checked or unchecked exceptions does Spring prefer?	Unchecked
+What is the data access exception hierarchy?	A convenient translation from technology-specific exceptions to Spring exceptions to help avoid coupling
+Which two beans are very useful for dev/test databases?	EmbeddedDatabaseBuilder and DataSourceInitializer
+How do you configure a DataSource in Spring?	With a @Configuration class that returns a javax.sql.DataSource bean
+What are three javax.sql.DataSource Spring Beans?	DriverManagerDataSource is a basic JDBC driver connection source, BasicDataSource is an Apache DBCP for Connection Pooling, and ComboPooledDataSource is C3P0 for Connection Pooling
+How is a DataSource configured in Spring Boot application?	application.properties
+How is a DataSource configured in Spring standalone application?	@Configuration class with a @Bean method returning a javax.sql.DataSource bean
+How is a DataSource configured in Spring Servlet application?	Fetched from application server-managed JNDI via JndiDataSourceLookup in a @Configuration class
+What is the Template design pattern?	An abstract class that contains algorithm definition and shared code, and child classes that customize step(s) of the algorithm
+What is the JDBC template?	A org.springframework.jdbc.core class that requires implementation of callback interfaces to allows specific steps of its workflow
+What are the three JdbcTemplate callback interfaces that can be used with queries?	RowMapper, RowCallbackHandler, ResultSetExtractor
+What is the RowMapper callback interface used for?	Processing ResultSet data on per-row basis
+What is the RowCallbackHandler callback interface used for?	Processing ResultSet data on a per-row basis
+What is the ResultSetExtractor callback interface used for?	Processing entire ResultSet data
+True or false: RowMapper is typically stateless	True
+True or false: RowCallbackHandler is typically stateless	False
+What is the minimum implementation for the RowMapper callback interface?	Calls ResultSet.get*(..) in interface mapRow method
+What is the minimum implementation for the RowCallbackHandler callback interface?	Calls ResultSet.get*(..) in interface processRow method
+What is the minimum implementation for the ResultSetExtractor callback interface?	ResultSet.next() in extractData method
+What are the eight JDBC template methods to execute plain SQL?	query, queryForList, queryForObject, queryForMap, queryForRowSet, execute, update, batchUpdate
+What is the JDBC template connection lifecycle with a transaction?	DataSourceUtils uses TransactionSynchronizationManager to reuse connections between method calls as long as transactions are not committed or rolled back
+What is the JDBC template connection lifecycle without a transaction?	Connection is acquired and released for every method call
+True or false: JDBC template queryForObject throws an exception if more than one record is returned	True
+True or false: JDBC template queryForList throws an exception if more than one column is returned	True
+What does ACID stand for?	Atomicity, Consistency, Isolation, Durability
+How does @Transactional work, internally?	TransactionInterceptor and TransactionAspectSupport provide proxy support, while PlatformTransactionManager manages transactions or rollbacks
+How are you going to define a transaction in a Spring app?	Annotate configuration class with @EnableTransactionManagement and return a PlatformTransactionManager from a Bean method
+What are three examples of PlatformTransactionManager types?	DataSourceTransactionManager, JtaTransactionManager, JpaTransactionManager
+What are six settings for @Transactional?	Transaction manager, propagation type, isolation level, transaction timeout, read-only flag, rollback behavior for various exceptions
+What are three PlatformTransactionManager methods?	rollback, commit, getTransaction
+How does JDBC template participate in existing transactions?	By usage of DataSourceUtils and TransactionSynchronizationManager
+What is transaction isolation?	Determines how changes made in one transaction are visible in other transactions
+What is a benefit of higher transaction isolation levels?	Data is visible in more consistent way
+What is a benefit of lower transaction isolation levels?	Higher system concurrency and throughput
+What are three challenges that may occur due to transaction level?	Phantom read, non-repeatable read, dirty read
+What is phantom read?	Uncommitted writes are visible across transactions
+How is phantom read prevented?	Range locks
+What is non-repeatable read?	Committed writes are visible across transactions
+How is non-repeatable read prevented?	Read-write locks
+What is a dirty read?	Uncommitted writes are visible across transactions
+How is a dirty read prevented?	Use isolation level to prevent uncommitted changes being visible across transactions
+What are the four transaction levels in descending order of isolation?	Serializable, repeatable read, read committed, read uncommitted
+In which transaction isolation level(s) is phantom read impossible?	Serializable
+In which transaction isolation level(s) is non-repeatable read impossible?	Serializable, repeatable read
+In which transaction isolation level(s) is dirty read impossible?	Serializable, repeatable, read-committed
+What does @EnableTransactionManagement do?	TransactionInterceptor and TransactionAspectSupport will provide proxy support and PlatformTransactionManager will manage transactions
+What are three EnableTransactionManagement settings?	How transactional advice is applied, the order of multiple advices execution at a join point, the proxy approach
+What does transaction propagation mean?	Transaction propagation defines how an existing transaction is re-used
+What are the seven @Transactional propagation field options?	REQUIRED, SUPPORTS, MANDATORY, REQUIRES_NEW, NOT_SUPPORTED, NEVER, NESTED
+What is the @Transactional propagation REQUIRED field?	Support a current transaction, create a new one if none exists
+What is the @Transactional propagation SUPPORTS field?	Support a current transaction, execute non-transactionally if none exists
+What is the @Transactional propagation MANDATORY field?	Support a current transaction, throw an exception if none exists
+What is the @Transactional propagation REQUIRES_NEW field?	Create a new transaction, and suspend the current transaction if one exists
+What is the @Transactional propagation NOT_SUPPORTED field?	Execute non-transactionally, suspend the current transaction if one exists
+What is the @Transactional propagation NEVER field?	Execute non-transactionally, throw an exception if a transaction exists
+What is the @Transactional propagation NESTED field?	Execute within a nested transaction if a current transaction exists, behave like REQUIRED else
+What happens if one @Transactional annotated method is calling another @Transactional annotated method on the same object instance?	Nothing, because Spring proxies do not support self-invocation
+What three things are required to enable self-invocation @Transactional support?	spring-aspects dependency, aspectj-maven-plugin, @EnableTransactionManagement(mode = AdviceMode.ASPECTJ)
+Where can the @Transactional annotation be used?	On top of class or method, in classes or interfaces
+When can the @Transactional annotation be used at the class level?	For all public methods
+True or false: @Transactional supports methods with protected/private/package visibility	False
+What does declarative transaction management mean?	Methods to be executed in transactions are annotated with @Transactional
+What is the default rollback policy?	Automatic rollback only when unchecked exception is thrown from method annotated with @Transactional
+What are the four options in @Transactional to modify the rollback policy?	rollbackFor, rollbackForClassName, noRollbackFor, noRollbackForClassName
+What is the default JUnit rollback policy for test methods annotated with @Test and @Transactional?	Default rollback
+How can you modify the default JUnit rollback policy for test methods annotated with @Test and @Transactional?	Annotate with @Rollback(false)
+Why does JDBC AutoCommit violate the "unit of work" pattern?	Because every SQL statement is in a separate transaction that is committed after SQL is executed
+What five required and optional dependencies are used to work with JPA in Spring?	javax.persistence-api, spring-orm, some ORM, some database driver, optionally, spring-data-jpa
+What are the five required code configurations used to work with JPA in regular Spring applications?	Define DataSource Bean, define PlatformTransactionManager Bean, define EntityManagerFactory Bean, define @Entity classes with at least one @Id field, define DAO classes or use Spring Data JPA Repositories
+Are you able to participate in a given transaction in Spring while working with JPA?	Yes, with JpaTransactionManager in the case of JDBC and with JtaTransactionManager in the case of Java EE
+Which two PlatformTransactionManagers can you use with JPA?	JpaTransactionManager, JtaTransactionManager
+What are the seven ways Spring Boot makes it easier than Spring to integrate with JPA?	spring-boot-starter-data-jpa dependency includes all required dependencies, JPA auto-configuration, automatically defines PlatformTransactionManager and EntityManager, data source configuration via properties, out-of-the-box support for Hikari Connection Pool, default JPA properties, automatically creates DAO beans for Repositories
+What are the four Repository interfaces?	Repository, CrudRepository, PagingAndSortingRepository, JpaRepository
+What are the four steps required to define a Repository interface?	Extend one of the Repository interfaces, annotate a class with @Entity, annotate a field in the @Entity class with @Id or @EmbeddedId, scan for packages with @EnableJpaRepositories
+Why is the Repository interface not a class?	To allow use of JDK Dynamic Proxy for repositories
+What is the format, including optional settings for Repository finder methods?	find[limit]By[properties expression][comparison][ordering operator]
+What is @Query used for?	@Query annotation allows more control and flexibility over the JPA query
+What three embedded containers does Spring Boot support?	Tomcat, Jetty, Undertow
+What are 10 advantages of using Spring Boot?	Boosts productivity, simplifies deployment with executable jar, customized autoconfiguration, dev/prod parity, offers set of managed dependencies, provides Maven Plugins, provides common non-functional features, integrates with micro service architecture tools for highly-available fault-tolerant applications, integrates with systemd and init.d, uses Spring IoC/DI
+How do you enable custom auto-configuration?	Add org.springframework.boot.autoconfigure.EnableAutoConfiguration with list of custom classes to META-INF/spring.factories
+What is a Spring Boot starter POM?	A Maven module that represents an empty jar with set of dependencies, which may also provide autoconfiguration to create additional required beans
+What are three specific logging systems for Spring Boot?	Logback, log4j2, JDK Java Util Logging
+What is the configuration keyword to colorize logs?	%clr
+What is the default Spring Boot starter logging system?	Logback
+What is one way to set the logging level in application.properties?	logging.level
+How can you set the logging pattern in application.properties?	logging.pattern
+How can you set the log maximum file size in application.properties?	logging.file.max-size
+How can you set the maximum log files in history in application.properties?	logging.file.max-history
+How can you group loggers into a group in application.properties?	logging.group
+How do you use a logging system other than Logback in Spring Boot?	Exclude spring-boot-starter-logging in the pom.xml spring-boot-starter dependency
+Where does Spring Boot look for property files outside of the Jar?	In the current directory or /config subdirectory
+Where does Spring Boot look for property files inside the Jar?	On the classpath in the root package and /config package
+What is the file name format for profile-specific property files?	application-{profile}.properties and application-{profile}.yml
+What is the file name format for application-specific property files?	application.properties and application.yml
+What command-line argument can be used to change the name of the Spring Boot default properties configuration file?	spring.config.name
+What command-line argument can be used to change the location of the Spring Boot default properties configuration file?	spring.config.location
+What are the two ways to define Spring profile-specific property files?	Multi-profile YAML and application-{profile}.{properties or yml}
+What are three ways to access properties defined in properties files?	@Value, @ConfigurationProperties(prefix) on a data object class, inject and use Environment object
+What four steps are necessary to configure external MySQL?	Specify spring.datasource.{url, username, password} properties, maybe specify the JDBC driver with spring.datasource.driver-class-name, give MySQL connector dependency, and give database access dependency, for example, for JDBC
+What two scripts does Spring Boot use to configure the default SQL schema?	schema.sql, schema-${platform}.sql
+What two scripts can Spring Boot use to seed initial SQL data?	data.sql, data-${platform}.sql
+True or false: Spring Boot automatically initializes embedded databases	True
+What is the Spring Boot property setting to automatically initialize any database?	spring.datasource. Initialization-mode=always
+What Spring Boot property changes the default name for the SQL schema?	spring.datasource.schema
+What Spring Boot property changes the default name for the initial SQL data file?	spring.datasource.data
+What is a fat jar?	A jar that also contains compiled application and dependency code
+Why is a fat jar called an "executable jar"?	Because it has a MANIFEST.MF file with Main-Class and Start-Class entries together with JarLauncher code
+What dependency is required to create a fat jar?	spring-boot-maven-plugin
+What are two differences between a fat jar and the original jar?	Original jar does not contain all dependencies and is not executable by default
+What is the difference between an embedded container and a WAR?	A WAR cannot be executed in standalone mode, it needs to be deployed to Application Server
+What are three required configuration elements to create a WAR file with Spring Boot for Tomcat?	war specified by packaging element, spring-boot-starter-web, spring-boot-starter-tomcat
+What are two required pom.xml elements to create a JAR file with embedded container in Spring Boot?	spring-boot-starter-web and spring-boot-maven-plugin
+What is the default Spring Boot embedded container?	Tomcat
+What configuration is required to use Jetty embedded container in Spring Boot?	exclude spring-boot-starter-tomcat and include spring-boot-starter-jetty
+What configuration is required to use Undertow embedded container in Spring Boot?	exclude spring-boot-starter-tomcat and include spring-boot-starter-undertow
+What are six common cross-cutting concerns?	Application and performance logging, caching, security, transactions, monitoring
+What two problems arise without AOP?	Code duplications, mixing of concerns
+What is a AOP join point?	A point in program execution where AOP alter behavior
+What is a Spring AOP join point?	A Spring AOP join point is always a method execution
+What is an AOP pointcut?	A predicate used to match a join point
+What is an AOP advice?	Code executed where the program matches the pointcut
+What is an AOP aspect?	Pointcut and advice
+What is AOP weaving?	The process of applying aspects
+What are three types of AOP weaving?	Compile time, load time and runtime
+Which type of weaving does Spring AOP use?	Runtime
+How can Spring AOP be forced to use CGLIB proxy?	@EnableAspectJAutoProxy(proxyTargetClass = true)
+What are the two types of proxy used by Spring AOP?	JDK Dynamic Proxy, CGLIB
+What visibility must Spring bean methods have to be proxied using Spring AOP under CGLIB and JDK Dynamic Proxy?	public for JDK Dynamic Proxy, public/protected/package for CGLIB
+What are the five Spring advice types?	@Before, @After, @AfterThrowing, @AfterReturning, @Around
+What are three @Before advice use cases?	Authorization, logging, data validation
+What are two @After advice use cases?	Logging, resource cleanup
+What are two @AfterThrowing advice use cases?	Logging, error handling
+What are two @AfterReturning advice use cases?	Logging, data validation for method result
+What are three @Around advice use cases?	Transactions, distributed call tracing, authorization
+Which two advices can you use if you would like to try and catch exceptions?	@AfterThrowing, @Around
+What are the three requirements to enable the detection of the @Aspect annotation?	@Configuration class with @EnableAspectJAutoProxy, @Aspect annotated classes, aspectjweaver/spring-aop on classpath
+What are the responsibilities of @EnableAspectJAutoProxy?	Enables detection of @Aspect classes and creates proxy object for beans subject to aspects
+What is the general form of the execution pointcut designator?	execution([visibility modifiers] [return type] [package].[class].[method]([arguments]) [throws exceptions])
+What is the pointcut expression pattern matcher that matches zero or more arguments?	..
+True or false: Visibility modifiers may not be omitted in an execution pointcut designator expression?	False
+What four Spring AOP advice types use the JoinPoint argument?	Before, After, AfterReturning, AfterThrowing
+What is a ProceedingJoinPoint?	An object that can be provided to @Around advice as a first argument
+What useful method does ProceedingJoinPoint offer?	proceed(..)
+What are three ProceedingJoinPoint use cases?	Conditionally block method execution, filter arguments, inject additional argument

@@ -4,14 +4,16 @@ import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.CertificateNotFoundException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.PersistenceException;
 import jakarta.persistence.PersistenceUnit;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Order;
+import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -22,6 +24,7 @@ import static com.epam.esm.dao.Queries.DELETE_CT_BY_TAG_ID;
 import static com.epam.esm.dao.Queries.DELETE_TAG;
 import static com.epam.esm.dao.Queries.ID;
 import static com.epam.esm.dao.Queries.NAME;
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
 /**
@@ -69,7 +72,7 @@ public class TagDaoImpl implements TagDao {
      * @return an {@link Optional} containing the tag entity, or empty if not found
      */
     @Override
-    public Optional<Tag> getByName(
+    public Optional<Tag> findByUsername(
             final String name) {
         try (EntityManager entityManager = factory.createEntityManager()) {
             CriteriaBuilder builder = entityManager.getCriteriaBuilder();
@@ -95,16 +98,24 @@ public class TagDaoImpl implements TagDao {
      */
     @Override
     public List<Tag> getAllBy(final Pageable pageable) {
-        try (EntityManager entityManager =
-                     factory.createEntityManager()) {
-            CriteriaQuery<Tag> query = entityManager
-                    .getCriteriaBuilder()
-                    .createQuery(Tag.class);
-            query.select(query.from(Tag.class));
+        try (EntityManager entityManager = factory.createEntityManager()) {
+            CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Tag> query = builder.createQuery(Tag.class);
+            Root<Tag> root = query.from(Tag.class);
+            query.select(root);
+
+            if (pageable.getSort().isSorted()) {
+                List<Order> orders = pageable.getSort().stream()
+                        .map(order -> order.getDirection().equals(Sort.Direction.ASC)
+                                ? builder.asc(root.get(order.getProperty()))
+                                : builder.desc(root.get(order.getProperty())))
+                        .collect(toList());
+                query.orderBy(orders);
+            }
+
             return entityManager.createQuery(query)
                     .setMaxResults(pageable.getPageSize())
-                    .setFirstResult(pageable.getPageNumber()
-                            * pageable.getPageSize())
+                    .setFirstResult(pageable.getPageNumber() * pageable.getPageSize())
                     .getResultList();
         }
     }
@@ -159,7 +170,7 @@ public class TagDaoImpl implements TagDao {
      * Deletes a tag by its ID.
      *
      * @param id the ID of the tag to delete
-     * @throws EntityNotFoundException if the tag is not found
+     * @throws PersistenceException if the tag is not found
      */
     @Override
     public void delete(final Long id) {

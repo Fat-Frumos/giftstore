@@ -1,0 +1,53 @@
+What are six advantages of the MVC design pattern?	Separation of concerns, code cohesion, code reusability, reduces coupling between data and logic and information representation, lower maintenance cost, extendibility
+What is the DispatcherServlet?	An internal Spring MVC component that implements HttpServlet from Java Servlet API and Front Controller Design Pattern
+What are four responsibilities of the DispatcherServlet?	Delegates requests to controllers, resolves views pointed out by controllers, produces response that is sent to user, handles shared concerns, such as error handling and security
+What does Servlet registration require?	URL patterns for the application server to map requests to the servlet
+Which controller method parameter annotation provides access to Servlet request parameters, including multipart files?	@RequestParam
+Which controller method parameter annotation provides access to URI template variables?	@PathVariable
+Which controller method parameter annotation provides access to name-value pairs in URI path segments?	@MatrixVariable
+Which controller method parameter annotation binds the value of an HTTP cookie to a method argument?	@CookieValue
+Which controller method parameter annotation provides access to request header values?	@RequestHeader
+Which controller method parameter annotation allows access to HTTP request body?	@RequestBody
+Which controller method parameter annotation allows binding of multipart HTTP requests to method parameters?	@RequestPart
+Which controller method parameter annotation allows access to HTTP request attributes populated on the server-side during HTTP request by a filter or interceptor?	@RequestAttribute
+Which controller method parameter annotation allows access to an existing attribute in the model with data binding and validation applied?	@ModelAttribute
+Which controller method parameter annotation allows access to pre-existing session attributes that are managed globally?	@SessionAttribute
+Which controller method parameter annotation is used to store model attributes in the HTTP Servlet session between requests?	@SessionAttributes
+Where are @SessionAttributes applied?	At the class level
+Which controller method annotation binds the method return value to the web response body?	@ResponseBody
+Which two controller method return types allow you to specify a full response with headers and body?	HttpEntity, ResponseEntity
+What is the difference between controller method return types HttpEntity and ResponseEntity?	ResponseEntity allows specification of HTTP status code
+Which controller method return type allows you to return a response with just headers and no body?	HttpHeaders
+What two controller method return types can be used to specify the applicable view?	String or View
+How is the Map or Model controller return type interpreted to determine the applicable view?	RequestToViewNameTranslator
+Which annotation allows you to specify an attribute to be added to the model in a controller?	@ModelAttribute
+Which controller method return type allows you to specify the view and model attributes to use?	ModelAndView
+What are four ways the void controller method return type can handle requests?	ServletResponse or OutputStream method parameters, @ResponseStatus annotation or identify view based on request
+Which controller method return type allows you to respond asynchronously from different Thread or as result of some event callback?	DeferredResult
+Which controller method return type allows you to respond asynchronously in a Spring-managed thread?	Callable
+Which three controller method return types allow you to to return a set of chained, asynchronous operations, with callbacks and transformations?	ListenableFuture, CompletableFuture, CompletionStage
+Which two controller method return types allow you to send objects in stream asynchronously?	ResponseBodyEmitter, SseEmitter
+Which controller method return type allows you to write to the response OutputStream asynchronously?	StreamingResponseBody
+Which two controller method parameter types provide access to HTTP request details, parameters, and request and session attributes without direct use of the Servlet API	WebRequest, NativeWebRequest
+What controller method parameter type provides access to the client request, including parameters, attributes and other request details without direct use of Spring interfaces	ServletRequest
+What controller method parameter type provides access to the servlet response?	ServletResponse
+What controller method parameter type allows access to session information and attributes and enforces use of the HTTP session for the request?	HttpSession
+What controller method parameter type allows use of Server Push technology to send resources to the client proactively from the server-side?	PushBuilder
+What controller method parameter type gives the currently authenticated user?	java.security.Principal
+What controller method parameter type gives the HTTP method request type?	HttpMethod
+What controller method parameter type gives the request locale?	java.util.Locale
+Which two controller method parameter types can be used to determine the time zone of the current request?	java.util.TimeZone, java.time.ZoneId
+Which two controller method parameter types allows access to raw request body exposed by the Servlet API?	java.io.InputStream, java.io.Reader
+Which two controller method parameter types allow creation of the raw response exposed by the Servlet API?	java.io.OutputStream, java.io.Writer
+What controller method parameter type exposes request headers and body?	HttpEntity
+What three controller method parameter types can be used to expose data to templates as part of view rendering?	java.util.Map, org.springframework.ui.Model, org.springframework.ui.ModelMap
+What controller method parameter type can be used to specify attributes to use in case of redirect?	RedirectAttributes
+What RedirectAttributes instance method sets attributes that are kept only until the next request?	addFlashAttribute
+What combination of annotation at the class-level and controller method parameter type are useful for multi step form processing?	SessionStatus, @SessionAttributes
+How is any simple type that is not among the standard set of controller method parameter types interpreted by a controller method?	@RequestParam
+How is any complex type that is not among the standard set of controller method parameter types interpreted by a controller method?	@ModelAttribute
+What are two differences between @RequestParam and @PathVariable?	@PathVariable is for URI templates, @PathVariable does not offer a defaultValue property
+What are three categories of parameters handled by @RequestParam?	query parameters, form data, multipart requests parts
+How can @GetMapping be expressed in terms of @RequestMapping?	@RequestMapping(method = RequestMethod.GET).
+What are the four steps by which an incoming request is mapped to a controller and mapped to a method?	Application DispatcherServlet maps the request to a controller method, DispatcherServlet uses HandlerMapping classes to get HandlerAdapter, DispatcherServlet uses HandlerAdapter to execute controller method, DispatcherServlet interprets results of execution and renders view
+What is the @Controller annotation used for?	DispatcherServlet uses @Controller to identity controllers
