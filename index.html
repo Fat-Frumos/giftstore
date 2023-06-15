@@ -5,23 +5,28 @@
     <link rel="stylesheet" type="text/css" href="styles.css">
   </head>
   <body>
-
     <label for="file-selector"></label>
     <select id="file-selector">
       <option value="questions.txt">Boot</option>
-      <option value="Mvc-questions.txt">Mvc</option>
-      <option value="Rest-questions.txt">Rest</option>
-      <option value="Test-questions.txt" >Test</option>
-      <option value="Spring-questions.txt">Java</option>
-      <option value="JAVA_75-Spring.txt" >Spring</option>
-      <option value="Pattern-questions.txt" >Pattern(en)</option>
-      <option value="Annotation-questions.txt" >Annotation</option>
-      <option value="Microservices-questions.txt" selected>Microservices(en)</option>
+      <option value="Java-questions.txt" >Java(ru)</option>
+      <option value="Hibernate-questions.txt" >Hibernate</option>
+      <option value="Hibernate-questions-ru.txt" >Hibernate(ru)</option>
+      <option value="Microservices-questions.txt" >Microservices</option>
       <option value="Microservices-questions-ru.txt" >Microservices(ru)</option>
+      <option value="Mvc-questions.txt">Mvc</option>
+      <option value="Spring-Mvc-questions-ru.txt" >Mvc(ru)</option>
+      <option value="Pattern-questions.txt" >Pattern(en)</option>
       <option value="Pattern-questions-ru.txt" >Pattern(ru)</option>
-      <option value="Java-questions.txt" >Java</option>
       <option value="Security-questions.txt" >Security(en)</option>
       <option value="Security-questions-ru.txt" >Security(ru)</option>
+      <option value="SPRING-Note-questions.txt" >Spring-Note</option>
+      <option value="SPRING-Note-questions-ru.txt" selected>Spring-Note(ru)</option>
+      <option value="Spring-questions.txt">Spring</option>
+      <option value="JAVA_75-Spring.txt" >Spring-75</option>
+      <option value="Spring-Boot-questions.txt"  >Spring-Boot</option>
+      <option value="Spring-Boot-questions-ru.txt" >Spring-Boot(ru)</option>
+      <option value="Rest-questions.txt">Rest</option>
+      <option value="Test-questions.txt" >Annotation</option>
     </select>
         
     <div class="container">
@@ -31,6 +36,16 @@
     <div id="result"></div>
   </div>
   
+  <div class="flip-card" tabIndex="0">
+    <div class="flip-card-inner">
+      <div class="flip-card-front">
+        <h3 id="questions"></h3>
+      </div>
+      <div class="flip-card-back">
+        <h3 id="answer"></h3>
+      </div>
+    </div>
+  </div>
     <script src="script.js"></script>
   </body>
 </html>

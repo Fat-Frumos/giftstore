@@ -8,9 +8,9 @@ How can you register custom a HttpMessageConverter?	Implement WebMvcConfigurer
 Is REST normally stateless?	Yes
 What does @RequestMapping do?	Specifies conditions a request must match for a method to be used as request handler
 What are six @RequestMapping parameters?	path, method, params, headers, consumes, produces
-What is a stereotype annotation?	Annotations applied to classes to describe role that will be performed
+What is a stereotype?	Annotations applied to classes to describe role that will be performed
 What is the difference between @Controller and @RestController?	@Controller methods usually return Model and View to render response, while @RestController returns serialized output directly to client
-What is an equation in Spring annotation terms between @Controller and @RestController?	@RestController = @Controller + @ResponseBody
+What is an equation annotation terms between @Controller and @RestController?	@RestController = @Controller + @ResponseBody
 When do you need @ResponseBody?	When you want Spring to return serialized response from controller method
 Where are the three places @ResponseBody can be used?	Top of class, top of method, on top of other annotations
 What does a 201 status code from a POST operation mean?	Resource created
@@ -37,7 +37,7 @@ What are the seven steps of Spring Bean creation in an Application Context?	Inst
 What are six advantages of dependency injection?	Reusability, readability, maintainability, testability and cohesion, and decoupling
 What are the three types of dependency injection?	Constructor injection, setter injection, interface injection
 What commonly occurring problem does the dependency injection pattern solve?	The problem of flexible dependencies creation
-What are three advantages of using Java interfaces in Spring?	JDK Dynamic Proxy, implementation hiding and easy bean switching
+What are three advantages of using Java interfaces?	JDK Dynamic Proxy, implementation hiding and easy bean switching
 What are eight responsibilities of the Spring ApplicationContext?	Initiates, configures and assembles Beans, manages Bean lifecycle, is a Bean factory, is a resource loader, can push events to registered event listeners and exposes the environment, which allows property resolution
 What are five ApplicationContext types?	AnnotationConfigApplicationContext, AnnotationConfigWebApplicationContext, ClassPathXmlApplicationContext, FileSystemXmlApplicationContext, XmlWebApplicationContext
 How do you create a new ApplicationContext instance in a Spring Boot web application?	Annotate a class with @SpringBootApplication
@@ -73,7 +73,7 @@ What are the two methods of the BeanPostProcessor interface?	postProcessBeforeIn
 What interface must be implemented in Servlet 3.0 environments to configure ServletContext programmatically?	WebApplicationInitializer
 What is the difference between BeanPostProcessor and BeanFactoryPostProcessor?	BeanPostProcessor works with Bean objects and BeanFactoryPostProcessor works with Bean definitions
 What is the recommended way to create a custom BeanPostProcessor?	With a static @Bean method in Application Configuration
-What are the three ways to declare a Spring Bean initialization method?	Create method in Spring Bean annotated with @PostConstruct, implement InitializingBean::afterPropertiesSet, create Bean in Configuration class with @Bean(initMethod) method
+What are the three ways to declare a Spring Bean initialization method?	Create method Bean annotated with @PostConstruct, implement InitializingBean::afterPropertiesSet, create Bean in Configuration class with @Bean(initMethod) method
 What are the three ways to declare a Spring Bean destroy method?	Create method annotated with @PreDestroy annotation, implement DisposableBean::destroy, create Bean in Configuration class with @Bean(destroyMethod) method
 True or false: AnnotationConfigApplicationContext adds support for @PostConstruct and @PreDestroy automatically	True
 True or false: @Autowired dependency is not required by default	False
@@ -93,14 +93,14 @@ What are three advantages of Java Config over annotation-based config?	Separatio
 Why can't a final class be annotated with @Configuration?	Because Spring proxies configuration classes with CGLIB, which doesn't work with final classes or methods
 How do @Configuration annotated classes ensure beans will be singleton?	With a CGLIB configuration proxy
 What does the @Import annotation do?	Indicates one or more configuration classes to import
-What are four ways to apply the @Profile annotation?	At @Component class level, at @Configuration class level, per @Bean method in @Configuration class, in a custom annotation definition
-What are the five ways to activate a Spring profile?	ConfigurableEnvironment, spring.profiles.active command-line switch, @ActiveProfiles in JUnit tests, SpringApplicationBuilder in Spring Boot, application.properties in Spring Boot
+What are four ways to apply the @Profile?	At @Component class level, at @Configuration class level, per @Bean method in @Configuration class, in a custom annotation definition
+What are the five ways to activate a Spring profile?	ConfigurableEnvironment, spring.profiles.active command-line switch, @ActiveProfiles in JUnit tests, SpringApplicationBuilder, application.properties
 True or false: @Bean cannot be used with @Profile	False
 True or false: @Bean can be used with @Component	True
 What is the limit on the number of active Spring profiles?	Integer.MAX_VALUE, or 2^31 − 1
 What are three field types does @Value accept?	Simple value, property reference, SpEL
 True or false: Method parameter injection will not be performed automatically if not one of @Value or @Autowired present at the method level	True
-What are the three ways SpEL can be invoked in Spring?	@Value("#{...}"), ExpressionParser, EvaluationContext
+What are the three ways SpEL can be invoked?	@Value("#{...}"), ExpressionParser, EvaluationContext
 What system property turns on the SpEL compiler?	spring.expression.compiler.mode
 What are the three SpEL compiler modes?	Off, immediate, mixed
 What six types of SpEL expressions are not supported in compiled mode?	Assignment, conversion service, custom resolver, custom accessor, SpEL projection, SpEL selection
@@ -109,5 +109,5 @@ What 10 things can be referenced with SpEL?	Static fields and methods from a cla
 What are three property sources for a Spring standalone application?	Properties files, JVM system properties, system environment variables
 What are six property sources for a Servlet Container Spring application?	Properties files, JVM system properties, system environment variables, JNDI, ServletConfig init parameters, ServletContext init parameters
 What are ten property sources for a Spring Boot application?	~/.spring-boot-devtools.properties, command line arguments, SPRING_APPLICATION_JSON property, RandomValuePropertySource, application properties files, @PropertySource annotations on @Configuration classes, SpringApplication.setDefaultProperties, OS environment variables, Java system properties, JNDI
-What is the Environment abstraction in Spring?	Application environment profiles and properties
+What is the Environment abstraction?	Application environment profiles and properties
 What are three Bean initialization methods?	@PostConstruct, initializingBean:afterPropertiesSet, @Bean(init)

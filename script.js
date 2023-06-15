@@ -45,6 +45,10 @@ function loadQuestions(selectedFile) {
 }
 
 function resetArrays() {
+  currentQuestionIndex = 0;
+  score = 0;
+  correct = false;
+  answer = '';
   questions = [];
   correctAnswers = [];
   incorrectAnswers = [];
@@ -52,17 +56,25 @@ function resetArrays() {
 
 function displayQuestion(index) {
     const questionElement = document.getElementById('question');
+    const questionsElement = document.getElementById('questions');
     const answersElement = document.getElementById('answers');
+    const answerElement = document.getElementById('answer');
     const currentQuestion = questions[index];
     const currentCorrectAnswer = correctAnswers[index];
     const currentIncorrectAnswers = generateIncorrectAnswers(currentCorrectAnswer, 3);
-  
     questionElement.textContent = currentQuestion;
+    answerElement.innerHTML = currentCorrectAnswer;
+    questionsElement.innerHTML = currentQuestion;
+    const flipCardElement = document.querySelector('.flip-card');
+    flipCardElement.style.height =`${currentCorrectAnswer.length-10}px`;
+    const flipCardFront = document.querySelector('.flip-card-front');
+    const flipCardBack = document.querySelector('.flip-card-back');
+    const backHeight = flipCardBack.offsetHeight;
+    flipCardFront.style.height = `${backHeight}px`;
     answersElement.innerHTML = '';
-    console.log(currentCorrectAnswer)
+    console.log(currentCorrectAnswer);
     const allAnswers = [currentCorrectAnswer, ...currentIncorrectAnswers];
     shuffleArray(allAnswers);
-  
     for (let i = 0; i < allAnswers.length; i++) {
       const li = document.createElement('li');
       const radio = document.createElement('input');
@@ -70,7 +82,6 @@ function displayQuestion(index) {
       radio.name = 'answer';
       radio.value = i + 1;
       li.appendChild(radio);
-  
       const span = document.createElement('span');
       span.textContent = allAnswers[i];
       span.addEventListener('click', () => {
@@ -79,28 +90,29 @@ function displayQuestion(index) {
           showNextQuestion()
       });
       li.appendChild(span);
-  
       answersElement.appendChild(li);
     }
   }
 
 function generateIncorrectAnswers(correctAnswer, count) {
-    const maxNumber = correctAnswer.length;
+    const maxNumber = correctAnswers.length;
     const incorrectAnswers = [];
     let i = 0;
     let uniqueAnswers = [];
     while (uniqueAnswers.length < count) {
       let incorrectAnswerIndex = Math.floor(Math.random() * maxNumber);
       let incorrectAnswer = correctAnswers[incorrectAnswerIndex];
-      if (!uniqueAnswers.includes(incorrectAnswer) && !correctAnswer.includes(incorrectAnswer)) {
+      if (incorrectAnswer.length <= correctAnswer.length * 1.5
+        && incorrectAnswer.length * 1.5 >= correctAnswer.length
+        && !uniqueAnswers.includes(incorrectAnswer) 
+      && !correctAnswer.includes(incorrectAnswer)) {
         incorrectAnswers.push(incorrectAnswer);
       }
-    const filteredAnswers = incorrectAnswers.filter(answer => answer !== undefined);
-    uniqueAnswers = [...new Set(filteredAnswers)];
+    uniqueAnswers = [...new Set(incorrectAnswers.filter(answer => answer !== undefined))];
     i++;
     if (i >= maxNumber) {
       break;
-    }
+      }
     }
     return uniqueAnswers;
   }
@@ -119,8 +131,7 @@ function selectAnswer() {
     if (selectedAnswer) {
       const userAnswer = selectedAnswer.nextSibling.textContent.trim();
       const correctAnswer = correctAnswers[currentQuestionIndex];
-      answer = correctAnswer;
-      
+      answer = correctAnswer;      
       if (correctAnswer.includes(userAnswer)) {        
           score++;
           correct = true;
@@ -138,16 +149,25 @@ function showResult() {
     resultElement.classList.remove('incorrect');
     resultElement.classList.add('correct');
 } else {
-      resultElement.classList.remove('correct');
+    resultElement.classList.remove('correct');
     resultElement.classList.add('incorrect');
   }
 }
 
+
 function showNextQuestion() {
-  selectAnswer();
-  currentQuestionIndex++;
-  displayQuestion(currentQuestionIndex);
-  showResult();
+  if(currentQuestionIndex < questions.length - 1){
+    selectAnswer();
+    currentQuestionIndex++;
+    displayQuestion(currentQuestionIndex);
+    showResult();
+  }else {
+    const resultText = `Total Score: ${score} out of ${questions.length}`;
+    const resultElement = document.getElementById('result');
+    resultElement.classList.add('correct');
+    resultElement.innerHTML = resultText;
+  }
 }
+
 document.getElementById('next').addEventListener('click', showNextQuestion);
 loadQuestions(selectedFile);

@@ -70,11 +70,11 @@ What are two cons of unchecked exceptions?	No compile-time checking, may miss ex
 Which of checked or unchecked exceptions does Spring prefer?	Unchecked
 What is the data access exception hierarchy?	A convenient translation from technology-specific exceptions to Spring exceptions to help avoid coupling
 Which two beans are very useful for dev/test databases?	EmbeddedDatabaseBuilder and DataSourceInitializer
-How do you configure a DataSource in Spring?	With a @Configuration class that returns a javax.sql.DataSource bean
+How do you configure a DataSource?	With a @Configuration class that returns a javax.sql.DataSource bean
 What are three javax.sql.DataSource Spring Beans?	DriverManagerDataSource is a basic JDBC driver connection source, BasicDataSource is an Apache DBCP for Connection Pooling, and ComboPooledDataSource is C3P0 for Connection Pooling
-How is a DataSource configured in Spring Boot application?	application.properties
-How is a DataSource configured in Spring standalone application?	@Configuration class with a @Bean method returning a javax.sql.DataSource bean
-How is a DataSource configured in Spring Servlet application?	Fetched from application server-managed JNDI via JndiDataSourceLookup in a @Configuration class
+How is a DataSource configured application?	application.properties
+How is a DataSource configured standalone application?	@Configuration class with a @Bean method returning a javax.sql.DataSource bean
+How is a DataSource configured Servlet application?	Fetched from application server-managed JNDI via JndiDataSourceLookup in a @Configuration class
 What is the Template design pattern?	An abstract class that contains algorithm definition and shared code, and child classes that customize step(s) of the algorithm
 What is the JDBC template?	A org.springframework.jdbc.core class that requires implementation of callback interfaces to allows specific steps of its workflow
 What are the three JdbcTemplate callback interfaces that can be used with queries?	RowMapper, RowCallbackHandler, ResultSetExtractor
@@ -134,9 +134,9 @@ What are the four options in @Transactional to modify the rollback policy?	rollb
 What is the default JUnit rollback policy for test methods annotated with @Test and @Transactional?	Default rollback
 How can you modify the default JUnit rollback policy for test methods annotated with @Test and @Transactional?	Annotate with @Rollback(false)
 Why does JDBC AutoCommit violate the "unit of work" pattern?	Because every SQL statement is in a separate transaction that is committed after SQL is executed
-What five required and optional dependencies are used to work with JPA in Spring?	javax.persistence-api, spring-orm, some ORM, some database driver, optionally, spring-data-jpa
+What five required and optional dependencies are used to work with JPA?	javax.persistence-api, spring-orm, some ORM, some database driver, optionally, spring-data-jpa
 What are the five required code configurations used to work with JPA in regular Spring applications?	Define DataSource Bean, define PlatformTransactionManager Bean, define EntityManagerFactory Bean, define @Entity classes with at least one @Id field, define DAO classes or use Spring Data JPA Repositories
-Are you able to participate in a given transaction in Spring while working with JPA?	Yes, with JpaTransactionManager in the case of JDBC and with JtaTransactionManager in the case of Java EE
+Are you able to participate in a given transaction while working with JPA?	Yes, with JpaTransactionManager in the case of JDBC and with JtaTransactionManager in the case of Java EE
 Which two PlatformTransactionManagers can you use with JPA?	JpaTransactionManager, JtaTransactionManager
 What are the seven ways Spring Boot makes it easier than Spring to integrate with JPA?	spring-boot-starter-data-jpa dependency includes all required dependencies, JPA auto-configuration, automatically defines PlatformTransactionManager and EntityManager, data source configuration via properties, out-of-the-box support for Hikari Connection Pool, default JPA properties, automatically creates DAO beans for Repositories
 What are the four Repository interfaces?	Repository, CrudRepository, PagingAndSortingRepository, JpaRepository
@@ -156,7 +156,7 @@ How can you set the logging pattern in application.properties?	logging.pattern
 How can you set the log maximum file size in application.properties?	logging.file.max-size
 How can you set the maximum log files in history in application.properties?	logging.file.max-history
 How can you group loggers into a group in application.properties?	logging.group
-How do you use a logging system other than Logback in Spring Boot?	Exclude spring-boot-starter-logging in the pom.xml spring-boot-starter dependency
+How do you use a logging system other than Logback?	Exclude spring-boot-starter-logging in the pom.xml spring-boot-starter dependency
 Where does Spring Boot look for property files outside of the Jar?	In the current directory or /config subdirectory
 Where does Spring Boot look for property files inside the Jar?	On the classpath in the root package and /config package
 What is the file name format for profile-specific property files?	application-{profile}.properties and application-{profile}.yml
@@ -178,10 +178,10 @@ What dependency is required to create a fat jar?	spring-boot-maven-plugin
 What are two differences between a fat jar and the original jar?	Original jar does not contain all dependencies and is not executable by default
 What is the difference between an embedded container and a WAR?	A WAR cannot be executed in standalone mode, it needs to be deployed to Application Server
 What are three required configuration elements to create a WAR file with Spring Boot for Tomcat?	war specified by packaging element, spring-boot-starter-web, spring-boot-starter-tomcat
-What are two required pom.xml elements to create a JAR file with embedded container in Spring Boot?	spring-boot-starter-web and spring-boot-maven-plugin
+What are two required pom.xml elements to create a JAR file with embedded container?	spring-boot-starter-web and spring-boot-maven-plugin
 What is the default Spring Boot embedded container?	Tomcat
-What configuration is required to use Jetty embedded container in Spring Boot?	exclude spring-boot-starter-tomcat and include spring-boot-starter-jetty
-What configuration is required to use Undertow embedded container in Spring Boot?	exclude spring-boot-starter-tomcat and include spring-boot-starter-undertow
+What configuration is required to use Jetty embedded container?	exclude spring-boot-starter-tomcat and include spring-boot-starter-jetty
+What configuration is required to use Undertow embedded container?	exclude spring-boot-starter-tomcat and include spring-boot-starter-undertow
 What are six common cross-cutting concerns?	Application and performance logging, caching, security, transactions, monitoring
 What two problems arise without AOP?	Code duplications, mixing of concerns
 What is a AOP join point?	A point in program execution where AOP alter behavior
@@ -202,7 +202,7 @@ What are two @AfterThrowing advice use cases?	Logging, error handling
 What are two @AfterReturning advice use cases?	Logging, data validation for method result
 What are three @Around advice use cases?	Transactions, distributed call tracing, authorization
 Which two advices can you use if you would like to try and catch exceptions?	@AfterThrowing, @Around
-What are the three requirements to enable the detection of the @Aspect annotation?	@Configuration class with @EnableAspectJAutoProxy, @Aspect annotated classes, aspectjweaver/spring-aop on classpath
+What are the three requirements to enable the detection of the @Aspect?	@Configuration class with @EnableAspectJAutoProxy, @Aspect annotated classes, aspectjweaver/spring-aop on classpath
 What are the responsibilities of @EnableAspectJAutoProxy?	Enables detection of @Aspect classes and creates proxy object for beans subject to aspects
 What is the general form of the execution pointcut designator?	execution([visibility modifiers] [return type] [package].[class].[method]([arguments]) [throws exceptions])
 What is the pointcut expression pattern matcher that matches zero or more arguments?	..

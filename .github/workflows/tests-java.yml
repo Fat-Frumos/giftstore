@@ -29,5 +29,5 @@ jobs:
       - name: find file
         run: find . -name web-app-1.0.0.jar
 
-      - name: run java
-        run: java -jar ./web-app/target/web-app-1.0.0.jar
+      # - name: run java
+      #   run: java -jar ./web-app/target/web-app-1.0.0.jar

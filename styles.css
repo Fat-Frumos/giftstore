@@ -1,5 +1,4 @@
 body {
-  /* font-weight: 500; */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -10,13 +9,15 @@ body {
 
 #file-selector option {
   font-size: 14px;
-  line-height: 1.5;
   color: #333;
-  background-color: #f7f7f7;
-  padding: 5px 10px;
+  background-color: #f7f7f7;  
 }
 
 #file-selector {
+  box-sizing: border-box;
+  position: absolute;
+  right: 200px;
+  top: 30px;
   font-size: 16px;
   padding: 8px;
   border: 1px solid #ccc;
@@ -24,7 +25,7 @@ body {
 }
 
 .container {
-  width: 1500px;
+  width: 1100px;
   margin-top: 20px;
   padding: 20px;
   background-color: #f0f0f0;
@@ -95,4 +96,64 @@ span:hover{
 
 input{
   display: none;
+}
+
+.flip-card {
+  left: 30px;
+  top: 30px;
+  position: absolute;
+  background-color: transparent;
+  width: 320px;
+  height: 100%;
+  perspective: 1100px;
+}
+
+.flip-card-inner {
+  position: relative;
+  text-align: center;
+  transition: transform 1s;
+  transform-style: preserve-3d;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+}
+
+.flip-card:focus {
+    outline: 0;
+}
+
+.flip-card:hover .flip-card-inner,
+.flip-card:focus .flip-card-inner{
+  transform: rotateY(180deg);
+}
+
+.flip-card-front,
+.flip-card-back {
+  position: absolute;
+  border-radius: 7px;
+  width: 100%;
+  padding: 10px;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(to left, #4364f7, #6fb1fc);
+}
+
+.flip-card-front {
+  height: 100%;
+  z-index: 2;
+  font-size: 18px;
+  font-weight: 900;
+  display: flex;
+}
+
+.flip-card-back {
+  color: white;
+  transform: rotateY(180deg);
+  z-index: 1;
+}
+h3 {
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.3;
+  color: #fff;
 }

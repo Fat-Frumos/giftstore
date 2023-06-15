@@ -24,7 +24,7 @@ What is Docker?	a tool designed to make it easier to create, deploy, and run app
 SOAP API	Is a standard communication protocol. Take the advantages of making web based protocols such as HTTP and its XML that are already operating the all operating systems that are why its developers can easily manipulate web services and get responses without caring about language and platforms at all. (envelope)
 REST API	Is an architectural style for web services that acts like a channel of communication between computers and systems on the internet. (postcard)
 SonarQube	Used to measure and analyze the source code quality. Scans for vulnerabilities and code errors.
-What is Loose Coupling?	The approach in which components of an application are interconnected to each other in least dependent way. In Spring Framework it is achieved by a core feature called Dependency Injection
+What is Loose Coupling?	The approach in which components of an application are interconnected to each other in least dependent way. Framework it is achieved by a core feature called Dependency Injection
 What is Java Dependencies Injection?	design pattern allows us to remove the hard-coded dependencies and make our application loosely coupled, extendable and maintainable. We can implement dependency injection in java to move the dependency resolution from compile-time to runtime.
 Complie-Time	The instance where the code you entered is converted to executable
 Runtime	The instance where the executable is running
