@@ -12,7 +12,6 @@ let selectedFile = document.getElementById('file-selector').value;
 
 fileSelector.addEventListener('change', (event) => {
   const selectedFile = event.target.value;
-  console.log('Selected file:', selectedFile);
   resetArrays();
   loadQuestions(selectedFile);
 });
@@ -62,14 +61,14 @@ function displayQuestion(index) {
     const currentQuestion = questions[index];
     const currentCorrectAnswer = correctAnswers[index];
     const currentIncorrectAnswers = generateIncorrectAnswers(currentCorrectAnswer, 3);
+    const flipCardElement = document.querySelector('.flip-card');
+    const flipCardFront = document.querySelector('.flip-card-front');
+    const flipCardBack = document.querySelector('.flip-card-back');
     questionElement.textContent = currentQuestion;
     answerElement.innerHTML = currentCorrectAnswer;
     questionsElement.innerHTML = currentQuestion;
-    const flipCardElement = document.querySelector('.flip-card');
-    flipCardElement.style.height =`${currentCorrectAnswer.length-10}px`;
-    const flipCardFront = document.querySelector('.flip-card-front');
-    const flipCardBack = document.querySelector('.flip-card-back');
     const backHeight = flipCardBack.offsetHeight;
+    flipCardElement.style.height =`${currentCorrectAnswer.length}px`;
     flipCardFront.style.height = `${backHeight}px`;
     answersElement.innerHTML = '';
     console.log(currentCorrectAnswer);
@@ -154,7 +153,6 @@ function showResult() {
   }
 }
 
-
 function showNextQuestion() {
   if(currentQuestionIndex < questions.length - 1){
     selectAnswer();
@@ -171,3 +169,30 @@ function showNextQuestion() {
 
 document.getElementById('next').addEventListener('click', showNextQuestion);
 loadQuestions(selectedFile);
+
+const originalOptions = Array.from(fileSelector.options);
+
+function switchLang() {
+  const languageLabel = document.querySelector('#language-label');
+
+  if (languageLabel.textContent === 'EN') {
+    console.log('switching to RU');
+    languageLabel.textContent = 'RU';
+    fileSelector.innerHTML = '';
+    originalOptions.forEach(function(option) {
+      if (option.value.includes('-ru.txt')) {
+        fileSelector.appendChild(option);
+      }
+    });
+  } else {
+    console.log('switching to EN');
+    languageLabel.textContent = 'EN';
+    fileSelector.innerHTML = '';
+    originalOptions.forEach(function(option) {
+      if (!option.value.includes('-ru.txt')) {
+        fileSelector.appendChild(option);
+      }
+    });
+  }
+}
+switchLang();

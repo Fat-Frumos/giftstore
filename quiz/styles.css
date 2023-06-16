@@ -157,3 +157,9 @@ h3 {
   line-height: 1.3;
   color: #fff;
 }
+
+#language-switch{
+  position: absolute;
+  right: 170px;
+  top: 35px;
+}

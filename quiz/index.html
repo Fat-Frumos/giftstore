@@ -5,27 +5,31 @@
     <link rel="stylesheet" type="text/css" href="styles.css">
   </head>
   <body>
+    <div id="language-switch">
+      <span onclick="switchLang()" id="language-label">EN</span>
+    </div>
+    
     <label for="file-selector"></label>
     <select id="file-selector">
-      <option value="questions.txt">Boot</option>
-      <option value="Java-questions.txt" >Java(ru)</option>
-      <option value="Hibernate-questions.txt" selected>Hibernate</option>
-      <option value="Hibernate-questions-ru.txt" >Hibernate(ru)</option>
+      <option value="Boot-questions.txt">Boot</option>
+      <option value="Java-questions-ru.txt" >Java</option>
+      <option value="Hibernate-questions.txt" >Hibernate</option>
+      <option value="Hibernate-questions-ru.txt" >Hibernate</option>
       <option value="Microservices-questions.txt" >Microservices</option>
-      <option value="Microservices-questions-ru.txt" >Microservices(ru)</option>
+      <option value="Microservices-questions-ru.txt" >Microservices</option>
       <option value="Mvc-questions.txt">Mvc</option>
-      <option value="Spring-Mvc-questions-ru.txt" >Mvc(ru)</option>
-      <option value="Pattern-questions.txt" >Pattern(en)</option>
-      <option value="Pattern-questions-ru.txt" >Pattern(ru)</option>
-      <option value="Security-questions.txt" >Security(en)</option>
-      <option value="Security-questions-ru.txt" >Security(ru)</option>
+      <option value="Spring-Mvc-questions-ru.txt" >Mvc</option>
+      <option value="Pattern-questions.txt" >Pattern</option>
+      <option value="Pattern-questions-ru.txt" >Pattern</option>
+      <option value="Security-questions.txt" >Security</option>
+      <option value="Security-questions-ru.txt" >Security</option>
       <option value="SPRING-Note-questions.txt" >Spring-Note</option>
-      <option value="SPRING-Note-questions-ru.txt" >Spring-Note(ru)</option>
+      <option value="SPRING-Note-questions-ru.txt" >Spring-Note</option>
       <option value="Spring-questions.txt">Spring</option>
       <option value="JAVA_75-Spring.txt">Spring-75</option>
-      <option value="JAVA_75-Spring-ru.txt">Spring-75-ru</option>
+      <option value="JAVA_75-Spring-ru.txt" selected>Spring-75</option>
       <option value="Spring-Boot-questions.txt"  >Spring-Boot</option>
-      <option value="Spring-Boot-questions-ru.txt" >Spring-Boot(ru)</option>
+      <option value="Spring-Boot-questions-ru.txt" >Spring-Boot</option>
       <option value="Rest-questions.txt">Rest</option>
       <option value="Test-questions.txt" >Annotation</option>
     </select>
