@@ -5,7 +5,6 @@ What are three reasons why REST is interoperable?	Standardized resource URIs, cl
 What is the result of a successful PUT to a resource URI without any id?	Bulk update
 What are the five methods of the HttpMessageConverter interface?	canWrite, canRead, getSupportedMediaTypes, read, write
 How can you register custom a HttpMessageConverter?	Implement WebMvcConfigurer
-Is REST normally stateless?	Yes
 What does @RequestMapping do?	Specifies conditions a request must match for a method to be used as request handler
 What are six @RequestMapping parameters?	path, method, params, headers, consumes, produces
 What is a stereotype?	Annotations applied to classes to describe role that will be performed
@@ -52,16 +51,12 @@ What is the preferred way to close an application context in a standalone non-we
 What are two non-preferred ways to close an application context in a standalone non-web application?	try block, context close method
 What is the preferred way to close an application context in a Spring web application?	ContextLoaderListener automatically closes context
 How does a Spring Boot application close an application context?	Shutdown hook automatically registered, Application Context automatically closed, ContextLoaderListener automatically closes context for web applications
-What is required for Spring dependency injection using Java	configuration?
-@Configuration on class, @Bean and, where required, @Autowired	What is Spring component scanning?
 Classpath is searched for classes annotated with stereotypes annotations from which bean definitions are created	What does Spring do with Stereotypes?
 Creates bean definitions from classes annotated by them	What are four key Stereotypes?
 Component, Service, Repository, Controller	What are Meta-Annotations?
 Annotations used to create new annotations	What are the six Spring bean scopes?
 Singleton, Prototype, Request, Session, Application, Websocket	What is the Spring bean default scope?
 Singleton	True or false: Singleton Beans are lazily instantiated by default
-False	True or false: Prototype Beans are lazily instantiated by default
-True	What are two ways to change the lazy instantiation of Spring beans?
 @ComponentScan, @Lazy	What is a Spring property source?
 A Spring abstraction on environment key-value pairs	What are six sources for Spring property source?
 JVM properties, system environment variables, JNDI properties, Servlet parameters, properties file on filesystem, properties file on classpath	What is a Spring BeanFactoryPostProcessor? What is it for?

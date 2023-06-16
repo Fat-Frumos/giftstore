@@ -165,7 +165,7 @@ What command-line argument can be used to change the name of the Spring Boot def
 What command-line argument can be used to change the location of the Spring Boot default properties configuration file?	spring.config.location
 What are the two ways to define Spring profile-specific property files?	Multi-profile YAML and application-{profile}.{properties or yml}
 What are three ways to access properties defined in properties files?	@Value, @ConfigurationProperties(prefix) on a data object class, inject and use Environment object
-What four steps are necessary to configure external MySQL?	Specify spring.datasource.{url, username, password} properties, maybe specify the JDBC driver with spring.datasource.driver-class-name, give MySQL connector dependency, and give database access dependency, for example, for JDBC
+What four steps are necessary to configure external MySQL?	Specify spring.datasource.{url, username, password} properties, maybe specify the JDBC driver with spring.datasource.driver-class-name, give MySQL connector dependency, and give database access dependency, for JDBC
 What two scripts does Spring Boot use to configure the default SQL schema?	schema.sql, schema-${platform}.sql
 What two scripts can Spring Boot use to seed initial SQL data?	data.sql, data-${platform}.sql
 True or false: Spring Boot automatically initializes embedded databases	True
