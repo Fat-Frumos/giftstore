@@ -21,14 +21,14 @@
       <option value="Spring-Mvc-questions-ru.txt" >Mvc</option>
       <option value="Pattern-questions.txt" >Pattern</option>
       <option value="Pattern-questions-ru.txt" >Pattern</option>
-      <option value="Security-questions.txt" >Security</option>
+      <option value="Security-questions.txt" selected>Security</option>
       <option value="Security-questions-ru.txt" >Security</option>
       <option value="SPRING-Note-questions.txt" >Spring-Note</option>
       <option value="SPRING-Note-questions-ru.txt" >Spring-Note</option>
       <option value="Spring-questions.txt">Spring</option>
       <option value="JAVA_75-Spring.txt">Spring-75</option>
-      <option value="JAVA_75-Spring-ru.txt" selected>Spring-75</option>
-      <option value="Spring-Boot-questions.txt"  >Spring-Boot</option>
+      <option value="JAVA_75-Spring-ru.txt" >Spring-75</option>
+      <option value="Spring-Boot-questions.txt" >Spring-Boot</option>
       <option value="Spring-Boot-questions-ru.txt" >Spring-Boot</option>
       <option value="Rest-questions.txt">Rest</option>
       <option value="Test-questions.txt" >Annotation</option>
@@ -41,7 +41,7 @@
     <div id="result"></div>
   </div>
   
-  <div class="flip-card" tabIndex="0">
+  <div onclick="displayQuestion(currentQuestionIndex++)" class="flip-card" tabIndex="0">
     <div class="flip-card-inner">
       <div class="flip-card-front">
         <h3 id="questions"></h3>

@@ -22,12 +22,11 @@ CRUD Repository	takes in type and Id
 Spring Bean	This is responsible for managing the lifecycle of beans created through the spring container. The bean lifecycle consists of post-initialization and pre-destruction callback methods
 What is Docker?	a tool designed to make it easier to create, deploy, and run applications by using containers. Containers allow a developer to package up an application with all of the parts it needs, such as libraries and other dependencies, and ship it all out as one package
 SOAP API	Is a standard communication protocol. Take the advantages of making web based protocols such as HTTP and its XML that are already operating the all operating systems that are why its developers can easily manipulate web services and get responses without caring about language and platforms at all. (envelope)
-REST API	Is an architectural style for web services that acts like a channel of communication between computers and systems on the internet. (postcard)
+REST API	Is an architectural style for web services that acts like a channel of communication between computers and systems on the internet.
 SonarQube	Used to measure and analyze the source code quality. Scans for vulnerabilities and code errors.
 What is Loose Coupling?	The approach in which components of an application are interconnected to each other in least dependent way. Framework it is achieved by a core feature called Dependency Injection
 What is Java Dependencies Injection?	design pattern allows us to remove the hard-coded dependencies and make our application loosely coupled, extendable and maintainable. We can implement dependency injection in java to move the dependency resolution from compile-time to runtime.
 Complie-Time	The instance where the code you entered is converted to executable
-Runtime	The instance where the executable is running
 Bootstrap	Is a potent front-end framework used to create modern websites and web apps.
 Aspect-Oriented Programming (AOP)	An approach to programming that allows global properties of a program to determine how it is compiled into an executable program
 Thymeleaf	is a Java-based library used to create a web application. It provides a good support for serving a XHTML/HTML5 in web applications. Spring Boot

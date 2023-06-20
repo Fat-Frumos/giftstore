@@ -71,7 +71,6 @@ function displayQuestion(index) {
     flipCardElement.style.height =`${currentCorrectAnswer.length}px`;
     flipCardFront.style.height = `${backHeight}px`;
     answersElement.innerHTML = '';
-    console.log(currentCorrectAnswer);
     const allAnswers = [currentCorrectAnswer, ...currentIncorrectAnswers];
     shuffleArray(allAnswers);
     for (let i = 0; i < allAnswers.length; i++) {
