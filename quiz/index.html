@@ -13,7 +13,7 @@
     <select id="file-selector">
       <option value="Boot-questions.txt">Boot</option>
       <option value="Java-questions-ru.txt" >Java</option>
-      <option value="Hibernate-questions.txt" >Hibernate</option>
+      <option value="Hibernate-questions.txt" selected>Hibernate</option>
       <option value="Hibernate-questions-ru.txt" >Hibernate</option>
       <option value="Microservices-questions.txt" >Microservices</option>
       <option value="Microservices-questions-ru.txt" >Microservices</option>
@@ -21,7 +21,7 @@
       <option value="Spring-Mvc-questions-ru.txt" >Mvc</option>
       <option value="Pattern-questions.txt" >Pattern</option>
       <option value="Pattern-questions-ru.txt" >Pattern</option>
-      <option value="Security-questions.txt" selected>Security</option>
+      <option value="Security-questions.txt" >Security</option>
       <option value="Security-questions-ru.txt" >Security</option>
       <option value="SPRING-Note-questions.txt" >Spring-Note</option>
       <option value="SPRING-Note-questions-ru.txt" >Spring-Note</option>
@@ -40,6 +40,17 @@
     <button id="next">Submit</button>
     <div id="result"></div>
   </div>
+  
+  <!-- <div class="cube-container">
+    <div class="cube">
+      <div class="side front">1</div>
+      <div class="side bottom">6</div>
+      <div class="side back">2</div>
+      <div class="side top">5</div>
+      <div class="side right">3</div>
+      <div class="side left">4</div>
+    </div>
+  </div> -->
   
   <div onclick="displayQuestion(currentQuestionIndex++)" class="flip-card" tabIndex="0">
     <div class="flip-card-inner">

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>CodePen - Movie Finder</title>
+  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css'><link rel="stylesheet" href="./style.css">
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<nav class="fixed-top d-flex justify-content-center navbar p-2">
+      <a href="index.html" class="p-0 navbar-brand d-none d-lg-block"
+        >Movie Finder</a
+      >
+      <form id="search-form" class="form-inline">
+        <input
+          id="search"
+          class="form-control mr-sm-2"
+          type="search"
+          placeholder="Search"
+          aria-label="Search"
+        />
+      </form>
+    </nav>
+    <section>
+      <div class="container-fluid mt-5 p-5">
+        <div id="movie-content" class="row d-flex justify-content-center">
+          <!-- javascript will come here -->
+        </div>
+      </div>
+    </section>
+    <nav aria-label="Page navigation example">
+      <ul class="pagination justify-content-center">
+        <li class="page-item">
+          <a id="previous" class="btn page-link" tabindex="-1">Previous</a>
+        </li>
+        <li class="page-item">
+          <a id="next" class="btn page-link">Next</a>
+        </li>
+      </ul>
+    </nav>
+<!-- partial -->
+  <script  src="./script.js"></script>
+
+</body>
+</html>

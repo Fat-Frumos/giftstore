@@ -1,3 +1,24 @@
+WebAsyncManagerIntegrationFilter	Интегрирует SecurityContext с WebAsyncManager
+SecurityContextPersistenceFilter	Ищет SecurityContext в сессии и заполняет SecurityContextHolder если находит
+HeaderWriterFilter	Добавляет «security» заголовки в ответ
+CsrfFilter	Проверяет на наличие сsrf токена
+LogoutFilter	Выполняет logout
+BasicAuthenticationFilter	Производит basic аутентификацию
+RequestCacheAwareFilter	Восстанавливает сохраненный до аутентификации запрос, если такой есть
+SecurityContextHolderAwareRequestFilter	Оборачивает существущий запрос в SecurityContextHolderAwareRequestWrapper
+AnonymousAuthenticationFilter	Заполняет SecurityContext ананонимной аутентификацией
+SessionManagementFilter	Выполняет действия связанные с сессией
+ExceptionTranslationFilter	Обрабатывает AuthenticationException\AccessDeniedException которые происходят ниже по стеку.
+FilterSecurityInterceptor	Проверяет имеет ли текущей пользователь доступ к текущему url.
+FilterComparator	здесь можно посмотреть список фильтров и их возможный порядок.
+AuthenticationManager	интерфейс, ответственнен за аутентификацию
+ProviderManager	реализация AuthenticationManager, которая использует внутри использует AuthenticationProvider
+AuthenticationProvider	интерфейс, отвественнен за аутентификаци конкретной реализации Authentication.
+SecurityContextHolder	хранит в себе аутентификацию обычно в ThreadLocal переменной.
+AuthenticationEntryPoint	модифицирует ответ, чтобы дать понять клиенту что необходима аутентификация (заголовки, редирект на страницу логина, т.п.)
+AccessDecisionManager	решает имеет ли Authentication доступ к какому-то ресурсу.
+AffirmativeBased	стратегия используемая AccessDecisionManager по умолчанию.
+Security Mechanisms 	component containers are responsible for providing application-layer security, security services for a specific application type tailored to the needs of the application. At the application layer, application firewalls can be used to enhance application protection by protecting the communication stream and all associated application resources from attacks. is easy to implement and configure and can offer fine-grained access control to application functions and data. However, as is inherent to security applied at the application layer, security properties are not transferable to applications running in other environments and protect data only while it is residing in the application environment. In the context of a traditional enterprise application, this is not necessarily a problem, but when applied to a web services application, in which data often travels across several intermediaries, you would need to use the Java EE security mechanisms along with transport-layer security and message-layer security for a complete security solution.
 WebSecurityConfigurer<T extends SecurityBuilder<Filter>> extends SecurityConfigurer<Filter, T> 	Allows customization to the WebSecurity. In most instances users will use EnableWebSecurity and create a Configuration that exposes a SecurityFilterChain bean. This will automatically be applied to the WebSecurity by the EnableWebSecurity annotation.
 RequestCache 	Implements "saved request" logic, allowing a single request to be retrieved and restarted after redirecting to an authentication mechanism.
 public interface ApplicationContextAware extends Aware 	Interface to be implemented by any object that wishes to be notified of the ApplicationContext that it runs in. Implementing this interface makes sense for example when an object requires access to a set of collaborating beans. Note that configuration via bean references is preferable to implementing this interface just for bean lookup purposes. This interface can also be implemented if an object needs access to file resources, i.e. wants to call getResource, wants to publish an application event, or requires access to the MessageSource. However, it is preferable to implement the more specific ResourceLoaderAware, ApplicationEventPublisherAware or MessageSourceAware interface in such a specific scenario. Note that file resource dependencies can also be exposed as bean properties of type org.springframework.core.io.Resource, populated via Strings with automatic type conversion by the bean factory. This removes the need for implementing any callback interface just for the purpose of accessing a specific file resource. ApplicationObjectSupport is a convenience base class for application objects, implementing this interface.
