@@ -1,15 +1,21 @@
 FROM centos:7
 
-# Install OpenJDK 17
+# Update system and install wget
 RUN yum update -y && \
-    yum install -y java-17-openjdk
+    yum install -y wget
+
+# Download and install OpenJDK 17
+RUN wget https://download.oracle.com/java/17/latest/jdk-17_linux-x64_bin.rpm && \
+    yum -y install ./jdk-17_linux-x64_bin.rpm
 
 # Install Nginx
 RUN yum install -y epel-release && \
     yum install -y nginx
 
+COPY nginx.conf /etc/nginx/nginx.conf
+
 # Copy custom index.html file
-COPY html/index.html /usr/share/nginx/html
+COPY index.html /usr/share/nginx/html
 
 # Open ports
 EXPOSE 22 80 8080
@@ -21,6 +27,7 @@ RUN yum install -y openssh-server && \
 
 # Start Nginx and SSH service
 CMD service nginx start && /usr/sbin/sshd -D
+
 
 
 # # Build stage
