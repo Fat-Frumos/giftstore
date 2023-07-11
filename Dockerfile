@@ -13,13 +13,16 @@ COPY nginx.conf /etc/nginx/nginx.conf
 
 COPY index.html /usr/share/nginx/html
 
+COPY systemctl.py /usr/bin/systemctl
+RUN chmod a+x /usr/bin/systemctl
+
 EXPOSE 22 80 8080
 
 RUN yum install -y openssh-server && \
     ssh-keygen -A && \
     echo 'root:password' | chpasswd
 
-CMD systemctl start nginx && /usr/sbin/sshd -D
+CMD service sshd start && nginx && /usr/sbin/sshd -D
 
 
 # # Build stage
