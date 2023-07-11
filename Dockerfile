@@ -13,4 +13,4 @@ RUN yum install -y openssh-server && \
 
 EXPOSE 8080 22
 
-CMD /usr/sbin/sshd && java -jar /opt/jenkins.war
+CMD /usr/sbin/sshd && java -Djenkins.install.runSetupWizard=false -jar /opt/jenkins.war && cat /root/.jenkins/secrets/initialAdminPassword
