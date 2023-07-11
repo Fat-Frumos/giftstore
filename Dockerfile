@@ -13,8 +13,9 @@ COPY nginx.conf /etc/nginx/nginx.conf
 
 COPY index.html /usr/share/nginx/html
 
-COPY systemctl.py /usr/bin/systemctl
-RUN chmod a+x /usr/bin/systemctl
+RUN wget https://raw.githubusercontent.com/gdraheim/docker-systemctl-replacement/master/files/docker/systemctl.py -O /usr/bin/systemctl && \
+    chmod a+x /usr/bin/systemctl
+
 
 EXPOSE 22 80 8080
 
