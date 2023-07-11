@@ -8,6 +8,9 @@ RUN yum update -y && \
 RUN curl --silent --location http://pkg.jenkins-ci.org/redhat-stable/jenkins.repo | tee /etc/yum.repos.d/jenkins.repo && \
     rpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.key
 
+# Import the Jenkins public key
+RUN rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+
 # Install Jenkins
 RUN yum install -y jenkins
 
