@@ -4,15 +4,8 @@ FROM centos:7
 RUN yum update -y && \
     yum install -y java-1.8.0-openjdk-devel
 
-# Add the Jenkins repository and key
-RUN curl --silent --location http://pkg.jenkins-ci.org/redhat-stable/jenkins.repo | tee /etc/yum.repos.d/jenkins.repo && \
-    rpm --import https://pkg.jenkins.io/redhat/jenkins.io.key
-
-# Import the Jenkins public key
-RUN rpm --import https://pkg.jenkins.io/redhat/jenkins.io.key
-
-# Install Jenkins
-RUN yum install -y jenkins
+# Download the jenkins.war file
+RUN curl -L -o /opt/jenkins.war https://get.jenkins.io/war-stable/latest/jenkins.war
 
 # Install OpenSSH server
 RUN yum install -y openssh-server && \
@@ -23,4 +16,4 @@ RUN yum install -y openssh-server && \
 EXPOSE 8080 22
 
 # Start Jenkins and sshd
-CMD /usr/sbin/sshd && java -jar /usr/lib/jenkins/jenkins.war
+CMD /usr/sbin/sshd && java -jar /opt/jenkins.war
