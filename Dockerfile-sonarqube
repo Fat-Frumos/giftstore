@@ -1,0 +1,42 @@
+FROM adoptopenjdk/openjdk11:latest
+
+ENV SONAR_VERSION=9.0.1.46107
+ENV SONAR_HOME=/opt/sonarqube
+
+RUN curl -OL https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-${SONAR_VERSION}.zip \
+    && unzip sonarqube-${SONAR_VERSION}.zip \
+    && rm sonarqube-${SONAR_VERSION}.zip \
+    && mv sonarqube-${SONAR_VERSION} ${SONAR_HOME}
+
+EXPOSE 9000
+
+# COPY custom-plugin.jar ${SONAR_HOME}/extensions/plugins/
+# COPY sonar.properties ${SONAR_HOME}/conf/
+
+RUN ls -la ${SONAR_HOME}
+
+# VOLUME ${SONAR_HOME}/data
+
+USER sonarqube
+
+CMD ["java", "-jar", "-Dsonar.web.javaAdditionalOpts=-Djava.security.egd=file:/dev/./urandom", "${SONAR_HOME}/lib/sonar-application-${SONAR_VERSION}.jar"]
+
+
+# FROM sonarqube:latest
+
+# EXPOSE 9000
+
+# # COPY custom-plugin.jar /opt/sonarqube/extensions/plugins/
+# # COPY sonar.properties /opt/sonarqube/conf/
+
+# # ENV SONARQUBE_JDBC_URL jdbc:mysql://mysql:3306/sonar
+
+# # VOLUME /opt/sonarqube/data
+
+# RUN ls -la /opt/sonarqube/bin
+
+# USER sonarqube
+
+# # HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD curl -f http://localhost:9000/api/system/status || exit 1
+
+# ENTRYPOINT ["/opt/sonarqube/bin/run.sh", "sonarqube"]

@@ -1,16 +1,13 @@
-FROM centos:7
+FROM maven:3.8.2-jdk-11 AS build
 
-RUN yum update -y && \
-    yum install -y wget
+COPY zero/Module#03 /usr/src/app
 
-RUN yum install -y java-11-openjdk-devel
+RUN mvn clean package -DskipTests -X
 
-RUN curl -L -o /opt/jenkins.war https://get.jenkins.io/war-stable/latest/jenkins.war
+#COPY --from=build ./web-app/target/web-app-1.0.0.jar certificate.jar
 
-RUN yum install -y openssh-server && \
-    ssh-keygen -A && \
-    echo 'root:password' | chpasswd
+EXPOSE 8080
 
-EXPOSE 8080 22
+CMD ["java", "-jar", "web-app/target/web-app-1.0.0.war"]
 
-CMD /usr/sbin/sshd && java -Djenkins.install.runSetupWizard=false -jar /opt/jenkins.war && cat /root/.jenkins/secrets/initialAdminPassword
+#HEALTHCHECK --interval=30s --timeout=10s CMD curl --fail http://localhost:8080/health || exit 1
