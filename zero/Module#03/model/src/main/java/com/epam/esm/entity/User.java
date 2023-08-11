@@ -7,37 +7,49 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedAttributeNode;
 import jakarta.persistence.NamedEntityGraph;
 import jakarta.persistence.NamedSubgraph;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Represents a user entity in the system.
+ * User class representing a user in the system.
+ * <p>
+ * Implements UserDetails interface for Spring Security integration.
  */
-@Data
+@Slf4j
+@Getter
+@Setter
 @Entity
 @Builder
+@Validated
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users")
 @NamedEntityGraph(
-        name = "User.orders.certificates.tags",
+        name = "User.orders.certificates.tags.role",
         attributeNodes = {
-                @NamedAttributeNode(value = "orders", subgraph = "orderGraph")
+                @NamedAttributeNode(value = "orders", subgraph = "orderGraph"),
+                @NamedAttributeNode(value = "role", subgraph = "roleGraph"),
+                @NamedAttributeNode("tokens")
         },
         subgraphs = {
                 @NamedSubgraph(
@@ -52,7 +64,13 @@ import java.util.Set;
                 @NamedSubgraph(
                         name = "certificateGraph",
                         attributeNodes = {
-                                @NamedAttributeNode("tags")
+                                @NamedAttributeNode(value = "tags")
+                        }
+                ),
+                @NamedSubgraph(
+                        name = "roleGraph",
+                        attributeNodes = {
+                                @NamedAttributeNode("authorities")
                         }
                 )
         }
@@ -63,8 +81,11 @@ public class User implements Serializable {
      */
     @Id
     @Column(name = "user_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_sequence")
-    @SequenceGenerator(name = "user_sequence", sequenceName = "user_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+            generator = "user_sequence")
+    @SequenceGenerator(name = "user_sequence",
+            sequenceName = "user_id_seq",
+            allocationSize = 1)
     private Long id;
 
     /**
@@ -77,12 +98,14 @@ public class User implements Serializable {
      * The email address of the user.
      */
     @Column(name = "email", nullable = false)
-    @Pattern(regexp = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\."
-            + "[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@"
-            + "(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9]"
-            + "(?:[a-z0-9-]*[a-z0-9])?",
-            message = "{invalid.email}")
+    @Email(message = "{invalid.email}")
     private String email;
+
+    /**
+     * The password of the user.
+     */
+    @Column(name = "password", nullable = false)
+    private String password;
 
     /**
      * The set of orders associated with the user.
@@ -95,29 +118,20 @@ public class User implements Serializable {
     private Set<Order> orders = new HashSet<>();
 
     /**
-     * Adds an order to the user's set of orders.
-     *
-     * @param order the order to add
+     * The set of tokens associated with the user.
      */
-    public void addOrder(final Order order) {
-        if (orders == null) {
-            this.orders = new HashSet<>();
-        }
-        if (order != null) {
-            this.orders.add(order);
-        }
-    }
+    @Builder.Default
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user",
+            cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Token> tokens = new HashSet<>();
 
     /**
-     * Removes an order from the user's set of orders.
-     *
-     * @param order the order to remove
-     * @return the removed order
+     * The role of a user.
      */
-    public Order removeOrder(final Order order) {
-        if (order != null) {
-            this.orders.remove(order);
-        }
-        return order;
-    }
+    @ManyToOne(fetch = FetchType.EAGER,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "role_id")
+    private Role role;
 }

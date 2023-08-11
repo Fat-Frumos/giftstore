@@ -1,13 +1,13 @@
-FROM maven:3.8.2-jdk-11 AS build
+FROM maven:3.8.4-openjdk-17-slim
 
 COPY zero/Module#03 /usr/src/app
 
-RUN mvn clean package -DskipTests -X
+WORKDIR /usr/src/app
 
-#COPY --from=build ./web-app/target/web-app-1.0.0.jar certificate.jar
+RUN mvn clean install -DskipTests -X
 
-EXPOSE 8080
+EXPOSE 8080 80
 
-CMD ["java", "-jar", "web-app/target/web-app-1.0.0.war"]
+CMD ["java", "-jar", "web-app/target/web-app-1.0.0.jar", "--thin.dryrun"]
 
 #HEALTHCHECK --interval=30s --timeout=10s CMD curl --fail http://localhost:8080/health || exit 1
