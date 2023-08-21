@@ -71,7 +71,6 @@ public class Certificate implements Serializable {
      */
     @Column(nullable = false)
     private BigDecimal price;
-
     /**
      * The description of the certificate.
      */
@@ -97,6 +96,8 @@ public class Certificate implements Serializable {
      */
     @Column(nullable = false)
     private Integer duration;
+
+    private String path;
 
     /**
      * The set of tags associated with the certificate.

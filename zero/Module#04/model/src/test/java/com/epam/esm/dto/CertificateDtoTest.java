@@ -175,16 +175,30 @@ class CertificateDtoTest {
             "3, Spring, Season 3, 30.0, 60",
             "4, Autumn, Season 4, 40.0, 75"})
     void testRemoveNonExistingCertificate(
-            long id, String name, String name2,
+            long id, String name, String description,
             BigDecimal price, int duration) {
+        Certificate certificate = Certificate.builder()
+                .id(id).name(name)
+                .price(price)
+                .lastUpdateDate(lastUpdateDate)
+                .description(description)
+                .build();
         certificate.setId(id);
         certificate.setName(name);
         certificate.setPrice(price);
         certificate.setDuration(duration);
         order.addCertificate(certificate);
-        certificate2.setName(name2);
+        certificate2.setName(name);
         int initialSize = order.getCertificates().size();
         order.removeCertificate(certificate2);
+        assertNotNull(certificate.getLastUpdateDate());
+        assertNotNull(certificate.getName());
+        assertNotNull(certificate.getId());
+        assertNotNull(certificate.getPrice());
+        assertNotNull(certificate.getDescription());
+        assertNotNull(certificate.getLastUpdateDate());
+        assertNotNull(certificate.getLastUpdateDate());
+        assertNotNull(certificate.getLastUpdateDate());
         assertEquals(initialSize, order.getCertificates().size());
         assertTrue(order.getCertificates().contains(certificate));
         assertTrue(certificate.getOrders().contains(order));

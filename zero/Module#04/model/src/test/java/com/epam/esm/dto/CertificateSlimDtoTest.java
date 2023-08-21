@@ -15,7 +15,9 @@ import java.util.Set;
 
 import static java.sql.Timestamp.valueOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CertificateSlimDtoTest {
@@ -29,6 +31,7 @@ class CertificateSlimDtoTest {
     int duration;
     Timestamp createDate;
     Timestamp lastUpdateDate;
+    CertificateSlimDto certificate;
 
     @BeforeEach
     public void setup() {
@@ -39,12 +42,16 @@ class CertificateSlimDtoTest {
         duration = 365;
         createDate = valueOf(LocalDateTime.now());
         lastUpdateDate = valueOf(LocalDateTime.now());
+        certificate = CertificateSlimDto.builder()
+                .id(id).name(name).description(description)
+                .duration(duration).price(price)
+                .build();
     }
 
     @Test
     @DisplayName("Test CertificateSlimDto validation")
     void testCertificateSlimDtoValidation() {
-        CertificateSlimDto certificate = new CertificateSlimDto(id, name, description, price, duration, createDate, lastUpdateDate);
+        CertificateSlimDto certificate = new CertificateSlimDto(id, name, description, price, duration, createDate, lastUpdateDate, "http");
         Set<ConstraintViolation<CertificateSlimDto>> violations =
                 validator.validate(certificate);
         assertTrue(violations.isEmpty());
@@ -146,6 +153,51 @@ class CertificateSlimDtoTest {
                 getDto(id, name, description, price, 366, createDate, lastUpdateDate);
         validator.validate(certificate).forEach(violation -> assertEquals(
                 "Duration must be less than or equal to 365.", violation.getMessage()));
+    }
+
+    @Test
+    void testFields() {
+        CertificateSlimDto certificate = CertificateSlimDto.builder().build();
+        certificate.setId(1L);
+        certificate.setName("Test Certificate");
+        certificate.setDescription("Description");
+        certificate.setPrice(new BigDecimal("99.99"));
+        certificate.setDuration(30);
+
+        assertNotNull(certificate.getId());
+        assertEquals("Test Certificate", certificate.getName());
+        assertEquals("Description", certificate.getDescription());
+        assertEquals(new BigDecimal("99.99"), certificate.getPrice());
+        assertEquals(30, certificate.getDuration());
+        assertNull(certificate.getCreateDate());
+        assertNull(certificate.getLastUpdateDate());
+    }
+
+    @Test
+    void testEqualsAndHashCode() {
+        CertificateSlimDto certificate1 = CertificateSlimDto.builder().build();
+        certificate1.setId(1L);
+
+        CertificateSlimDto certificate2 = CertificateSlimDto.builder().build();
+        certificate2.setId(1L);
+
+        CertificateSlimDto certificate3 = CertificateSlimDto.builder().build();
+        certificate3.setId(2L);
+
+        assertEquals(certificate1, certificate2);
+        assertNotEquals(certificate1, certificate3);
+    }
+
+    @Test
+    void testToString() {
+        certificate.setId(1L);
+        certificate.setName("Test Certificate");
+        assertNotNull(certificate.toString());
+    }
+
+    @Test
+    void testRepresentationModel() {
+        assertNotNull(certificate.getLinks());
     }
 
     private static CertificateSlimDto getDto(
