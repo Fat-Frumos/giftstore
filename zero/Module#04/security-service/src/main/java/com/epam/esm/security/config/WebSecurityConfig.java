@@ -78,7 +78,7 @@ public class WebSecurityConfig {
                 .securityContext(customizer -> customizer.requireExplicitSave(false))
                 .authorizeHttpRequests(authorize ->
                         authorize.requestMatchers(PathRequest.toH2Console()).permitAll()
-                                .requestMatchers(POST, "/signup", "/logout", "/login").permitAll()
+                                .requestMatchers(POST, "/signup", "/logout", "/login", "/upload").permitAll()
                                 .requestMatchers(GET, "/tags/**", "/certificates/**").permitAll()
                                 .requestMatchers(GET, "/orders/**", "/token/**").hasAnyAuthority(USER, ADMIN)
                                 .requestMatchers(POST, "/orders/**").hasAnyAuthority(USER, ADMIN)
@@ -117,7 +117,7 @@ public class WebSecurityConfig {
         configuration.setAllowedMethods(Collections.singletonList("*"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true);
-        configuration.setMaxAge(36000L);
+        configuration.setMaxAge(360000L);
         configuration.setExposedHeaders(List.of("Authorization"));
         return configuration;
     }

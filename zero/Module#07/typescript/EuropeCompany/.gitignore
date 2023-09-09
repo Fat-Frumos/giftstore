@@ -68,6 +68,7 @@ build/
 ### React ###
 # dependencies
 /node_modules
+/scratch
 /.pnp
 .pnp.js
 /dist

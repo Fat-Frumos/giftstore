@@ -28,6 +28,7 @@ TODO.md
 logs/
 build/
 target/
+scratch/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
