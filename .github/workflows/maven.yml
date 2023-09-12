@@ -20,6 +20,9 @@ jobs:
           java-version: 17
           distribution: temurin
 
+      - name: Main
+        run: cd zero
+
       - name: Build with Maven
         run: mvn -B clean package --file pom.xml
 

@@ -110,6 +110,7 @@ public class WebSecurityConfig {
                 "http://192.168.31.177:5500",
                 "http://127.0.0.1:5500",
                 "http://localhost:5500",
+                "http://localhost:4200",
                 "http://127.0.0.1:8080",
                 "http://127.0.0.1:4200",
                 "https://gift-store.onrender.com",
