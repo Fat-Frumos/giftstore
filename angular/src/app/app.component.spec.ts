@@ -17,7 +17,7 @@ describe('AppComponent', () => {
   it(`should have as title 'store'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('store');
+    expect(app.host).toEqual('https://gift-store.onrender.com/api');
   });
 
   it('should render title', () => {
