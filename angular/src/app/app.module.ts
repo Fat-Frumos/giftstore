@@ -11,6 +11,14 @@ import { HttpClientModule } from '@angular/common/http';
 import { ChevronComponent } from './components/footer/chevron/chevron.component';
 import { FooterComponent } from './components/footer/footer/footer.component';
 import { SpinnerComponent } from './components/footer/spinner/spinner.component';
+import { FilterPipe } from './pipe/filter.pipe';
+import { ContainerComponent } from "./components/main/container/container.component";
+import { DetailsComponent } from './components/pages/details/details.component';
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {CategoryComponent} from "./components/main/category/category.component";
+import { CarouselDirective } from './directive/carousel.directive';
+import { HiddenDirective } from './directive/hidden.directive';
+import { DisplayDirective } from './directive/display.directive';
 
 @NgModule({
   declarations: [
@@ -19,6 +27,13 @@ import { SpinnerComponent } from './components/footer/spinner/spinner.component'
     ChevronComponent,
     FooterComponent,
     SpinnerComponent,
+    ContainerComponent,
+    FilterPipe,
+    DetailsComponent,
+    CategoryComponent,
+    CarouselDirective,
+    HiddenDirective,
+    DisplayDirective,
   ],
   imports: [
     BrowserModule,
@@ -29,8 +44,15 @@ import { SpinnerComponent } from './components/footer/spinner/spinner.component'
     MainModule,
     NgOptimizedImage,
     HttpClientModule,
+    BrowserAnimationsModule,
+
   ],
-  providers: [],
+  providers: [
+    FilterPipe,
+    DisplayDirective],
   bootstrap: [AppComponent],
+  exports: [
+    FilterPipe
+  ]
 })
 export class AppModule {}

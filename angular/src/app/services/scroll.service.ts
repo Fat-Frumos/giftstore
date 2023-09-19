@@ -18,5 +18,6 @@ export class ScrollService {
     if (savedScrollPosition) {
       window.scrollTo(0, parseInt(savedScrollPosition, 10));
     }
+    console.log("restore Position " + savedScrollPosition)
   }
 }

@@ -1,18 +1,17 @@
 import {
-  AfterViewInit,
-  Component, ElementRef,
-  HostListener,
-  OnDestroy,
+  AfterViewInit, ChangeDetectorRef,
+  Component,
+  HostListener, OnDestroy,
   OnInit,
-  Renderer2, ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import { Certificate } from '../../../model/Certificate';
-import { Subject, Subscription, takeUntil } from 'rxjs';
-import { LocalStorageService } from '../../../services/local-storage.service';
-import { ScrollService } from '../../../services/scroll.service';
-import { CertificateService } from '../../../services/certificate.service';
-import { LoadService } from '../../../services/load.service';
+import {Certificate} from '../../../model/Certificate';
+import {Subject, Subscription, takeUntil} from 'rxjs';
+import {LocalStorageService} from '../../../services/local-storage.service';
+import {ScrollService} from '../../../services/scroll.service';
+import {LoadService} from '../../../services/load.service';
+import {CertificateService} from "../../../services/certificate.service";
+import {ICriteria} from "../../../interfaces/ICriteria";
 
 @Component({
   selector: 'app-container',
@@ -24,50 +23,32 @@ export class ContainerComponent implements OnInit, OnDestroy, AfterViewInit {
   page: number = 0;
   size: number = 25;
   loading: boolean = false;
-  certificates$: Certificate[] = [];
   subscription!: Subscription;
-  private unSubscribers$:Subject<any> = new Subject();
-
-  @ViewChild('certificatesList', { static: false })
-  certificatesList!: ElementRef;
+  unSubscribers$: Subject<any> = new Subject();
+  criteria: ICriteria = {name: '', tag: ''};
 
   constructor(
-    private service: CertificateService,
     private scroll: ScrollService,
     private storage: LocalStorageService,
     private loadService: LoadService,
-    private renderer: Renderer2,
-  ) {}
-
-  ngAfterViewInit(): void {
-    this.createCards();
+    public service: CertificateService,
+    private cdr: ChangeDetectorRef
+  ) {
   }
 
-  createCards(): void {
-    if (this.certificatesList) {
-      this.certificates$.forEach((certificate) => {
-        const card = this.renderer.createElement('app-card');
-        this.renderer.addClass(card, 'certificate-card');
-        this.renderer.setAttribute(
-          card,
-          'tagName',
-          JSON.stringify(certificate.tags)
-        );
-        this.renderer.setAttribute(
-          card,
-          'certificate',
-          JSON.stringify(certificate)
-        );
-        this.renderer.appendChild(this.certificatesList.nativeElement, card);
-      });
-    }
+  ngAfterViewInit(): void {
+    console.log("After View Init")
+    this.cdr.detectChanges();
   }
 
   ngOnInit(): void {
-    this.loadCertificates();
-    this.scroll.restorePosition();
-    this.service.updateLoginLink();
-    this.service.counter();
+    const saved: Certificate[] = this.storage.getCertificatesFromLocalStorage();
+    if (saved.length !== 0) {
+      this.service.certificates$ = saved;
+    } else {
+      this.loadMoreCertificates();
+    }
+    console.log("saved certificates in Storage : " + this.service.certificates$.length);
   }
 
   ngOnDestroy(): void {
@@ -80,33 +61,35 @@ export class ContainerComponent implements OnInit, OnDestroy, AfterViewInit {
   onScroll(): void {
     if (
       !this.loading &&
-      window.innerHeight + window.scrollY >= document.body.offsetHeight - 100
+      window.innerHeight + window.scrollY >= document.body.offsetHeight - 80
     ) {
-      this.loadCertificates();
+      this.loadMoreCertificates();
     }
   }
 
-  private loadCertificates(): void {
-    if (this.loading) return;
-    this.loading = true;
-
-    const saved: Certificate[] =
-      this.storage.getCertificatesFromLocalStorage() || [];
-    this.page = saved.length / 25;
-
-    this.subscription = this.loadService
+  loadMoreCertificates(): void {
+    const spinner = document.getElementById('loading-indicator');
+    if (!this.loading && spinner) {
+      spinner.style.display = 'block';
+      this.loading = true;
+      const size: number = this.storage.getCertificatesSize();
+      if (size !== 0) {
+        this.page = size / 25;
+      }
+      this.subscription = this.loadService
       .getCertificates(this.page, this.size)
       .pipe(takeUntil(this.unSubscribers$))
       .subscribe({
         next: (certificates: any): void => {
           if (Array.isArray(certificates)) {
-            this.certificates$ = [...this.certificates$, ...certificates];
-            this.page++;
+            this.storage.saveCertificatesToLocalStorage(certificates);
+            this.service.certificates$ = this.storage.getCertificatesFromLocalStorage();
             this.loading = false;
-            this.scroll.saveScrollPosition();
+            this.cdr.detectChanges();
           }
-          console.log(this.certificates$.length);
-          console.log(certificates.length);
+          console.log("Saved: " + this.service.certificates$.length);
+
+          spinner.style.display = 'none';
         },
         error: (error) => {
           console.error('Error loading certificates:', error);
@@ -116,40 +99,6 @@ export class ContainerComponent implements OnInit, OnDestroy, AfterViewInit {
           console.log('Certificates loading completed.');
         },
       });
-
-    if (JSON.stringify(this.certificates$).length !== 0) {
-      this.storage.saveCertificatesToLocalStorage(this.certificates$);
-      this.loadNextPage();
     }
-    this.page++;
-    this.loading = false;
-  }
-
-  private loadNextPage() {
-    const saved: Certificate[] =
-      this.storage.getCertificatesFromLocalStorage() || [];
-    if (saved.length !== 0) {
-      this.certificates$ = saved;
-      this.createCards();
-      // spinner.style.display = "none";
-    } else {
-      this.loadCertificates();
-    }
-
-    const certificatesList =
-      document.getElementsByClassName('certificate-card');
-    const savedScrollPosition: string =
-      localStorage.getItem('scrollPosition') ?? '';
-    const timer = parseInt(savedScrollPosition) / 80;
-    console.log(saved.length);
-    const intervalId = setInterval(() => {
-      if (certificatesList.length === saved.length) {
-        clearInterval(intervalId);
-        this.scroll.restorePosition();
-        console.log(certificatesList.length);
-        console.log(timer);
-        // spinner.style.display = "none";
-      }
-    }, timer);
   }
 }

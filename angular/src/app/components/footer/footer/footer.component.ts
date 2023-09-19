@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, Input, ViewEncapsulation} from '@angular/core';
 import { fromEvent, throttleTime } from 'rxjs';
 import { ScrollService } from '../../../services/scroll.service';
 
@@ -6,11 +6,13 @@ import { ScrollService } from '../../../services/scroll.service';
   selector: 'app-footer',
   templateUrl: './footer.component.html',
   styleUrls: ['./footer.component.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class FooterComponent {
+  @Input() spinnerVisible!: boolean;
   constructor(private scroll: ScrollService) {
-    const scrollObservable = fromEvent(window, 'scroll').pipe(
-      throttleTime(300)
+    const scrollObservable = fromEvent(window, 'scroll')
+    .pipe(throttleTime(300)
     );
 
     scrollObservable.subscribe(() => {
@@ -19,9 +21,7 @@ export class FooterComponent {
         document.body.offsetHeight - 100
       ) {
         this.scroll.saveScrollPosition();
-        // this.load();
       }
-
       const scrollButton = document.querySelector('.scroll-top');
       if (scrollButton) {
         if (window.scrollY > 300) {
