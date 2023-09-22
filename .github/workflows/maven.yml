@@ -20,15 +20,12 @@ jobs:
           java-version: 17
           distribution: temurin
 
-      - name: Main
-        run: cd zero
-
       - name: list
         run: ls -la
 
-      - name: Module#04
-        run: cd Module#04
-
+      - name: Main
+        run: cd zero/Module#04
+        
       - name: list
         run: ls -la
 
