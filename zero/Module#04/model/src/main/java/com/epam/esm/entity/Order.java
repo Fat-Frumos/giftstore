@@ -15,6 +15,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedAttributeNode;
 import jakarta.persistence.NamedEntityGraph;
 import jakarta.persistence.NamedSubgraph;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -28,7 +30,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -106,6 +110,10 @@ public class Order implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "certificate_id")
     )
     private Set<Certificate> certificates = new HashSet<>();
+
+    @OneToOne
+    @JoinColumn(name = "order_id")
+    private Invoice invoice;
 
     /**
      * Adds a certificate to the order.

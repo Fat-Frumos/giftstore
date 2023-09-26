@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -60,7 +61,7 @@ public class OrderController {
     /**
      * Creates a new order for the specified user and certificate.
      *
-     * @param userId         the ID of the user
+     * @param username         the ID of the user
      * @param certificateIds the ID of the certificate
      * @return the created order DTO
      */
@@ -68,9 +69,12 @@ public class OrderController {
     @ResponseStatus(CREATED)
     public EntityModel<OrderDto> create(
             @PathVariable final String username,
-            @RequestParam final Set<Long> certificateIds) {
+            @RequestParam final Set<Long> certificateIds,
+            @RequestParam final List<Long> counters
+
+            ) {
         return assembler.toModel(
-                orderService.save(username, certificateIds));
+                orderService.save(username, certificateIds, counters));
     }
 
     /**
