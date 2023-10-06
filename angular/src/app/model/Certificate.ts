@@ -1,17 +1,19 @@
-import { Tag } from './Tag';
+import {ICertificate} from "./entity/ICertificate";
+import {ITag} from "./entity/ITag";
 
-export interface Certificate {
-  id: string;
-  name: string;
-  description: string;
-  shortDescription: string;
-  company: string;
-  price: number;
-  duration: number;
-  createDate: Date;
-  lastUpdate: Date;
-  favorite: boolean;
-  checkout: boolean;
-  path: string;
-  tags: Set<Tag>;
+export class Certificate implements ICertificate {
+  checkout!: boolean;
+  company!: string;
+  createDate!: Date;
+  description!: string;
+  duration!: number;
+  favorite!: boolean;
+  id!: string;
+  lastUpdate!: Date;
+  name!: string;
+  path!: string;
+  price!: number;
+  shortDescription!: string;
+  tags: Set<ITag> = new Set<ITag>();
+  count: number = 1;
 }

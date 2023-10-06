@@ -1,4 +1,4 @@
-import {Directive, HostBinding} from '@angular/core';
+import {Directive, Input} from '@angular/core';
 
 @Directive({
   selector: '[appDisplay]',
@@ -6,8 +6,8 @@ import {Directive, HostBinding} from '@angular/core';
 })
 export class DisplayDirective {
 
-  @HostBinding('style.display')
-  public display: 'none' | 'block' = 'block';
+  @Input()
+  public display: 'none' | 'block' = 'none';
 
   loadOn() {
     console.log('block')

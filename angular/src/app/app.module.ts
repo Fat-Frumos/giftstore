@@ -1,58 +1,52 @@
-import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { BrowserModule } from '@angular/platform-browser';
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { HeaderModule } from './shared/module/header.module';
-import { HomeComponent } from './components/pages/home/home.component';
-import {CommonModule, NgOptimizedImage} from '@angular/common';
-import { MainModule } from './shared/module/main.module';
-import { HttpClientModule } from '@angular/common/http';
-import { ChevronComponent } from './components/footer/chevron/chevron.component';
-import { FooterComponent } from './components/footer/footer/footer.component';
-import { SpinnerComponent } from './components/footer/spinner/spinner.component';
-import { FilterPipe } from './pipe/filter.pipe';
-import { ContainerComponent } from "./components/main/container/container.component";
-import { DetailsComponent } from './components/pages/details/details.component';
+import {NgModule, isDevMode} from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
+import {AppRoutingModule} from './app-routing.module';
+import {AppComponent} from './app.component';
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {CategoryComponent} from "./components/main/category/category.component";
-import { CarouselDirective } from './directive/carousel.directive';
-import { HiddenDirective } from './directive/hidden.directive';
-import { DisplayDirective } from './directive/display.directive';
+import {ModalModule} from "./components/modal/modal.module";
+import {SharedModule} from "./shared/shared.module";
+import {SpinnerModule} from "./components/spinner/spinner.module";
+import {StoreModule} from "@ngrx/store";
+import {reducers} from "./store/reducers";
+import {StoreDevtoolsModule} from "@ngrx/store-devtools";
+import {environment} from "../environments/environment.prod";
+import {EffectsModule} from "@ngrx/effects";
+import {effects} from "./store/effects";
+import { ServiceWorkerModule } from '@angular/service-worker';
+import {CheckoutModule} from "./content/checkout/checkout.module";
+import {ItemModule} from "./components/item/item.component";
 
 @NgModule({
   declarations: [
-    AppComponent,
-    HomeComponent,
-    ChevronComponent,
-    FooterComponent,
-    SpinnerComponent,
-    ContainerComponent,
-    FilterPipe,
-    DetailsComponent,
-    CategoryComponent,
-    CarouselDirective,
-    HiddenDirective,
-    DisplayDirective,
+    AppComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    CommonModule,
-    FormsModule,
-    HeaderModule,
-    MainModule,
-    NgOptimizedImage,
-    HttpClientModule,
     BrowserAnimationsModule,
-
+    ModalModule.forRoot(),
+    SharedModule.forRoot(),
+    SpinnerModule,
+    StoreModule.forRoot(reducers,
+      {
+        runtimeChecks: {
+          strictActionImmutability: false,
+          strictStateImmutability: false
+        }
+      }),
+    StoreDevtoolsModule.instrument({
+      maxAge: 25,
+      logOnly: environment.production
+    }),
+    EffectsModule.forRoot(effects),
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      registrationStrategy: 'registerWhenStable:30000'
+    }),
+    CheckoutModule,
+    ItemModule
   ],
-  providers: [
-    FilterPipe,
-    DisplayDirective],
-  bootstrap: [AppComponent],
-  exports: [
-    FilterPipe
-  ]
+  bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule {
+}

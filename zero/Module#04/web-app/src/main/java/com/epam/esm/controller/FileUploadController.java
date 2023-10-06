@@ -5,9 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,9 +29,13 @@ import static org.springframework.http.HttpStatus.OK;
 @Slf4j
 @RestController
 @CrossOrigin(origins = {
-        "http://192.168.31.177:5500",
-        "http://localhost:4200",
+        "http://192.168.31.177:4200",
         "http://localhost:5500",
+        "http://localhost:4200",
+        "http://127.0.0.1:5500",
+        "http://127.0.0.1:8080",
+        "http://127.0.0.1:4200",
+        "https://gift-store-angular.netlify.app",
         "https://gift-store-certificate.netlify.app",
         "https://gift-store.onrender.com"})
 public class FileUploadController {
@@ -35,19 +43,32 @@ public class FileUploadController {
     @Value("${upload-dir}")
     private String dir;
 
-    @GetMapping("/upload/")
-    public ResponseEntity<Resource> getImage(
-            @RequestParam("filename") String filename) {
+    @GetMapping(value = "upload/{filename:.+}")
+    public ResponseEntity<Resource> getImage(@PathVariable String filename) {
         try {
-            Resource resource =
-                    new UrlResource(Paths.get(dir)
-                            .resolve(filename).toUri());
-            return resource.exists() && resource.isReadable()
-                    ? ResponseEntity.ok(resource)
-                    : ResponseEntity.notFound().build();
+            Resource resource = new UrlResource(Paths.get(dir).resolve(filename).toUri());
+
+            if (resource.exists() && resource.isReadable()) {
+                MediaType mediaType = determineMediaType(filename);
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(mediaType);
+
+                return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
         } catch (IOException e) {
-            log.error(e.getMessage());
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    private MediaType determineMediaType(String filename) {
+        if (filename.endsWith(".jpg") || filename.endsWith(".jpeg")) {
+            return MediaType.IMAGE_JPEG;
+        } else if (filename.endsWith(".png")) {
+            return MediaType.IMAGE_PNG;
+        } else {
+            return MediaType.APPLICATION_OCTET_STREAM;
         }
     }
 
