@@ -455,7 +455,7 @@ class OrderServiceImplTest {
                 .build();
 
         Invoice invoice = new Invoice();
-        order.setInvoice(invoice);
+        order.setInvoices(Collections.singletonList(invoice));
 
         Order savedOrder = Order.builder()
                 .id(1L)
@@ -463,7 +463,7 @@ class OrderServiceImplTest {
                 .certificates(order.getCertificates())
                 .cost(order.getCost())
                 .user(order.getUser())
-                .invoice(invoice)
+                .invoices(Collections.singletonList(invoice))
                 .build();
 
         when(userDao.findByUsername(user.getUsername())).thenReturn(Optional.of(user));

@@ -111,9 +111,12 @@ public class Order implements Serializable {
     )
     private Set<Certificate> certificates = new HashSet<>();
 
-    @OneToOne
-    @JoinColumn(name = "order_id")
-    private Invoice invoice;
+    @Builder.Default
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "order",
+            cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Invoice> invoices = new ArrayList<>();
 
     /**
      * Adds a certificate to the order.

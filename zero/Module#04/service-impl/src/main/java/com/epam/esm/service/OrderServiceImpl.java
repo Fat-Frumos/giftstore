@@ -80,10 +80,17 @@ public class OrderServiceImpl implements OrderService {
                 .user(user)
                 .build();
 
-        Invoice invoice = orderDao.saveInvoice(
-                createInvoice(order, certificates, counters));
+        if (certificates.size() != counters.size()) {
+            throw new IllegalArgumentException("Certificate and counter counts do not match.");
+        }
 
-        order.setInvoice(invoice);
+//        List<Invoice> invoices = IntStream
+//                .range(0, certificates.size())
+//                .mapToObj(i -> orderDao.saveInvoice(
+//                        createInvoice(order, certificates.get(i), counters.get(i))))
+//                .toList();
+//
+//        order.setInvoices(invoices);
 
         try {
             return orderMapper.toDto(orderDao.save(order));
@@ -92,22 +99,14 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-    private Invoice createInvoice(Order order, List<Certificate> certificates, List<Long> counters) {
-        if (certificates.size() != counters.size()) {
-            throw new IllegalArgumentException("Certificate and counter counts do not match.");
-        }
-
+    private Invoice createInvoice(Order order, Certificate certificate, Long counter) {
         Invoice invoice = new Invoice();
-        for (int i = 0; i < certificates.size(); i++) {
-            Certificate certificate = certificates.get(i);
-            Long counter = counters.get(i);
-
-            invoice.setOrder(order);
-            invoice.setCertificate(certificate);
-            invoice.setCounter(counter);
-        }
+        invoice.setOrder(order);
+        invoice.setCertificate(certificate);
+        invoice.setCounter(counter);
         return invoice;
     }
+
 
     private BigDecimal calculateTotalCost(List<Certificate> certificates, List<Long> counters) {
         return IntStream.range(0, certificates.size())
