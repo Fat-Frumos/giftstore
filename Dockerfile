@@ -10,4 +10,4 @@ EXPOSE 8080 80
 
 CMD ["java", "-jar", "./web-app/target/web-app-1.0.0.jar", "--thin.dryrun"]
 
-HEALTHCHECK --interval=30s --timeout=10s CMD curl --fail http://localhost:8080/health || exit 1
+HEALTHCHECK --interval=30s --timeout=10s CMD curl --fail http://localhost:8080/api/health || exit 1

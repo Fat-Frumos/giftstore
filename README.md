@@ -6,6 +6,8 @@
 
 Clean, install, and generate report
 
+`mvn spring-boot:run`
+
 `mvn clean install site -P test`
 
 Test report
