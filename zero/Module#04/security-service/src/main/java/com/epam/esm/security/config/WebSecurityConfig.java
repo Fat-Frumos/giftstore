@@ -76,7 +76,7 @@ public class WebSecurityConfig {
                 .cors(customizer -> customizer.configurationSource(request -> corsConfigurationSource()))
                 .securityContext(customizer -> customizer.requireExplicitSave(false))
                 .authorizeHttpRequests(authorize ->
-                        authorize.requestMatchers("/api/upload/**").permitAll()
+                        authorize.requestMatchers("/upload/**").permitAll()
                                 .requestMatchers(POST, "/signup", "/logout", "/login", "/upload/*").permitAll()
                                 .requestMatchers(GET, "/tags/**", "/certificates/**").permitAll()
                                 .requestMatchers(GET, "/orders/**", "/token/**").hasAnyAuthority(USER, ADMIN)

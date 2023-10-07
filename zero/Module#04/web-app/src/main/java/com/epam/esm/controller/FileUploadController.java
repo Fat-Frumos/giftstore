@@ -44,10 +44,10 @@ public class FileUploadController {
     private String dir;
 
     @GetMapping(value = "upload/{filename:.+}")
-    public ResponseEntity<Resource> getImage(@PathVariable String filename) {
+    public ResponseEntity<Resource> getImage(
+            @PathVariable String filename) {
         try {
             Resource resource = new UrlResource(Paths.get(dir).resolve(filename).toUri());
-
             if (resource.exists() && resource.isReadable()) {
                 MediaType mediaType = determineMediaType(filename);
                 HttpHeaders headers = new HttpHeaders();
@@ -100,7 +100,7 @@ public class FileUploadController {
             Files.write(uploadPath, file.getBytes());
         } catch (IOException e) {
             return ResponseMessage.builder()
-                    .errorMessage("Image upload failed.")
+                    .errorMessage("error write File")
                     .statusCode(BAD_REQUEST)
                     .build();
         }
