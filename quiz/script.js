@@ -53,44 +53,44 @@ function resetArrays() {
   incorrectAnswers = [];
 }
 
-function displayQuestion(index) {
-    const questionElement = document.getElementById('question');
-    const questionsElement = document.getElementById('questions');
-    const answersElement = document.getElementById('answers');
-    const answerElement = document.getElementById('answer');
-    const currentQuestion = questions[index];
-    const currentCorrectAnswer = correctAnswers[index];
-    const currentIncorrectAnswers = generateIncorrectAnswers(currentCorrectAnswer, 3);
-    const flipCardElement = document.querySelector('.flip-card');
-    const flipCardFront = document.querySelector('.flip-card-front');
-    const flipCardBack = document.querySelector('.flip-card-back');
-    questionElement.textContent = currentQuestion;
-    answerElement.innerHTML = currentCorrectAnswer;
-    questionsElement.innerHTML = currentQuestion;
-    const backHeight = flipCardBack.offsetHeight;
-    flipCardElement.style.height =`${currentCorrectAnswer.length}px`;
-    flipCardFront.style.height = `${backHeight}px`;
-    answersElement.innerHTML = '';
-    const allAnswers = [currentCorrectAnswer, ...currentIncorrectAnswers];
-    shuffleArray(allAnswers);
-    for (let i = 0; i < allAnswers.length; i++) {
-      const li = document.createElement('li');
-      const radio = document.createElement('input');
-      radio.type = 'radio';
-      radio.name = 'answer';
-      radio.value = i + 1;
-      li.appendChild(radio);
-      const span = document.createElement('span');
-      span.textContent = allAnswers[i];
-      span.addEventListener('click', () => {
-        radio.checked = true;
-          showResult();
-          showNextQuestion()
-      });
-      li.appendChild(span);
-      answersElement.appendChild(li);
-    }
-  }
+// function displayQuestion(index) {
+//     const questionElement = document.getElementById('question');
+//     const questionsElement = document.getElementById('questions');
+//     const answersElement = document.getElementById('answers');
+//     const answerElement = document.getElementById('answer');
+//     const currentQuestion = questions[index];
+//     const currentCorrectAnswer = correctAnswers[index];
+//     const currentIncorrectAnswers = generateIncorrectAnswers(currentCorrectAnswer, 3);
+//     const flipCardElement = document.querySelector('.flip-card');
+//     const flipCardFront = document.querySelector('.flip-card-front');
+//     const flipCardBack = document.querySelector('.flip-card-back');
+//     questionElement.textContent = currentQuestion;
+//     answerElement.innerHTML = currentCorrectAnswer;
+//     questionsElement.innerHTML = currentQuestion;
+//     const backHeight = flipCardBack.offsetHeight;
+//     flipCardElement.style.height =`${currentCorrectAnswer.length}px`;
+//     flipCardFront.style.height = `${backHeight}px`;
+//     answersElement.innerHTML = '';
+//     const allAnswers = [currentCorrectAnswer, ...currentIncorrectAnswers];
+//     shuffleArray(allAnswers);
+//     for (let i = 0; i < allAnswers.length; i++) {
+//       const li = document.createElement('li');
+//       const radio = document.createElement('input');
+//       radio.type = 'radio';
+//       radio.name = 'answer';
+//       radio.value = i + 1;
+//       li.appendChild(radio);
+//       const span = document.createElement('span');
+//       span.textContent = allAnswers[i];
+//       span.addEventListener('click', () => {
+//         radio.checked = true;
+//           showResult();
+//           showNextQuestion()
+//       });
+//       li.appendChild(span);
+//       answersElement.appendChild(li);
+//     }
+//   }
 
 function generateIncorrectAnswers(correctAnswer, count) {
     const maxNumber = correctAnswers.length;
